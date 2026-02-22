@@ -756,27 +756,39 @@ function buildPrompt(){
 }
 
 async function saveEvent(){
-  const name=(document.getElementById('f-name').value||'').trim();
-  const city=(document.getElementById('f-city').value||'').trim();
-  const date=document.getElementById('f-date').value;
-  const year=parseInt(document.getElementById('f-year').value);
-  if(!name||!city){toast('Etkinlik adı ve şehir zorunludur','err');return;}
-  if(!username){toast('Lütfen sol menüden kullanıcı adı girin','err');return;}
+    const name=(document.getElementById('f-name').value||'').trim();
+    const city=(document.getElementById('f-city').value||'').trim();
+    const date=document.getElementById('f-date').value;
+    const year=parseInt(document.getElementById('f-year').value);
 
-  const ev={
-    id:'u'+Date.now(),name,date,city,year,
-    participants:nv('f-kat'),tents:nv('f-cadir'),
-    agency:nv('f-ajans'),personnel:nv('f-per'),standCost:nv('f-stand'),barter:nv('f-barter'),
-    cekCiro:nv('f-cek'),cadirCiro:nv('f-cciro'),
-    weather:(document.getElementById('f-wx').value||'').trim(),
-    addedBy:username,addedAt:new Date().toISOString()
-  };
+    if(!name||!city){toast('Etkinlik adı ve şehir zorunludur','err');return;}
+    if(!username){toast('Lütfen sol menüden kullanıcı adı girin','err');return;}
 
-  DB.push(ev);DB.sort((a,b)=>new Date(a.date||0)-new Date(b.date||0));
-  await saveData();rebuildFilters();applyFilters();
-  toast('✓ Kaydedildi: '+name);
-  clearForm();
-  goPage('events',document.querySelectorAll('.ni')[1]);
+    const ev={
+        id:'u'+Date.now(),name,date,city,year,
+        participants:nv('f-kat'),tents:nv('f-cadir'),
+        agency:nv('f-ajans'),personnel:nv('f-per'),standCost:nv('f-stand'),barter:nv('f-barter'),
+        cekCiro:nv('f-cek'),cadirCiro:nv('f-cciro'),
+        weather:(document.getElementById('f-wx').value||'').trim(),
+        addedBy:username,addedAt:new Date().toISOString()
+    };
+
+    // Google Sheets'e Gönder
+    fetch("https://script.google.com/macros/s/AKfycbxFgjdIgIkv6sk-FjkXPyDqkQuGxcb-tuBlsHzLpGg5ZVtqhwV2_RNPurf6oWVixF_m/exec", {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify(ev)
+    });
+
+    // Dashboard Sistemine Kaydet (783. satırdan sonrası)
+    DB.push(ev);
+    DB.sort((a,b)=>new Date(a.date||0)-new Date(b.date||0));
+    await saveData();
+    rebuildFilters();
+    applyFilters();
+    toast('✓ Kaydedildi: '+name);
+    clearForm();
+    goPage('events',document.querySelectorAll('.ni')[1]);
 }
 
 function clearForm(){
