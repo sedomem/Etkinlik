@@ -2,1862 +2,928 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SPX Event Intelligence — Finansal Performans Sistemi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SPX Event Intelligence</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg-void: #060a12;
-    --bg-base: #0b1120;
-    --bg-surface: #111827;
-    --bg-elevated: #1a2438;
-    --bg-card: #1e2d45;
-    --bg-hover: #243352;
-    --accent-primary: #3b82f6;
-    --accent-glow: #60a5fa;
-    --accent-cyan: #22d3ee;
-    --accent-emerald: #10b981;
-    --accent-amber: #f59e0b;
-    --accent-rose: #f43f5e;
-    --accent-violet: #8b5cf6;
-    --text-primary: #f0f4ff;
-    --text-secondary: #8da0bf;
-    --text-muted: #4d6080;
-    --border-subtle: rgba(59,130,246,0.12);
-    --border-accent: rgba(59,130,246,0.3);
-    --grid-line: rgba(59,130,246,0.06);
-  }
-
-  * { margin:0; padding:0; box-sizing:border-box; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg-void);
-    color: var(--text-primary);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* Background grid */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(var(--grid-line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .app-container { position: relative; z-index: 1; display: flex; min-height: 100vh; }
-
-  /* SIDEBAR */
-  .sidebar {
-    width: 220px;
-    min-height: 100vh;
-    background: var(--bg-surface);
-    border-right: 1px solid var(--border-subtle);
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0; left: 0;
-    z-index: 100;
-    padding: 24px 0;
-  }
-
-  .sidebar-logo {
-    padding: 0 20px 28px;
-    border-bottom: 1px solid var(--border-subtle);
-  }
-
-  .logo-mark {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 22px;
-    color: var(--text-primary);
-    letter-spacing: -0.5px;
-  }
-
-  .logo-sub {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    color: var(--accent-primary);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-top: 2px;
-  }
-
-  .nav-section {
-    padding: 20px 0;
-    flex: 1;
-  }
-
-  .nav-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    color: var(--text-muted);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 0 20px;
-    margin-bottom: 8px;
-  }
-
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: all 0.2s;
-    color: var(--text-secondary);
-    font-size: 13px;
-    font-weight: 400;
-    border-left: 2px solid transparent;
-  }
-
-  .nav-item:hover { background: var(--bg-elevated); color: var(--text-primary); }
-  .nav-item.active {
-    background: rgba(59,130,246,0.1);
-    color: var(--accent-glow);
-    border-left-color: var(--accent-primary);
-  }
-
-  .nav-icon { font-size: 14px; width: 16px; text-align: center; }
-
-  /* MAIN */
-  .main-content {
-    margin-left: 220px;
-    flex: 1;
-    padding: 0;
-    min-height: 100vh;
-  }
-
-  /* TOPBAR */
-  .topbar {
-    background: rgba(11,17,32,0.8);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border-subtle);
-    padding: 16px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-  }
-
-  .page-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--text-primary);
-  }
-
-  .topbar-right { display: flex; gap: 12px; align-items: center; }
-
-  .filter-group { display: flex; gap: 8px; }
-
-  .filter-select {
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-subtle);
-    color: var(--text-secondary);
-    padding: 7px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .filter-select:hover { border-color: var(--border-accent); }
-
-  .btn-primary {
-    background: var(--accent-primary);
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    transition: all 0.2s;
-    letter-spacing: 0.3px;
-  }
-
-  .btn-primary:hover { background: var(--accent-glow); transform: translateY(-1px); }
-
-  .btn-secondary {
-    background: var(--bg-elevated);
-    color: var(--text-secondary);
-    border: 1px solid var(--border-subtle);
-    padding: 8px 14px;
-    border-radius: 6px;
-    font-size: 12px;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    transition: all 0.2s;
-  }
-
-  .btn-secondary:hover { border-color: var(--border-accent); color: var(--text-primary); }
-
-  /* PAGES */
-  .page { display: none; padding: 28px 32px; }
-  .page.active { display: block; }
-
-  /* KPI GRID */
-  .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  .kpi-card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    border-radius: 12px;
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.2s;
-  }
-
-  .kpi-card:hover { border-color: var(--border-accent); }
-
-  .kpi-card::after {
-    content: '';
-    position: absolute;
-    top: 0; right: 0;
-    width: 60px; height: 60px;
-    border-radius: 0 12px 0 100%;
-    opacity: 0.08;
-  }
-
-  .kpi-card.blue::after { background: var(--accent-primary); }
-  .kpi-card.emerald::after { background: var(--accent-emerald); }
-  .kpi-card.amber::after { background: var(--accent-amber); }
-  .kpi-card.rose::after { background: var(--accent-rose); }
-  .kpi-card.violet::after { background: var(--accent-violet); }
-  .kpi-card.cyan::after { background: var(--accent-cyan); }
-
-  .kpi-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--text-muted);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  .kpi-value {
-    font-family: 'Syne', sans-serif;
-    font-size: 26px;
-    font-weight: 700;
-    color: var(--text-primary);
-    line-height: 1;
-    margin-bottom: 6px;
-  }
-
-  .kpi-sub {
-    font-size: 11px;
-    color: var(--text-muted);
-  }
-
-  .kpi-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    padding: 2px 7px;
-    border-radius: 4px;
-    font-size: 10px;
-    font-weight: 600;
-    font-family: 'DM Mono', monospace;
-  }
-
-  .badge-pos { background: rgba(16,185,129,0.15); color: var(--accent-emerald); }
-  .badge-neg { background: rgba(244,63,94,0.15); color: var(--accent-rose); }
-  .badge-neu { background: rgba(59,130,246,0.15); color: var(--accent-glow); }
-
-  /* CHART GRID */
-  .chart-grid-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  .chart-grid-3 {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  .chart-card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    border-radius: 12px;
-    padding: 20px;
-  }
-
-  .chart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 16px;
-  }
-
-  .chart-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text-primary);
-  }
-
-  .chart-sub {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 2px;
-  }
-
-  .chart-wrapper { position: relative; height: 220px; }
-  .chart-wrapper.tall { height: 280px; }
-
-  /* TABLE */
-  .table-card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 24px;
-  }
-
-  .table-head {
-    padding: 16px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--border-subtle);
-  }
-
-  .table-head-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-  }
-
-  .search-input {
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-subtle);
-    color: var(--text-primary);
-    padding: 7px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-    width: 200px;
-    transition: border-color 0.2s;
-  }
-
-  .search-input:focus { border-color: var(--border-accent); }
-  .search-input::placeholder { color: var(--text-muted); }
-
-  table { width: 100%; border-collapse: collapse; }
-
-  thead tr {
-    background: var(--bg-elevated);
-    border-bottom: 1px solid var(--border-subtle);
-  }
-
-  th {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    font-weight: 500;
-    color: var(--text-muted);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    padding: 10px 16px;
-    text-align: left;
-    white-space: nowrap;
-  }
-
-  tbody tr {
-    border-bottom: 1px solid var(--border-subtle);
-    transition: background 0.15s;
-    cursor: pointer;
-  }
-
-  tbody tr:hover { background: var(--bg-elevated); }
-  tbody tr:last-child { border-bottom: none; }
-
-  td {
-    padding: 10px 16px;
-    font-size: 12px;
-    color: var(--text-secondary);
-    white-space: nowrap;
-  }
-
-  td.name-col { color: var(--text-primary); font-weight: 500; max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
-  td.num { font-family: 'DM Mono', monospace; font-size: 11px; }
-  td.pos { color: var(--accent-emerald); }
-  td.neg { color: var(--accent-rose); }
-
-  .pill {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    font-weight: 500;
-  }
-
-  .pill-high { background: rgba(16,185,129,0.15); color: var(--accent-emerald); }
-  .pill-mid { background: rgba(245,158,11,0.15); color: var(--accent-amber); }
-  .pill-low { background: rgba(244,63,94,0.15); color: var(--accent-rose); }
-
-  /* FORM */
-  .form-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-bottom: 20px;
-  }
-
-  .form-group { display: flex; flex-direction: column; gap: 6px; }
-
-  .form-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--text-muted);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-  }
-
-  .form-input {
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-subtle);
-    color: var(--text-primary);
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    width: 100%;
-  }
-
-  .form-input:focus {
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
-  }
-
-  .form-input::placeholder { color: var(--text-muted); }
-
-  .form-divider {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    color: var(--accent-primary);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin: 8px 0;
-    padding: 6px 0;
-    border-top: 1px solid var(--border-subtle);
-    border-bottom: 1px solid var(--border-subtle);
-  }
-
-  .computed-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 12px;
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-subtle);
-    border-radius: 10px;
-    padding: 16px;
-    margin-bottom: 20px;
-  }
-
-  .computed-item { text-align: center; }
-  .computed-label { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
-  .computed-value { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; }
-  .cv-blue { color: var(--accent-glow); }
-  .cv-emerald { color: var(--accent-emerald); }
-  .cv-amber { color: var(--accent-amber); }
-  .cv-rose { color: var(--accent-rose); }
-
-  /* WEATHER */
-  .weather-card {
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-subtle);
-    border-radius: 10px;
-    padding: 16px;
-    margin-bottom: 20px;
-  }
-
-  .weather-status {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .weather-icon { font-size: 28px; }
-
-  .weather-detail { font-size: 12px; color: var(--text-secondary); line-height: 1.8; }
-  .weather-detail strong { color: var(--text-primary); font-family: 'DM Mono', monospace; }
-
-  .gemini-prompt {
-    background: rgba(59,130,246,0.05);
-    border: 1px solid rgba(59,130,246,0.15);
-    border-radius: 8px;
-    padding: 12px;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--text-muted);
-    line-height: 1.6;
-    margin-top: 10px;
-  }
-
-  /* ANALYSIS */
-  .insight-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  .insight-card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    border-radius: 12px;
-    padding: 20px;
-  }
-
-  .insight-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 14px;
-  }
-
-  .insight-icon {
-    width: 32px; height: 32px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-  }
-
-  .ii-blue { background: rgba(59,130,246,0.15); }
-  .ii-emerald { background: rgba(16,185,129,0.15); }
-  .ii-amber { background: rgba(245,158,11,0.15); }
-  .ii-rose { background: rgba(244,63,94,0.15); }
-
-  .insight-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; }
-
-  .insight-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 0;
-    border-bottom: 1px solid var(--border-subtle);
-    font-size: 12px;
-  }
-
-  .insight-row:last-child { border-bottom: none; }
-  .ir-label { color: var(--text-secondary); }
-  .ir-bar-wrap { flex: 1; margin: 0 12px; height: 3px; background: var(--bg-elevated); border-radius: 2px; }
-  .ir-bar { height: 100%; border-radius: 2px; }
-  .ir-val { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-primary); font-weight: 500; }
-
-  /* SECTION HEADER */
-  .section-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--accent-primary);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-
-  .section-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 22px;
-    font-weight: 800;
-    color: var(--text-primary);
-    margin-bottom: 20px;
-    letter-spacing: -0.5px;
-  }
-
-  .section-header {
-    margin-bottom: 20px;
-  }
-
-  /* STATUS indicator */
-  .status-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 4px;
-    animation: pulse 2s infinite;
-  }
-
-  .dot-green { background: var(--accent-emerald); box-shadow: 0 0 6px var(--accent-emerald); }
-  .dot-blue { background: var(--accent-primary); box-shadow: 0 0 6px var(--accent-primary); }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-  }
-
-  /* Modal */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(6,10,18,0.8);
-    backdrop-filter: blur(8px);
-    z-index: 200;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .modal-overlay.open { display: flex; }
-
-  .modal {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-accent);
-    border-radius: 16px;
-    padding: 28px;
-    max-width: 560px;
-    width: 90%;
-    max-height: 85vh;
-    overflow-y: auto;
-  }
-
-  .modal-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .modal-close {
-    cursor: pointer;
-    color: var(--text-muted);
-    font-size: 18px;
-    transition: color 0.2s;
-  }
-
-  .modal-close:hover { color: var(--text-primary); }
-
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: var(--bg-elevated);
-    border: 1px solid var(--accent-emerald);
-    color: var(--accent-emerald);
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-family: 'DM Mono', monospace;
-    z-index: 999;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.3s;
-  }
-
-  .toast.show { opacity: 1; transform: translateY(0); }
-
-  /* responsive scrollbar */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg-base); }
-  ::-webkit-scrollbar-thumb { background: var(--bg-elevated); border-radius: 3px; }
-
-  .year-tab {
-    padding: 5px 12px;
-    border-radius: 5px;
-    font-size: 11px;
-    font-family: 'DM Mono', monospace;
-    cursor: pointer;
-    border: 1px solid var(--border-subtle);
-    color: var(--text-muted);
-    background: transparent;
-    transition: all 0.2s;
-  }
-
-  .year-tab.active {
-    background: var(--accent-primary);
-    color: white;
-    border-color: var(--accent-primary);
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 40px;
-    color: var(--text-muted);
-    font-size: 13px;
-  }
+:root{
+  --bg0:#060a12;--bg1:#0b1120;--bg2:#111827;--bg3:#1a2438;--bg4:#1e2d45;
+  --blue:#3b82f6;--blue2:#60a5fa;--cyan:#22d3ee;
+  --green:#10b981;--amber:#f59e0b;--rose:#f43f5e;--violet:#8b5cf6;
+  --t1:#f0f4ff;--t2:#8da0bf;--t3:#4d6080;
+  --b1:rgba(59,130,246,.12);--b2:rgba(59,130,246,.3);--grid:rgba(59,130,246,.05);
+  --sb:220px;--r:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--t1);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+.shell{position:relative;z-index:1;display:flex;min-height:100vh;}
+
+/* ── SIDEBAR ── */
+.sb{width:var(--sb);min-height:100vh;background:var(--bg2);border-right:1px solid var(--b1);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:200;transition:transform .28s cubic-bezier(.4,0,.2,1);}
+.sb-logo{padding:18px 18px 16px;border-bottom:1px solid var(--b1);}
+.lm{font-family:'Syne',sans-serif;font-weight:800;font-size:21px;letter-spacing:-.5px;}
+.ls{font-family:'DM Mono',monospace;font-size:9px;color:var(--blue);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+.sb-nav{padding:14px 0;flex:1;overflow-y:auto;}
+.nl{font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;padding:0 16px;margin:10px 0 5px;}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 16px;cursor:pointer;transition:all .16s;color:var(--t2);font-size:13px;border-left:2px solid transparent;user-select:none;}
+.ni:hover{background:var(--bg3);color:var(--t1);}
+.ni.active{background:rgba(59,130,246,.11);color:var(--blue2);border-left-color:var(--blue);}
+.nx{font-size:14px;width:18px;text-align:center;flex-shrink:0;}
+.sb-foot{padding:13px 16px;border-top:1px solid var(--b1);}
+.ull{font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
+.ui{width:100%;background:var(--bg3);border:1px solid var(--b1);color:var(--t1);padding:7px 10px;border-radius:7px;font-size:11px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;}
+.ui:focus{border-color:var(--b2);}
+.ui::placeholder{color:var(--t3);}
+.sb-st{margin-top:9px;font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);line-height:1.9;}
+.dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:4px;animation:pulse 2s infinite;}
+.dot-g{background:var(--green);box-shadow:0 0 5px var(--green);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+/* ── MOBILE ── */
+.mob-bar{display:none;position:fixed;top:0;left:0;right:0;z-index:190;background:rgba(11,17,32,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--b1);padding:0 14px;height:54px;align-items:center;justify-content:space-between;}
+.mob-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;}
+.hb{width:36px;height:36px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;cursor:pointer;background:var(--bg3);border-radius:7px;border:1px solid var(--b1);}
+.hb span{width:18px;height:2px;background:var(--t2);border-radius:2px;transition:all .22s;}
+.hb.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hb.open span:nth-child(2){opacity:0;}
+.hb.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.sb-ov{display:none;position:fixed;inset:0;background:rgba(6,10,18,.6);z-index:195;backdrop-filter:blur(2px);}
+.sb-ov.open{display:block;}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sb);flex:1;min-width:0;}
+.topbar{background:rgba(11,17,32,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--b1);padding:12px 26px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:8px;flex-wrap:wrap;}
+.pt{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;white-space:nowrap;}
+.tr{display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
+.flt{background:var(--bg3);border:1px solid var(--b1);color:var(--t2);padding:7px 10px;border-radius:7px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;outline:none;transition:border-color .2s;}
+.flt:hover,.flt:focus{border-color:var(--b2);}
+.btn{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .18s;border:none;white-space:nowrap;}
+.bp{background:var(--blue);color:#fff;}.bp:hover{background:var(--blue2);transform:translateY(-1px);}
+.bs{background:var(--bg3);color:var(--t2);border:1px solid var(--b1);}.bs:hover{border-color:var(--b2);color:var(--t1);}
+.bd{background:rgba(244,63,94,.11);color:var(--rose);border:1px solid rgba(244,63,94,.18);}.bd:hover{background:rgba(244,63,94,.2);}
+
+/* ── PAGES ── */
+.page{display:none;padding:22px 26px;}
+.page.active{display:block;}
+.sec-l{font-family:'DM Mono',monospace;font-size:10px;color:var(--blue);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
+.sec-t{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:18px;letter-spacing:-.5px;}
+
+/* ── KPI ── */
+.kg{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:14px;}
+.kc{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--r);padding:17px;position:relative;overflow:hidden;transition:border-color .18s;}
+.kc:hover{border-color:var(--b2);}
+.kc::after{content:'';position:absolute;top:0;right:0;width:54px;height:54px;border-radius:0 var(--r) 0 100%;opacity:.09;}
+.bl::after{background:var(--blue)}.gn::after{background:var(--green)}.am::after{background:var(--amber)}.ro::after{background:var(--rose)}.vi::after{background:var(--violet)}.cy::after{background:var(--cyan)}
+.kl{font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:7px;}
+.kv{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;line-height:1;margin-bottom:5px;}
+.ks{font-size:11px;color:var(--t3);}
+.bdg{display:inline-flex;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600;font-family:'DM Mono',monospace;}
+.bg{background:rgba(16,185,129,.13);color:var(--green);}
+.br{background:rgba(244,63,94,.13);color:var(--rose);}
+.bb{background:rgba(59,130,246,.13);color:var(--blue2);}
+
+/* ── CHARTS ── */
+.cg32{display:grid;grid-template-columns:2fr 1fr;gap:13px;margin-bottom:14px;}
+.cg2{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:14px;}
+.cc{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--r);padding:17px;}
+.ch{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:13px;}
+.ct{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;}
+.cs{font-size:11px;color:var(--t3);margin-top:2px;}
+.cw{position:relative;height:215px;}
+.cw.t{height:265px;}
+
+/* ── TABLE ── */
+.tc{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--r);overflow:hidden;margin-bottom:18px;}
+.th{padding:13px 17px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--b1);flex-wrap:wrap;gap:7px;}
+.tht{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;}
+.si{background:var(--bg3);border:1px solid var(--b1);color:var(--t1);padding:7px 11px;border-radius:7px;font-size:12px;font-family:'DM Sans',sans-serif;outline:none;width:185px;transition:border-color .2s;}
+.si:focus{border-color:var(--b2);}
+.si::placeholder{color:var(--t3);}
+.tsc{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;min-width:860px;}
+thead tr{background:var(--bg3);border-bottom:1px solid var(--b1);}
+th{font-family:'DM Mono',monospace;font-size:9px;font-weight:500;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;padding:9px 12px;text-align:left;white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--b1);transition:background .13s;cursor:pointer;}
+tbody tr:hover{background:var(--bg3);}
+tbody tr:last-child{border-bottom:none;}
+td{padding:8px 12px;font-size:12px;color:var(--t2);white-space:nowrap;}
+td.nm{color:var(--t1);font-weight:500;max-width:185px;overflow:hidden;text-overflow:ellipsis;}
+td.mo{font-family:'DM Mono',monospace;font-size:11px;}
+td.pg{color:var(--green);}td.pr{color:var(--rose);}
+.pl{display:inline-block;padding:2px 7px;border-radius:4px;font-family:'DM Mono',monospace;font-size:10px;font-weight:500;}
+.ph{background:rgba(16,185,129,.13);color:var(--green);}
+.pm{background:rgba(245,158,11,.13);color:var(--amber);}
+.plo{background:rgba(244,63,94,.13);color:var(--rose);}
+.pu{background:rgba(139,92,246,.13);color:var(--violet);}
+
+/* Year group row */
+.yr-row td{background:linear-gradient(90deg,rgba(59,130,246,.07),transparent);padding:9px 13px;color:var(--blue2);font-family:'Syne',sans-serif;font-weight:700;font-size:14px;border-bottom:1px solid var(--b1);border-top:2px solid var(--b2);letter-spacing:-.3px;}
+.yr-stats{font-family:'DM Mono',monospace;font-size:10px;color:var(--t3);font-weight:400;margin-left:10px;}
+
+.del-btn{opacity:0;background:rgba(244,63,94,.11);border:none;color:var(--rose);width:22px;height:22px;border-radius:4px;cursor:pointer;font-size:11px;transition:all .18s;display:inline-flex;align-items:center;justify-content:center;}
+tbody tr:hover .del-btn{opacity:1;}
+
+/* ── FORM ── */
+.fc2{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--r);padding:20px;margin-bottom:16px;}
+.fd{font-family:'DM Mono',monospace;font-size:9px;color:var(--blue);letter-spacing:2px;text-transform:uppercase;margin:15px 0 11px;padding:5px 0;border-top:1px solid var(--b1);border-bottom:1px solid var(--b1);}
+.fg3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
+.fg4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px;}
+.fg2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:12px;}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fl{font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;}
+.fi{background:var(--bg3);border:1px solid var(--b1);color:var(--t1);padding:9px 12px;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .18s,box-shadow .18s;width:100%;}
+.fi:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,.1);}
+.fi::placeholder{color:var(--t3);}
+
+/* Preview strip */
+.pvs{display:grid;grid-template-columns:repeat(7,1fr);gap:9px;background:var(--bg3);border:1px solid var(--b1);border-radius:9px;padding:14px;margin-bottom:14px;}
+.pvi{text-align:center;}
+.pvl{font-family:'DM Mono',monospace;font-size:8px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+.pvv{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;}
+.cb{color:var(--blue2);}.cg{color:var(--green);}.ca{color:var(--amber);}.cr{color:var(--rose);}
+
+/* New year banner */
+.yr-banner{background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.22);border-radius:9px;padding:11px 14px;margin-bottom:12px;font-size:12px;color:var(--blue2);font-family:'DM Mono',monospace;display:none;}
+
+/* Weather */
+.wx-box{background:var(--bg3);border:1px solid var(--b1);border-radius:9px;padding:14px;margin-bottom:14px;}
+.wx-pr{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.13);border-radius:7px;padding:11px;font-family:'DM Mono',monospace;font-size:11px;color:var(--t2);line-height:1.7;margin-top:8px;white-space:pre-line;}
+
+/* ── ANALYSIS ── */
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:18px;}
+.ic{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--r);padding:17px;}
+.ih{display:flex;align-items:center;gap:9px;margin-bottom:12px;}
+.ii{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.ib{background:rgba(59,130,246,.13);}
+.ig2{background:rgba(16,185,129,.13);}
+.ia{background:rgba(245,158,11,.13);}
+.ir2{background:rgba(244,63,94,.13);}
+.it{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;}
+.ins-row{display:flex;align-items:center;padding:6px 0;border-bottom:1px solid var(--b1);font-size:12px;}
+.ins-row:last-child{border-bottom:none;}
+.irl{color:var(--t2);min-width:85px;}
+.irbw{flex:1;margin:0 9px;height:3px;background:var(--bg3);border-radius:2px;}
+.irb{height:100%;border-radius:2px;}
+.irv{font-family:'DM Mono',monospace;font-size:11px;color:var(--t1);min-width:75px;text-align:right;}
+.dg{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:13px;}
+.dc2{border-radius:9px;padding:14px;}
+
+/* ── MODAL ── */
+.mo{display:none;position:fixed;inset:0;background:rgba(6,10,18,.87);backdrop-filter:blur(8px);z-index:300;align-items:center;justify-content:center;padding:14px;}
+.mo.open{display:flex;}
+.md{background:var(--bg2);border:1px solid var(--b2);border-radius:15px;padding:22px;max-width:540px;width:100%;max-height:88vh;overflow-y:auto;}
+.mt{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;}
+.mc{cursor:pointer;color:var(--t3);font-size:18px;transition:color .18s;line-height:1;}.mc:hover{color:var(--t1);}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px;}
+.mi{background:var(--bg3);border-radius:8px;padding:10px;}
+.mil{font-family:'DM Mono',monospace;font-size:8px;color:var(--t3);letter-spacing:1px;margin-bottom:3px;}
+.miv{font-weight:600;color:var(--t1);font-size:13px;}
+.mkr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:11px;}
+.mk{background:var(--bg3);border-radius:8px;padding:10px;text-align:center;}
+.mkl{font-family:'DM Mono',monospace;font-size:8px;color:var(--t3);letter-spacing:1px;margin-bottom:3px;}
+.mkv{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--bg3);border:1px solid var(--green);color:var(--green);padding:10px 16px;border-radius:8px;font-size:12px;font-family:'DM Mono',monospace;z-index:999;opacity:0;transform:translateY(14px);transition:all .26s;max-width:280px;}
+.toast.show{opacity:1;transform:translateY(0);}
+.toast.err{border-color:var(--rose);color:var(--rose);}
+
+.empty{text-align:center;padding:34px;color:var(--t3);font-size:12px;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg1);}
+::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:3px;}
+
+/* ════ RESPONSIVE ════ */
+@media(max-width:1100px){
+  .kg{grid-template-columns:repeat(2,1fr);}
+  .cg32,.cg2{grid-template-columns:1fr;}
+  .ig{grid-template-columns:1fr;}
+  .dg{grid-template-columns:1fr;}
+  .pvs{grid-template-columns:repeat(4,1fr);}
+  .fg4{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:768px){
+  :root{--sb:264px;}
+  .sb{transform:translateX(-100%);}
+  .sb.open{transform:translateX(0);}
+  .mob-bar{display:flex;}
+  .main{margin-left:0;padding-top:54px;}
+  .topbar{padding:9px 13px;top:54px;}
+  .page{padding:14px 13px;}
+  .kg{grid-template-columns:repeat(2,1fr);gap:9px;}
+  .kv{font-size:20px;}
+  .fg3{grid-template-columns:repeat(2,1fr);}
+  .fg2{grid-template-columns:1fr;}
+  .pvs{grid-template-columns:repeat(3,1fr);}
+  .mg{grid-template-columns:1fr;}
+  .mkr{grid-template-columns:repeat(2,1fr);}
+  .sec-t{font-size:18px;}
+  .th{flex-direction:column;align-items:flex-start;}
+  .si{width:100%;}
+  .tr{width:100%;justify-content:flex-end;}
+}
+@media(max-width:480px){
+  .kg{grid-template-columns:1fr 1fr;}
+  .kv{font-size:17px;}
+  .kc{padding:13px;}
+  .fg3,.fg4{grid-template-columns:1fr;}
+  .pvs{grid-template-columns:repeat(2,1fr);}
+  .pvv{font-size:14px;}
+}
 </style>
 </head>
 <body>
 
-<div class="app-container">
-  <!-- SIDEBAR -->
-  <nav class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-mark">SPX<span style="color:var(--accent-primary)">.</span></div>
-      <div class="logo-sub">Event Intelligence</div>
+<!-- MOBILE BAR -->
+<div class="mob-bar">
+  <div class="mob-logo">SPX<span style="color:var(--blue)">.</span></div>
+  <div class="hb" id="hb" onclick="toggleSB()"><span></span><span></span><span></span></div>
+</div>
+<div class="sb-ov" id="sb-ov" onclick="closeSB()"></div>
+
+<div class="shell">
+<!-- SIDEBAR -->
+<nav class="sb" id="sb">
+  <div class="sb-logo">
+    <div class="lm">SPX<span style="color:var(--blue)">.</span></div>
+    <div class="ls">Event Intelligence</div>
+  </div>
+  <div class="sb-nav">
+    <div class="nl">Ana Menü</div>
+    <div class="ni active" onclick="goPage('dashboard',this)"><span class="nx">◈</span>Dashboard</div>
+    <div class="ni" onclick="goPage('events',this)"><span class="nx">◉</span>Etkinlikler</div>
+    <div class="ni" onclick="goPage('new-event',this)"><span class="nx">＋</span>Yeni Etkinlik</div>
+    <div class="nl" style="margin-top:9px">Analiz</div>
+    <div class="ni" onclick="goPage('analysis',this)"><span class="nx">▣</span>Analiz Motoru</div>
+    <div class="ni" onclick="goPage('weather',this)"><span class="nx">◎</span>Hava Durumu</div>
+  </div>
+  <div class="sb-foot">
+    <div class="ull">Kullanıcı Adı</div>
+    <input class="ui" id="username" placeholder="Adınızı girin…" oninput="saveUser(this.value)">
+    <div class="sb-st">
+      <span class="dot dot-g"></span><span id="sync-txt">Hazır</span><br>
+      <span style="margin-left:10px" id="foot-count">— etkinlik</span><br>
+      <span style="margin-left:10px" id="foot-users">— kullanıcı</span>
     </div>
-    <div class="nav-section">
-      <div class="nav-label">Ana Menü</div>
-      <div class="nav-item active" onclick="showPage('dashboard', this)">
-        <span class="nav-icon">◈</span> Dashboard
-      </div>
-      <div class="nav-item" onclick="showPage('events', this)">
-        <span class="nav-icon">◉</span> Etkinlikler
-      </div>
-      <div class="nav-item" onclick="showPage('new-event', this)">
-        <span class="nav-icon">+</span> Yeni Etkinlik
-      </div>
-      <div class="nav-label" style="margin-top:16px">Analiz</div>
-      <div class="nav-item" onclick="showPage('analysis', this)">
-        <span class="nav-icon">▣</span> Analiz Motoru
-      </div>
-      <div class="nav-item" onclick="showPage('weather', this)">
-        <span class="nav-icon">◎</span> Hava Durumu
-      </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="pt" id="pg-title">Dashboard</div>
+    <div class="tr">
+      <select class="flt" id="year-filter" onchange="applyFilters()"><option value="all">Tüm Yıllar</option></select>
+      <select class="flt" id="city-filter" onchange="applyFilters()"><option value="all">Tüm Şehirler</option></select>
+      <button class="btn bs" onclick="syncAll()" title="Yenile">↻</button>
+      <button class="btn bs" onclick="doExport()">↓ CSV</button>
+      <button class="btn bp" onclick="goPage('new-event',document.querySelectorAll('.ni')[2])">＋ Ekle</button>
     </div>
-    <div style="padding: 16px 20px; border-top: 1px solid var(--border-subtle);">
-      <div style="font-size:10px; color:var(--text-muted); font-family:'DM Mono',monospace; line-height:1.6;">
-        <span class="status-dot dot-green"></span>SİSTEM AKTİF<br>
-        <span style="margin-left:10px">v2.1.0 — 2025</span>
-      </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="page-dashboard">
+    <div class="sec-l">Genel Bakış</div>
+    <div class="sec-t">Finansal Performans</div>
+    <div class="kg">
+      <div class="kc bl"><div class="kl">Toplam Ciro</div><div class="kv" id="k-ciro">₺0</div><div class="ks" id="k-ciro-s">—</div></div>
+      <div class="kc gn"><div class="kl">Toplam Net Kar</div><div class="kv" id="k-kar">₺0</div><div class="ks" id="k-kar-s">—</div></div>
+      <div class="kc am"><div class="kl">Toplam Gider</div><div class="kv" id="k-gider">₺0</div><div class="ks" id="k-gider-s">—</div></div>
+      <div class="kc vi"><div class="kl">Ort. Kar Marjı</div><div class="kv" id="k-margin">%0</div><div class="ks" id="k-margin-s">—</div></div>
     </div>
-  </nav>
-
-  <!-- MAIN -->
-  <main class="main-content">
-    <!-- TOPBAR -->
-    <div class="topbar">
-      <div class="page-title" id="page-title">Dashboard — Genel Bakış</div>
-      <div class="topbar-right">
-        <div class="filter-group">
-          <select class="filter-select" id="year-filter" onchange="applyFilters()">
-            <option value="all">Tüm Yıllar</option>
-            <option value="2024">2024</option>
-            <option value="2025" selected>2025</option>
-          </select>
-          <select class="filter-select" id="city-filter" onchange="applyFilters()">
-            <option value="all">Tüm Şehirler</option>
-          </select>
-        </div>
-        <button class="btn-secondary" onclick="exportCSV()">↓ CSV</button>
-        <button class="btn-primary" onclick="showPage('new-event', document.querySelector('.nav-item:nth-child(3)'))">+ Ekle</button>
-      </div>
+    <div class="kg">
+      <div class="kc cy"><div class="kl">Etkinlik Sayısı</div><div class="kv" id="k-count">0</div><div class="ks" id="k-count-s">—</div></div>
+      <div class="kc gn"><div class="kl">En Karlı Etkinlik</div><div class="kv" style="font-size:13px;padding-top:4px" id="k-best">—</div><div class="ks" id="k-best-s">—</div></div>
+      <div class="kc ro"><div class="kl">En Düşük Performans</div><div class="kv" style="font-size:13px;padding-top:4px" id="k-worst">—</div><div class="ks" id="k-worst-s">—</div></div>
+      <div class="kc bl"><div class="kl">Ort. ROI</div><div class="kv" id="k-roi">%0</div><div class="ks" id="k-roi-s">—</div></div>
     </div>
-
-    <!-- DASHBOARD PAGE -->
-    <div class="page active" id="page-dashboard">
-      <div class="section-header">
-        <div class="section-label">Genel Bakış</div>
-        <div class="section-title">Finansal Performans Dashboard</div>
-      </div>
-
-      <!-- KPI Row 1 -->
-      <div class="kpi-grid">
-        <div class="kpi-card blue">
-          <div class="kpi-label">Toplam Ciro</div>
-          <div class="kpi-value" id="kpi-ciro">₺0</div>
-          <div class="kpi-sub"><span class="kpi-badge badge-pos" id="kpi-ciro-badge">—</span></div>
-        </div>
-        <div class="kpi-card emerald">
-          <div class="kpi-label">Toplam Net Kar</div>
-          <div class="kpi-value" id="kpi-kar">₺0</div>
-          <div class="kpi-sub"><span class="kpi-badge badge-pos" id="kpi-kar-badge">—</span></div>
-        </div>
-        <div class="kpi-card amber">
-          <div class="kpi-label">Toplam Gider</div>
-          <div class="kpi-value" id="kpi-gider">₺0</div>
-          <div class="kpi-sub" id="kpi-gider-sub">—</div>
-        </div>
-        <div class="kpi-card violet">
-          <div class="kpi-label">Ort. Kar Marjı</div>
-          <div class="kpi-value" id="kpi-margin">%0</div>
-          <div class="kpi-sub" id="kpi-margin-sub">—</div>
-        </div>
-      </div>
-
-      <div class="kpi-grid" style="grid-template-columns: repeat(4,1fr)">
-        <div class="kpi-card cyan">
-          <div class="kpi-label">Etkinlik Sayısı</div>
-          <div class="kpi-value" id="kpi-count">0</div>
-          <div class="kpi-sub" id="kpi-count-sub">—</div>
-        </div>
-        <div class="kpi-card emerald">
-          <div class="kpi-label">En Karlı Etkinlik</div>
-          <div class="kpi-value" style="font-size:13px; padding-top:4px" id="kpi-best">—</div>
-          <div class="kpi-sub" id="kpi-best-val">—</div>
-        </div>
-        <div class="kpi-card rose">
-          <div class="kpi-label">En Düşük Performans</div>
-          <div class="kpi-value" style="font-size:13px; padding-top:4px" id="kpi-worst">—</div>
-          <div class="kpi-sub" id="kpi-worst-val">—</div>
-        </div>
-        <div class="kpi-card blue">
-          <div class="kpi-label">Ortalama ROI</div>
-          <div class="kpi-value" id="kpi-roi">%0</div>
-          <div class="kpi-sub" id="kpi-roi-sub">—</div>
-        </div>
-      </div>
-
-      <!-- Charts Row 1 -->
-      <div class="chart-grid-3">
-        <div class="chart-card">
-          <div class="chart-header">
-            <div>
-              <div class="chart-title">Aylık Ciro & Kar Trendi</div>
-              <div class="chart-sub">Seçili dönem bazında</div>
-            </div>
-          </div>
-          <div class="chart-wrapper tall">
-            <canvas id="chartMonthly"></canvas>
-          </div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-header">
-            <div>
-              <div class="chart-title">Şehre Göre ROI</div>
-              <div class="chart-sub">Konum bazlı karşılaştırma</div>
-            </div>
-          </div>
-          <div class="chart-wrapper tall">
-            <canvas id="chartCityROI"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <!-- Charts Row 2 -->
-      <div class="chart-grid-2">
-        <div class="chart-card">
-          <div class="chart-header">
-            <div>
-              <div class="chart-title">Etkinlik Bazlı Karlılık</div>
-              <div class="chart-sub">Ciro vs Gider karşılaştırması</div>
-            </div>
-          </div>
-          <div class="chart-wrapper">
-            <canvas id="chartEventProfit"></canvas>
-          </div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-header">
-            <div>
-              <div class="chart-title">Gider Dağılımı</div>
-              <div class="chart-sub">Maliyet kalemleri</div>
-            </div>
-          </div>
-          <div class="chart-wrapper">
-            <canvas id="chartExpense"></canvas>
-          </div>
-        </div>
-      </div>
+    <div class="cg32">
+      <div class="cc"><div class="ch"><div><div class="ct">Aylık Ciro & Kar Trendi</div><div class="cs">Seçili dönem</div></div></div><div class="cw t"><canvas id="cMonthly"></canvas></div></div>
+      <div class="cc"><div class="ch"><div><div class="ct">Şehre Göre ROI</div><div class="cs">Karşılaştırma</div></div></div><div class="cw t"><canvas id="cCity"></canvas></div></div>
     </div>
+    <div class="cg2">
+      <div class="cc"><div class="ch"><div><div class="ct">Etkinlik Karlılığı (Top 10)</div><div class="cs">Ciro vs Gider vs Kar</div></div></div><div class="cw"><canvas id="cEvent"></canvas></div></div>
+      <div class="cc"><div class="ch"><div><div class="ct">Gider Dağılımı</div><div class="cs">Maliyet kalemleri</div></div></div><div class="cw"><canvas id="cExp"></canvas></div></div>
+    </div>
+  </div>
 
-    <!-- EVENTS PAGE -->
-    <div class="page" id="page-events">
-      <div class="section-header">
-        <div class="section-label">Etkinlik Yönetimi</div>
-        <div class="section-title">Tüm Etkinlikler</div>
+  <!-- EVENTS -->
+  <div class="page" id="page-events">
+    <div class="sec-l">Etkinlik Yönetimi</div>
+    <div class="sec-t">Tüm Etkinlikler</div>
+    <div class="tc">
+      <div class="th">
+        <div class="tht">Etkinlik Listesi <span id="ev-badge" style="font-size:10px;color:var(--t3);font-family:'DM Mono',monospace"></span></div>
+        <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap">
+          <input class="si" id="ev-srch" placeholder="Ara…" oninput="renderEvents()">
+          <label style="font-size:11px;color:var(--t2);display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap">
+            <input type="checkbox" id="grp-yr" checked onchange="renderEvents()"> Yıla göre grupla
+          </label>
+        </div>
       </div>
-      <div class="table-card">
-        <div class="table-head">
-          <div class="table-head-title">Etkinlik Listesi <span id="event-count-badge" style="font-size:11px;color:var(--text-muted);font-family:'DM Mono',monospace"></span></div>
-          <div style="display:flex;gap:8px">
-            <input type="text" class="search-input" placeholder="Etkinlik ara..." oninput="filterTable(this.value)">
-          </div>
+      <div class="tsc"><table><thead><tr>
+        <th>ETKİNLİK</th><th>TARİH</th><th>ŞEHİR</th><th>YIL</th><th>KATILIMCI</th>
+        <th>CİRO</th><th>GİDER</th><th>NET KAR</th><th>KAR MARJI</th>
+        <th>ROI</th><th>KAT.BAŞI CİRO</th><th>PERF.</th><th>EKLEYEN</th><th></th>
+      </tr></thead><tbody id="ev-tbody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- NEW EVENT -->
+  <div class="page" id="page-new-event">
+    <div class="sec-l">Veri Girişi</div>
+    <div class="sec-t">Yeni Etkinlik Ekle</div>
+    <div class="fc2">
+      <div class="fd">— Etkinlik Bilgileri</div>
+      <div class="fg3">
+        <div class="fg"><label class="fl">Etkinlik Adı *</label><input class="fi" id="f-name" placeholder="İzmir Maratonu 2026"></div>
+        <div class="fg"><label class="fl">Tarih *</label><input type="date" class="fi" id="f-date" onchange="onDateChange()"></div>
+        <div class="fg"><label class="fl">Şehir *</label><input class="fi" id="f-city" placeholder="İzmir" list="city-dl"><datalist id="city-dl"></datalist></div>
+      </div>
+      <div class="fg3">
+        <div class="fg">
+          <label class="fl">Yıl *</label>
+          <select class="fi" id="f-year" onchange="onYearChange()"></select>
         </div>
-        <div style="overflow-x:auto">
-          <table>
-            <thead>
-              <tr>
-                <th>ETKİNLİK</th>
-                <th>TARİH</th>
-                <th>ŞEHİR</th>
-                <th>KATILIMCI</th>
-                <th>TOPLAM CİRO</th>
-                <th>TOPLAM GİDER</th>
-                <th>NET KAR</th>
-                <th>KAR MARJI</th>
-                <th>ROI</th>
-                <th>KAT. BAŞI CİRO</th>
-                <th>KAT. BAŞI MALİYET</th>
-                <th>PERFORMANS</th>
-              </tr>
-            </thead>
-            <tbody id="events-table-body"></tbody>
-          </table>
+        <div class="fg"><label class="fl">Katılımcı Sayısı</label><input type="number" class="fi" id="f-kat" placeholder="0" oninput="calcPrev()"></div>
+        <div class="fg"><label class="fl">Çadır Sayısı</label><input type="number" class="fi" id="f-cadir" placeholder="0"></div>
+      </div>
+
+      <!-- Dynamic year banner -->
+      <div class="yr-banner" id="yr-banner">
+        🆕 <span id="yr-banner-txt"></span> yılı için yeni etkinlik — sistem otomatik yıl grubu oluşturacak.
+      </div>
+
+      <div class="fd">— Gider Kalemleri</div>
+      <div class="fg4">
+        <div class="fg"><label class="fl">Ajans Bedeli (₺)</label><input type="number" class="fi" id="f-ajans" placeholder="0" oninput="calcPrev()"></div>
+        <div class="fg"><label class="fl">Personel Gideri (₺)</label><input type="number" class="fi" id="f-per" placeholder="0" oninput="calcPrev()"></div>
+        <div class="fg"><label class="fl">Stand Maliyeti (₺)</label><input type="number" class="fi" id="f-stand" placeholder="0" oninput="calcPrev()"></div>
+        <div class="fg"><label class="fl">Barter (₺)</label><input type="number" class="fi" id="f-barter" placeholder="0" oninput="calcPrev()"></div>
+      </div>
+
+      <div class="fd">— Ciro Kalemleri</div>
+      <div class="fg2">
+        <div class="fg"><label class="fl">Çek Ciro (₺)</label><input type="number" class="fi" id="f-cek" placeholder="0" oninput="calcPrev()"></div>
+        <div class="fg"><label class="fl">Çadır Ciro (₺)</label><input type="number" class="fi" id="f-cciro" placeholder="0" oninput="calcPrev()"></div>
+      </div>
+
+      <div class="fd">— Anlık Hesaplama</div>
+      <div class="pvs">
+        <div class="pvi"><div class="pvl">Toplam Ciro</div><div class="pvv cb" id="p-ciro">₺0</div></div>
+        <div class="pvi"><div class="pvl">Toplam Gider</div><div class="pvv ca" id="p-gider">₺0</div></div>
+        <div class="pvi"><div class="pvl">Net Kar</div><div class="pvv cg" id="p-kar">₺0</div></div>
+        <div class="pvi"><div class="pvl">Kar Marjı</div><div class="pvv cb" id="p-margin">—</div></div>
+        <div class="pvi"><div class="pvl">ROI</div><div class="pvv cg" id="p-roi">—</div></div>
+        <div class="pvi"><div class="pvl">Kat.Başı Ciro</div><div class="pvv cb" id="p-pciro">—</div></div>
+        <div class="pvi"><div class="pvl">Kat.Başı Mlt.</div><div class="pvv ca" id="p-pgdr">—</div></div>
+      </div>
+
+      <div class="fd">— Hava Durumu (Gemini AI)</div>
+      <div class="wx-box">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;flex-wrap:wrap;gap:7px">
+          <span style="font-size:12px;color:var(--t2)">Gemini'ye gönderilecek prompt:</span>
+          <button class="btn bs" style="font-size:11px" onclick="buildPrompt()">⟳ Oluştur</button>
         </div>
+        <div class="wx-pr" id="wx-pr">Tarih ve şehir girerek prompt oluşturun…</div>
+        <div style="margin-top:11px">
+          <label class="fl" style="margin-bottom:5px;display:block">Gemini yanıtını buraya yapıştır</label>
+          <textarea class="fi" id="f-wx" rows="4" style="resize:vertical;font-family:'DM Mono',monospace;font-size:11px" placeholder="Sıcaklık: 22°C&#10;Durum: Güneşli&#10;Rüzgar: 15 km/h"></textarea>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:9px;justify-content:flex-end;flex-wrap:wrap">
+        <button class="btn bs" onclick="clearForm()">Temizle</button>
+        <button class="btn bp" onclick="saveEvent()">✓ Kaydet</button>
       </div>
     </div>
+  </div>
 
-    <!-- NEW EVENT PAGE -->
-    <div class="page" id="page-new-event">
-      <div class="section-header">
-        <div class="section-label">Veri Girişi</div>
-        <div class="section-title">Yeni Etkinlik Ekle</div>
-      </div>
-
-      <div class="chart-card" style="margin-bottom:20px">
-        <div class="form-divider">— Etkinlik Bilgileri</div>
-        <div class="form-grid">
-          <div class="form-group">
-            <label class="form-label">Etkinlik Adı</label>
-            <input type="text" class="form-input" id="f-name" placeholder="İzmir Maratonu 2025">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Tarih</label>
-            <input type="date" class="form-input" id="f-date">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Şehir</label>
-            <input type="text" class="form-input" id="f-city" placeholder="İzmir">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Katılımcı Sayısı</label>
-            <input type="number" class="form-input" id="f-katilimci" placeholder="0">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Çadır Sayısı</label>
-            <input type="number" class="form-input" id="f-cadır" placeholder="0">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Yıl</label>
-            <select class="form-input" id="f-year">
-              <option value="2025">2025</option>
-              <option value="2024">2024</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-divider">— Gider Kalemleri</div>
-        <div class="form-grid">
-          <div class="form-group">
-            <label class="form-label">Ajans Bedeli (₺)</label>
-            <input type="number" class="form-input" id="f-ajans" placeholder="0" oninput="calcPreview()">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Personel Gideri (₺)</label>
-            <input type="number" class="form-input" id="f-personel" placeholder="0" oninput="calcPreview()">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Stand Maliyeti (₺)</label>
-            <input type="number" class="form-input" id="f-stand" placeholder="0" oninput="calcPreview()">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Barter (₺)</label>
-            <input type="number" class="form-input" id="f-barter" placeholder="0" oninput="calcPreview()">
-          </div>
-        </div>
-
-        <div class="form-divider">— Ciro Kalemleri</div>
-        <div class="form-grid">
-          <div class="form-group">
-            <label class="form-label">Çek Ciro (₺)</label>
-            <input type="number" class="form-input" id="f-cek" placeholder="0" oninput="calcPreview()">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Çadır Ciro (₺)</label>
-            <input type="number" class="form-input" id="f-cadirciro" placeholder="0" oninput="calcPreview()">
-          </div>
-        </div>
-
-        <!-- Computed preview -->
-        <div class="form-divider">— Anlık Hesaplama</div>
-        <div class="computed-grid">
-          <div class="computed-item">
-            <div class="computed-label">Toplam Ciro</div>
-            <div class="computed-value cv-blue" id="p-ciro">₺0</div>
-          </div>
-          <div class="computed-item">
-            <div class="computed-label">Toplam Gider</div>
-            <div class="computed-value cv-amber" id="p-gider">₺0</div>
-          </div>
-          <div class="computed-item">
-            <div class="computed-label">Net Kar</div>
-            <div class="computed-value cv-emerald" id="p-kar">₺0</div>
-          </div>
-          <div class="computed-item">
-            <div class="computed-label">Kar Marjı</div>
-            <div class="computed-value cv-blue" id="p-margin">%0</div>
-          </div>
-          <div class="computed-item">
-            <div class="computed-label">ROI</div>
-            <div class="computed-value cv-emerald" id="p-roi">%0</div>
-          </div>
-          <div class="computed-item">
-            <div class="computed-label">Kat. Başı Ciro</div>
-            <div class="computed-value cv-blue" id="p-perciro">₺0</div>
-          </div>
-          <div class="computed-item">
-            <div class="computed-label">Kat. Başı Maliyet</div>
-            <div class="computed-value cv-amber" id="p-pergider">₺0</div>
-          </div>
-        </div>
-
-        <!-- Weather section -->
-        <div class="form-divider">— Hava Durumu (Gemini AI)</div>
-        <div class="weather-card">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-            <div style="font-size:12px;color:var(--text-secondary)">Gemini'ye şu prompt gönderilecek:</div>
-            <button class="btn-secondary" onclick="fetchWeather()" style="font-size:11px">Prompt Oluştur</button>
-          </div>
-          <div class="gemini-prompt" id="weather-prompt">Tarih ve şehir girerek prompt oluşturun...</div>
-          <div style="margin-top:12px;display:flex;align-items:center;gap:12px" id="weather-result" style="display:none">
-            <div>
-              <div class="form-label" style="margin-bottom:6px">Gemini Yanıtını Yapıştır</div>
-              <textarea class="form-input" id="f-weather" rows="4" style="resize:vertical;font-family:'DM Mono',monospace;font-size:11px" placeholder="Sıcaklık: 22°C&#10;Durum: Güneşli&#10;Rüzgar: 15 km/h"></textarea>
-            </div>
-          </div>
-        </div>
-
-        <div style="display:flex;gap:12px;justify-content:flex-end">
-          <button class="btn-secondary" onclick="clearForm()">Temizle</button>
-          <button class="btn-primary" onclick="saveEvent()">✓ Etkinliği Kaydet</button>
-        </div>
-      </div>
+  <!-- ANALYSIS -->
+  <div class="page" id="page-analysis">
+    <div class="sec-l">Karar Destek Sistemi</div>
+    <div class="sec-t">Analiz Motoru</div>
+    <div class="ig">
+      <div class="ic"><div class="ih"><div class="ii ig2">🏆</div><div class="it">Şehir Bazlı Karlılık</div></div><div id="city-ins"></div></div>
+      <div class="ic"><div class="ih"><div class="ii ib">📊</div><div class="it">Ajans Maliyeti vs Kar Marjı</div></div><div class="cw"><canvas id="cAgency"></canvas></div></div>
+      <div class="ic"><div class="ih"><div class="ii ia">👥</div><div class="it">Katılımcı & ROI İlişkisi</div></div><div class="cw"><canvas id="cPart"></canvas></div></div>
+      <div class="ic"><div class="ih"><div class="ii ir2">🌤</div><div class="it">Hava Durumu & Performans</div></div><div id="wx-ins"><div class="empty">Hava durumu girildikçe analiz görünür.</div></div></div>
     </div>
-
-    <!-- ANALYSIS PAGE -->
-    <div class="page" id="page-analysis">
-      <div class="section-header">
-        <div class="section-label">Karar Destek Sistemi</div>
-        <div class="section-title">Analiz Motoru</div>
-      </div>
-
-      <div class="insight-grid">
-        <div class="insight-card">
-          <div class="insight-header">
-            <div class="insight-icon ii-emerald">🏆</div>
-            <div class="insight-title">Şehir Bazlı Karlılık</div>
-          </div>
-          <div id="city-analysis"></div>
-        </div>
-        <div class="insight-card">
-          <div class="insight-header">
-            <div class="insight-icon ii-blue">📊</div>
-            <div class="insight-title">Ajans Maliyeti vs Kar Marjı</div>
-          </div>
-          <div class="chart-wrapper">
-            <canvas id="chartAgencyMargin"></canvas>
-          </div>
-        </div>
-        <div class="insight-card">
-          <div class="insight-header">
-            <div class="insight-icon ii-amber">👥</div>
-            <div class="insight-title">Katılımcı Artışı & ROI İlişkisi</div>
-          </div>
-          <div class="chart-wrapper">
-            <canvas id="chartParticipantROI"></canvas>
-          </div>
-        </div>
-        <div class="insight-card">
-          <div class="insight-header">
-            <div class="insight-icon ii-rose">🌤</div>
-            <div class="insight-title">Hava Durumu & Performans</div>
-          </div>
-          <div id="weather-analysis">
-            <div class="empty-state" style="padding:20px">
-              <div style="font-size:24px;margin-bottom:8px">☁️</div>
-              Hava durumu verisi girdikçe burada görünecek
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Decision Support -->
-      <div class="chart-card">
-        <div class="chart-header">
-          <div>
-            <div class="chart-title">Karar Destek Özeti</div>
-            <div class="chart-sub">Veri odaklı öneriler</div>
-          </div>
-        </div>
-        <div id="decision-support" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:8px"></div>
-      </div>
+    <div class="cc">
+      <div class="ch"><div><div class="ct">Karar Destek Özeti</div><div class="cs">Veri odaklı öneriler</div></div></div>
+      <div class="dg" id="deci-cards"></div>
     </div>
+  </div>
 
-    <!-- WEATHER PAGE -->
-    <div class="page" id="page-weather">
-      <div class="section-header">
-        <div class="section-label">Hava Durumu Analizi</div>
-        <div class="section-title">Gemini AI Entegrasyonu</div>
-      </div>
-      <div class="chart-card" style="margin-bottom:20px">
-        <div style="font-size:13px;color:var(--text-secondary);line-height:1.8;margin-bottom:16px">
-          Gemini'ye göndermeniz gereken format:
-        </div>
-        <div style="background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:10px;padding:20px">
-          <div style="font-family:'DM Mono',monospace;font-size:12px;line-height:2;color:var(--text-secondary)">
-            <span style="color:var(--accent-amber)">PROMPT ŞABLONU</span><br><br>
-            "<span style="color:var(--text-primary)">[TARİH] tarihinde [ŞEHİR]'de hava nasıldı?</span><br>
-            Sadece şu formatta cevap ver:<br>
-            Sıcaklık: X°C<br>
-            Durum: Güneşli/Yağmurlu/Bulutlu<br>
-            Rüzgar: X km/h"
-          </div>
-        </div>
-        <div style="margin-top:16px;font-size:12px;color:var(--text-muted)">
-          ℹ️ Yanıtı kopyalayıp Yeni Etkinlik > Hava Durumu bölümüne yapıştırın.
+  <!-- WEATHER -->
+  <div class="page" id="page-weather">
+    <div class="sec-l">Gemini AI Entegrasyonu</div>
+    <div class="sec-t">Hava Durumu Rehberi</div>
+    <div class="fc2" style="margin-bottom:18px">
+      <div style="background:var(--bg3);border-radius:9px;padding:16px">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--amber);letter-spacing:1px;margin-bottom:9px">PROMPT ŞABLONU</div>
+        <div style="font-family:'DM Mono',monospace;font-size:12px;line-height:2;color:var(--t2)">
+          "<span style="color:var(--t1)">[TARİH] tarihinde [ŞEHİR]'de hava nasıldı?</span><br>Sadece şu formatta cevap ver:<br>Sıcaklık: X°C<br>Durum: Güneşli/Yağmurlu/Bulutlu<br>Rüzgar: X km/h"
         </div>
       </div>
-
-      <div class="table-card">
-        <div class="table-head">
-          <div class="table-head-title">Hava Durumu Kayıtları</div>
-        </div>
-        <div style="overflow-x:auto">
-          <table>
-            <thead>
-              <tr>
-                <th>ETKİNLİK</th>
-                <th>TARİH</th>
-                <th>ŞEHİR</th>
-                <th>SICAKLIK</th>
-                <th>DURUM</th>
-                <th>RÜZGAR</th>
-                <th>NET KAR</th>
-                <th>ETKİ</th>
-              </tr>
-            </thead>
-            <tbody id="weather-table-body"></tbody>
-          </table>
-        </div>
-      </div>
+      <div style="margin-top:11px;font-size:12px;color:var(--t3)">ℹ️ Yanıtı kopyalayıp Yeni Etkinlik → Hava Durumu alanına yapıştırın.</div>
     </div>
-
-  </main>
+    <div class="tc">
+      <div class="th"><div class="tht">Hava Durumu Kayıtları</div></div>
+      <div class="tsc"><table><thead><tr>
+        <th>ETKİNLİK</th><th>TARİH</th><th>ŞEHİR</th><th>YIL</th><th>SICAKLIK</th><th>DURUM</th><th>RÜZGAR</th><th>NET KAR</th><th>ETKİ</th>
+      </tr></thead><tbody id="wx-tbody"></tbody></table></div>
+    </div>
+  </div>
+</main>
 </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
 <!-- DETAIL MODAL -->
-<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
-  <div class="modal">
-    <div class="modal-title">
-      <span id="modal-event-name">Etkinlik Detayı</span>
-      <span class="modal-close" onclick="closeModal()">✕</span>
-    </div>
-    <div id="modal-body"></div>
+<div class="mo" id="modal" onclick="modalBg(event)">
+  <div class="md">
+    <div class="mt"><span id="m-name">Detay</span><span class="mc" onclick="closeModal()">✕</span></div>
+    <div id="m-body"></div>
   </div>
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script>
-// ============================================================
-// DATA
-// ============================================================
-const EVENTS_2024 = [
-  { id:1, name:'İzmir Maratonu', date:'2024-04-21', city:'İzmir', participants:5759, tents:0, agency:47300, personnel:12910, standCost:80000, barter:0, cekCiro:0, cadirCiro:161621, year:2024, weather:'' },
-  { id:2, name:'Merrell Tahtalı Run To Sky', date:'2024-11-05', city:'Antalya', participants:825, tents:0, agency:0, personnel:3651, standCost:0, barter:0, cekCiro:53683, cadirCiro:348600, year:2024, weather:'' },
-  { id:3, name:'Spx Dağyenice Ultra', date:'2024-05-24', city:'Bursa', participants:980, tents:0, agency:0, personnel:6760, standCost:0, barter:0, cekCiro:11493, cadirCiro:227000, year:2024, weather:'' },
-  { id:4, name:'Granfondo Bursa', date:'2024-05-26', city:'Bursa', participants:600, tents:0, agency:13500, personnel:500, standCost:0, barter:12000, cekCiro:13941, cadirCiro:23000, year:2024, weather:'' },
-  { id:5, name:'Wolfest', date:'2024-05-31', city:'Kocaeli', participants:0, tents:0, agency:0, personnel:0, standCost:0, barter:0, cekCiro:0, cadirCiro:236200, year:2024, weather:'' },
-  { id:6, name:'SPX Pickleball İstanbul Cup', date:'2024-06-06', city:'İstanbul', participants:80, tents:0, agency:0, personnel:7500, standCost:0, barter:0, cekCiro:14424, cadirCiro:0, year:2024, weather:'' },
-  { id:7, name:'Spx Uludağ Bisiklet Tırmanışı', date:'2024-08-03', city:'Bursa', participants:458, tents:0, agency:33500, personnel:4850, standCost:0, barter:0, cekCiro:1226, cadirCiro:0, year:2024, weather:'' },
-  { id:8, name:'Uludağ Ultra Trail', date:'2024-07-13', city:'Bursa', participants:2620, tents:0, agency:38500, personnel:28000, standCost:60000, barter:0, cekCiro:0, cadirCiro:160167, year:2024, weather:'' },
-  { id:9, name:'Eskişehir Yarı Maratonu', date:'2024-08-25', city:'Eskişehir', participants:1850, tents:5, agency:38500, personnel:11440, standCost:0, barter:50000, cekCiro:40833, cadirCiro:110266, year:2024, weather:'' },
-  { id:10, name:'Bursa Pickleball Turnuvası', date:'2024-08-24', city:'Bursa', participants:75, tents:0, agency:28102, personnel:9500, standCost:0, barter:0, cekCiro:0, cadirCiro:0, year:2024, weather:'' },
-  { id:11, name:'Merrell Belgrad Ultra', date:'2024-07-09', city:'İstanbul', participants:2590, tents:0, agency:0, personnel:27764, standCost:0, barter:0, cekCiro:0, cadirCiro:343386, year:2024, weather:'' },
-  { id:12, name:'Kyzikos Ultra Trail', date:'2024-09-21', city:'Erdek', participants:1100, tents:0, agency:44110, personnel:35664, standCost:0, barter:0, cekCiro:0, cadirCiro:144000, year:2024, weather:'' },
-  { id:13, name:'Ankara Kahve Festivali', date:'2024-09-20', city:'Ankara', participants:35000, tents:0, agency:0, personnel:500, standCost:0, barter:50000, cekCiro:62630, cadirCiro:0, year:2024, weather:'' },
-  { id:14, name:'Spx Pickleball İzmir Cup', date:'2024-10-11', city:'İzmir', participants:90, tents:0, agency:0, personnel:78000, standCost:0, barter:0, cekCiro:25436, cadirCiro:0, year:2024, weather:'' },
-  { id:15, name:'Salomon Cappadocia Ultra', date:'2024-10-19', city:'Nevşehir', participants:3500, tents:4, agency:48500, personnel:72000, standCost:100000, barter:0, cekCiro:0, cadirCiro:517000, year:2024, weather:'' },
-  { id:16, name:'Kurumsal Kürek Yarışı', date:'2024-02-11', city:'Bursa', participants:350, tents:0, agency:0, personnel:1200, standCost:0, barter:0, cekCiro:3500, cadirCiro:10000, year:2024, weather:'' },
-  { id:17, name:'Antalya Ultra', date:'2024-12-28', city:'Antalya', participants:950, tents:0, agency:43296, personnel:15180, standCost:30000, barter:0, cekCiro:0, cadirCiro:181419, year:2024, weather:'' },
+// ── SEED DATA ──────────────────────────────────────
+const SEED=[
+  {id:'s1',name:'İzmir Maratonu',date:'2024-04-21',city:'İzmir',participants:5759,tents:0,agency:47300,personnel:12910,standCost:80000,barter:0,cekCiro:0,cadirCiro:161621,year:2024,weather:'',addedBy:'Sistem'},
+  {id:'s2',name:'Merrell Tahtalı Run To Sky',date:'2024-11-05',city:'Antalya',participants:825,tents:0,agency:0,personnel:3651,standCost:0,barter:0,cekCiro:53683,cadirCiro:348600,year:2024,weather:'',addedBy:'Sistem'},
+  {id:'s3',name:'Spx Dağyenice Ultra',date:'2024-05-24',city:'Bursa',participants:980,tents:0,agency:0,personnel:6760,standCost:0,barter:0,cekCiro:11493,cadirCiro:227000,year:2024,weather:'',addedBy:'Sistem'},
+  {id:'s4',name:'Granfondo Bursa',date:'2024-05-26',city:'Bursa',participants:600,tents:0,agency:13500,personnel:500,standCost:0,barter:12000,cekCiro:13941,cadirCiro:23000,year:2024,weather:'',addedBy:'Sistem'},
+  {id:'s5',name:'Wolfest',date:'2024-05-31',city:'Kocaeli',participants:0,tents:0,agency:0,personnel:0,standCost:0,barter:0,cekCiro:0,cadirCiro:236200,year:2024,weather:'',addedBy:'Sistem'},
+  {id:'s6',name:'SPX Pickleball İstanbul Cup',date:'2024-06-06',city:'İstanbul',participants:80,tents:0,agency:0,personnel:7500,standCost:0,barter:0,cekCiro:14424,cadirCiro:0,year:2024,weather:'',addedBy:'Sistem'},
+  {id:'s7',name:'Spx Uludağ Bisiklet Tırmanışı',date:'2024-08-03',city:'Bursa',participants:458,tents:0,agency:33500,personnel:4850,standCost:0,barter:0,cekCiro:1226,cadirCiro:0,year:2024,weather:'',addedBy:'Sistem'},
+  {id:'s8',name:'Uludağ Ultra Trail',date:'2024-07-13',city:'Bursa',participants:2620,tents:0,agency:38500,personnel:28000,standCost:60000,barter:0,cekCiro:0,cadirCiro:160167,year:2024,weather:'',addedBy:'Sistem'},
+  {id:'s9',name:'Eskişehir Yarı Maratonu',date:'2024-08-25',city:'Eskişehir',participants:1850,tents:5,agency:38500,personnel:11440,standCost:0,barter:50000,cekCiro:40833,cadirCiro:110266,year:2024,weather:'',addedBy:'Sistem'},
+  {id:'s10',name:'Bursa Pickleball Turnuvası',date:'2024-08-24',city:'Bursa',participants:75,tents:0,agency:28102,personnel:9500,standCost:0,barter:0,cekCiro:0,cadirCiro:0,year:2024,weather:'',addedBy:'Sistem'},
+  {id:'s11',name:'Merrell Belgrad Ultra',date:'2024-07-09',city:'İstanbul',participants:2590,tents:0,agency:0,personnel:27764,standCost:0,barter:0,cekCiro:0,cadirCiro:343386,year:2024,weather:'',addedBy:'Sistem'},
+  {id:'s12',name:'Kyzikos Ultra Trail',date:'2024-09-21',city:'Erdek',participants:1100,tents:0,agency:44110,personnel:35664,standCost:0,barter:0,cekCiro:0,cadirCiro:144000,year:2024,weather:'',addedBy:'Sistem'},
+  {id:'s13',name:'Ankara Kahve Festivali',date:'2024-09-20',city:'Ankara',participants:35000,tents:0,agency:0,personnel:500,standCost:0,barter:50000,cekCiro:62630,cadirCiro:0,year:2024,weather:'',addedBy:'Sistem'},
+  {id:'s14',name:'Spx Pickleball İzmir Cup',date:'2024-10-11',city:'İzmir',participants:90,tents:0,agency:0,personnel:78000,standCost:0,barter:0,cekCiro:25436,cadirCiro:0,year:2024,weather:'',addedBy:'Sistem'},
+  {id:'s15',name:'Salomon Cappadocia Ultra',date:'2024-10-19',city:'Nevşehir',participants:3500,tents:4,agency:48500,personnel:72000,standCost:100000,barter:0,cekCiro:0,cadirCiro:517000,year:2024,weather:'',addedBy:'Sistem'},
+  {id:'s16',name:'Kurumsal Kürek Yarışı',date:'2024-02-11',city:'Bursa',participants:350,tents:0,agency:0,personnel:1200,standCost:0,barter:0,cekCiro:3500,cadirCiro:10000,year:2024,weather:'',addedBy:'Sistem'},
+  {id:'s17',name:'Antalya Ultra',date:'2024-12-28',city:'Antalya',participants:950,tents:0,agency:43296,personnel:15180,standCost:30000,barter:0,cekCiro:0,cadirCiro:181419,year:2024,weather:'',addedBy:'Sistem'},
+  {id:'s18',name:'Efes Ultra Maratonu',date:'2025-04-04',city:'İzmir',participants:2180,tents:6,agency:60000,personnel:49460,standCost:30000,barter:0,cekCiro:0,cadirCiro:658000,year:2025,weather:'',addedBy:'Sistem'},
+  {id:'s19',name:'SPX Pickleball Ligi Nisan',date:'2025-04-12',city:'İstanbul',participants:60,tents:0,agency:0,personnel:6039,standCost:0,barter:0,cekCiro:0,cadirCiro:0,year:2025,weather:'',addedBy:'Sistem'},
+  {id:'s20',name:'Troya Yarı Maratonu',date:'2025-04-19',city:'Çanakkale',participants:2500,tents:8,agency:140100,personnel:27996,standCost:0,barter:0,cekCiro:87011,cadirCiro:1014904,year:2025,weather:'',addedBy:'Sistem'},
+  {id:'s21',name:'Tahtalı Run To Sky 2025',date:'2025-05-10',city:'Antalya',participants:300,tents:0,agency:0,personnel:0,standCost:36000,barter:0,cekCiro:0,cadirCiro:126000,year:2025,weather:'',addedBy:'Sistem'},
+  {id:'s22',name:'SPX Tenis Turnuvası',date:'2025-05-17',city:'Antalya',participants:600,tents:0,agency:106774,personnel:0,standCost:0,barter:0,cekCiro:111915,cadirCiro:0,year:2025,weather:'',addedBy:'Sistem'},
+  {id:'s23',name:'KTSK Şenlikleri',date:'2025-05-23',city:'İstanbul',participants:10000,tents:0,agency:103000,personnel:0,standCost:0,barter:0,cekCiro:0,cadirCiro:1185749,year:2025,weather:'',addedBy:'Sistem'},
+  {id:'s24',name:'Sapanca Ultra',date:'2025-06-14',city:'Sakarya',participants:1000,tents:0,agency:120000,personnel:35596,standCost:0,barter:0,cekCiro:0,cadirCiro:220733,year:2025,weather:'',addedBy:'Sistem'},
+  {id:'s25',name:'KTSK En Uzun Gece',date:'2025-06-20',city:'İstanbul',participants:3000,tents:0,agency:162000,personnel:30500,standCost:0,barter:0,cekCiro:0,cadirCiro:526000,year:2025,weather:'',addedBy:'Sistem'},
+  {id:'s26',name:'SPX Pickleball Ligi Finalleri',date:'2025-06-28',city:'İstanbul',participants:90,tents:0,agency:145080,personnel:35000,standCost:0,barter:0,cekCiro:106000,cadirCiro:0,year:2025,weather:'',addedBy:'Sistem'},
+  {id:'s27',name:'YKB Ankara Yaz Şenlikleri',date:'2025-07-05',city:'Ankara',participants:450,tents:0,agency:147912,personnel:2950,standCost:0,barter:0,cekCiro:0,cadirCiro:25000,year:2025,weather:'',addedBy:'Sistem'},
+  {id:'s28',name:'YKB Bankacılık Üssü',date:'2025-07-16',city:'Kocaeli',participants:500,tents:0,agency:90000,personnel:34371,standCost:0,barter:0,cekCiro:0,cadirCiro:261220,year:2025,weather:'',addedBy:'Sistem'},
+  {id:'s29',name:'Uludağ Ultra Trail Yarışı',date:'2025-07-18',city:'Bursa',participants:2500,tents:0,agency:114000,personnel:44000,standCost:100000,barter:0,cekCiro:0,cadirCiro:462762,year:2025,weather:'',addedBy:'Sistem'},
+  {id:'s30',name:'Eskişehir Yarı Maratonu 2025',date:'2025-08-02',city:'Eskişehir',participants:2400,tents:0,agency:131700,personnel:29580,standCost:0,barter:54000,cekCiro:0,cadirCiro:222000,year:2025,weather:'',addedBy:'Sistem'},
+  {id:'s31',name:'Gran Fondo Başkent Bisiklet',date:'2025-08-23',city:'Ankara',participants:900,tents:0,agency:0,personnel:3800,standCost:0,barter:0,cekCiro:0,cadirCiro:39000,year:2025,weather:'',addedBy:'Sistem'},
+  {id:'s32',name:'Summer Run',date:'2025-08-30',city:'İstanbul',participants:1150,tents:0,agency:48000,personnel:24555,standCost:120000,barter:0,cekCiro:0,cadirCiro:70826,year:2025,weather:'',addedBy:'Sistem'},
+  {id:'s33',name:'Merrell Belgrad Ultra 2025',date:'2025-09-05',city:'İstanbul',participants:3500,tents:0,agency:0,personnel:30132,standCost:0,barter:0,cekCiro:0,cadirCiro:400375,year:2025,weather:'',addedBy:'Sistem'},
+  {id:'s34',name:'Tuzla Fest Run',date:'2025-09-19',city:'İstanbul',participants:1200,tents:0,agency:79200,personnel:22494,standCost:30000,barter:40000,cekCiro:0,cadirCiro:87526,year:2025,weather:'',addedBy:'Sistem'},
+  {id:'s35',name:'Runkara Yarı Maratonu',date:'2025-10-04',city:'Ankara',participants:3300,tents:0,agency:108000,personnel:9435,standCost:40000,barter:60000,cekCiro:0,cadirCiro:0,year:2025,weather:'',addedBy:'Sistem'},
+  {id:'s36',name:'Salomon Kapadokya Yarışı',date:'2025-10-16',city:'Nevşehir',participants:3500,tents:0,agency:146400,personnel:117600,standCost:120000,barter:0,cekCiro:0,cadirCiro:738000,year:2025,weather:'',addedBy:'Sistem'},
 ];
 
-const EVENTS_2025 = [
-  { id:100, name:'Efes Ultra Maratonu', date:'2025-04-04', city:'İzmir', participants:2180, tents:6, agency:60000, personnel:49460, standCost:30000, barter:0, cekCiro:0, cadirCiro:658000, year:2025, weather:'' },
-  { id:101, name:'SPX Pickleball Ligi (Nisan/İst)', date:'2025-04-12', city:'İstanbul', participants:60, tents:0, agency:0, personnel:6039, standCost:0, barter:0, cekCiro:0, cadirCiro:0, year:2025, weather:'' },
-  { id:102, name:'Troya Yarı Maratonu', date:'2025-04-19', city:'Çanakkale', participants:2500, tents:8, agency:140100, personnel:27996, standCost:0, barter:0, cekCiro:87011, cadirCiro:1014904, year:2025, weather:'' },
-  { id:103, name:'SPX Pickleball Ligi (Nisan/Ank)', date:'2025-04-26', city:'Ankara', participants:0, tents:0, agency:0, personnel:1000, standCost:0, barter:0, cekCiro:0, cadirCiro:0, year:2025, weather:'' },
-  { id:104, name:'Tahtalı Run To Sky', date:'2025-05-10', city:'Antalya', participants:300, tents:0, agency:0, personnel:0, standCost:36000, barter:0, cekCiro:0, cadirCiro:126000, year:2025, weather:'' },
-  { id:105, name:'SPX Tenis Turnuvası', date:'2025-05-17', city:'Antalya', participants:600, tents:0, agency:106774, personnel:0, standCost:0, barter:0, cekCiro:111915, cadirCiro:0, year:2025, weather:'' },
-  { id:106, name:'KTSK Şenlikleri', date:'2025-05-23', city:'İstanbul', participants:10000, tents:0, agency:103000, personnel:0, standCost:0, barter:0, cekCiro:0, cadirCiro:1185749, year:2025, weather:'' },
-  { id:107, name:'Sapanca Ultra', date:'2025-06-14', city:'Sakarya', participants:1000, tents:0, agency:120000, personnel:35596, standCost:0, barter:0, cekCiro:0, cadirCiro:220733, year:2025, weather:'' },
-  { id:108, name:'KTSK En Uzun Gece', date:'2025-06-20', city:'İstanbul', participants:3000, tents:0, agency:162000, personnel:30500, standCost:0, barter:0, cekCiro:0, cadirCiro:526000, year:2025, weather:'' },
-  { id:109, name:'SPX Pickleball Ligi Finalleri', date:'2025-06-28', city:'İstanbul', participants:90, tents:0, agency:145080, personnel:35000, standCost:0, barter:0, cekCiro:106000, cadirCiro:0, year:2025, weather:'' },
-  { id:110, name:'YKB Ankara Yaz Şenlikleri', date:'2025-07-05', city:'Ankara', participants:450, tents:0, agency:147912, personnel:2950, standCost:0, barter:0, cekCiro:0, cadirCiro:25000, year:2025, weather:'' },
-  { id:111, name:'YKB Bankacılık Üssü', date:'2025-07-16', city:'Kocaeli', participants:500, tents:0, agency:90000, personnel:34371, standCost:0, barter:0, cekCiro:0, cadirCiro:261220, year:2025, weather:'' },
-  { id:112, name:'Uludağ Ultra Trail Yarışı', date:'2025-07-18', city:'Bursa', participants:2500, tents:0, agency:114000, personnel:44000, standCost:100000, barter:0, cekCiro:0, cadirCiro:462762, year:2025, weather:'' },
-  { id:113, name:'Eskişehir Yarı Maratonu 2025', date:'2025-08-02', city:'Eskişehir', participants:2400, tents:0, agency:131700, personnel:29580, standCost:0, barter:54000, cekCiro:0, cadirCiro:222000, year:2025, weather:'' },
-  { id:114, name:'Gran Fondo Başkent Bisiklet', date:'2025-08-23', city:'Ankara', participants:900, tents:0, agency:0, personnel:3800, standCost:0, barter:0, cekCiro:0, cadirCiro:39000, year:2025, weather:'' },
-  { id:115, name:'Summer Run', date:'2025-08-30', city:'İstanbul', participants:1150, tents:0, agency:48000, personnel:24555, standCost:120000, barter:0, cekCiro:0, cadirCiro:70826, year:2025, weather:'' },
-  { id:116, name:'Merrell Belgrad Ultra 2025', date:'2025-09-05', city:'İstanbul', participants:3500, tents:0, agency:0, personnel:30132, standCost:0, barter:0, cekCiro:0, cadirCiro:400375, year:2025, weather:'' },
-  { id:117, name:'Tuzla Fest Run', date:'2025-09-19', city:'İstanbul', participants:1200, tents:0, agency:79200, personnel:22494, standCost:30000, barter:40000, cekCiro:0, cadirCiro:87526, year:2025, weather:'' },
-  { id:118, name:'Runkara Yarı Maratonu', date:'2025-10-04', city:'Ankara', participants:3300, tents:0, agency:108000, personnel:9435, standCost:40000, barter:60000, cekCiro:0, cadirCiro:0, year:2025, weather:'' },
-  { id:119, name:'Salomon Kapadokya Yarışı', date:'2025-10-16', city:'Nevşehir', participants:3500, tents:0, agency:146400, personnel:117600, standCost:120000, barter:0, cekCiro:0, cadirCiro:738000, year:2025, weather:'' },
-];
+// ── STATE ──────────────────────────────────────────
+let DB=[];
+let username='';
+let CH={};
+const SK='spx:events:v4';
+const UK='spx:user';
 
-let allEvents = [...EVENTS_2024, ...EVENTS_2025];
-let charts = {};
-let nextId = 200;
+// ── STORAGE (shared via window.storage if available) ──
+async function sGet(k){
+  if(window.storage){try{const r=await window.storage.get(k,true);return r?r.value:null;}catch{return null;}}
+  return localStorage.getItem(k);
+}
+async function sSet(k,v){
+  if(window.storage){try{await window.storage.set(k,v,true);}catch(e){console.warn(e);}return;}
+  localStorage.setItem(k,v);
+}
+function lGet(k){return localStorage.getItem(k);}
+function lSet(k,v){localStorage.setItem(k,v);}
 
-// ============================================================
-// COMPUTE METRICS
-// ============================================================
-function compute(ev) {
-  const ciro = (ev.cekCiro || 0) + (ev.cadirCiro || 0);
-  const gider = (ev.agency || 0) + (ev.personnel || 0) + (ev.standCost || 0) + (ev.barter || 0);
-  const kar = ciro - gider;
-  const margin = ciro > 0 ? (kar / ciro) * 100 : 0;
-  const roi = gider > 0 ? (kar / gider) * 100 : 0;
-  const perCiro = ev.participants > 0 ? ciro / ev.participants : 0;
-  const perGider = ev.participants > 0 ? gider / ev.participants : 0;
-  return { ciro, gider, kar, margin, roi, perCiro, perGider };
+// ── COMPUTE ────────────────────────────────────────
+function calc(e){
+  const ciro=(e.cekCiro||0)+(e.cadirCiro||0);
+  const gider=(e.agency||0)+(e.personnel||0)+(e.standCost||0)+(e.barter||0);
+  const kar=ciro-gider;
+  const margin=ciro>0?(kar/ciro)*100:0;
+  const roi=gider>0?(kar/gider)*100:0;
+  const perC=e.participants>0?ciro/e.participants:0;
+  const perG=e.participants>0?gider/e.participants:0;
+  return{ciro,gider,kar,margin,roi,perC,perG};
 }
 
-// ============================================================
-// FILTERS
-// ============================================================
-function getFilteredEvents() {
-  const year = document.getElementById('year-filter').value;
-  const city = document.getElementById('city-filter').value;
-  return allEvents.filter(e => {
-    if (year !== 'all' && e.year != parseInt(year)) return false;
-    if (city !== 'all' && e.city !== city) return false;
-    return true;
-  });
+// ── FORMAT ────────────────────────────────────────
+function fc(n){const a=Math.abs(n),s=n<0?'-':'';return s+'₺'+(a>=1e6?(a/1e6).toFixed(1)+'M':a>=1000?(a/1000).toFixed(0)+'K':Math.round(a).toLocaleString('tr-TR'));}
+function fn(n){return Math.round(n).toLocaleString('tr-TR');}
+
+// ── FILTERS ───────────────────────────────────────
+function filtered(){
+  const y=document.getElementById('year-filter').value;
+  const c=document.getElementById('city-filter').value;
+  return DB.filter(e=>(y==='all'||String(e.year)===y)&&(c==='all'||e.city===c));
 }
 
-function populateCityFilter() {
-  const cities = [...new Set(allEvents.map(e => e.city))].sort();
-  const sel = document.getElementById('city-filter');
-  sel.innerHTML = '<option value="all">Tüm Şehirler</option>';
-  cities.forEach(c => {
-    const o = document.createElement('option');
-    o.value = c; o.textContent = c;
-    sel.appendChild(o);
-  });
+function rebuildFilters(){
+  const years=[...new Set(DB.map(e=>e.year))].sort((a,b)=>b-a);
+  const cities=[...new Set(DB.map(e=>e.city))].sort();
+  const nowY=new Date().getFullYear();
+
+  const yf=document.getElementById('year-filter'),cy=yf.value;
+  yf.innerHTML='<option value="all">Tüm Yıllar</option>'+years.map(y=>`<option value="${y}"${String(y)===cy?' selected':''}>${y}</option>`).join('');
+
+  const cf=document.getElementById('city-filter'),cc=cf.value;
+  cf.innerHTML='<option value="all">Tüm Şehirler</option>'+cities.map(c=>`<option value="${c}"${c===cc?' selected':''}>${c}</option>`).join('');
+
+  // City datalist
+  document.getElementById('city-dl').innerHTML=cities.map(c=>`<option value="${c}">`).join('');
+
+  // Year select for form: all existing years + current + next 2
+  const formYears=[...new Set([...years,nowY,nowY+1,nowY+2])].sort((a,b)=>b-a);
+  const fy=document.getElementById('f-year'),fcy=fy.value||nowY;
+  fy.innerHTML=formYears.map(y=>`<option value="${y}"${String(y)===String(fcy)?' selected':''}>${y} Etkinlikleri</option>`).join('');
 }
 
-function applyFilters() {
-  updateDashboard();
-  renderEventsTable();
-  renderAnalysis();
-  renderWeatherTable();
-}
-
-// ============================================================
-// FORMAT
-// ============================================================
-function fCur(n) {
-  if (Math.abs(n) >= 1000000) return '₺' + (n/1000000).toFixed(1) + 'M';
-  if (Math.abs(n) >= 1000) return '₺' + (n/1000).toFixed(0) + 'K';
-  return '₺' + Math.round(n).toLocaleString('tr-TR');
-}
-
-function fNum(n) { return Math.round(n).toLocaleString('tr-TR'); }
-function fPct(n) { return (n >= 0 ? '+' : '') + n.toFixed(1) + '%'; }
-
-// ============================================================
-// DASHBOARD
-// ============================================================
-function updateDashboard() {
-  const evs = getFilteredEvents();
-  const metrics = evs.map(e => ({ ...e, ...compute(e) }));
-
-  const totalCiro = metrics.reduce((a,b) => a + b.ciro, 0);
-  const totalGider = metrics.reduce((a,b) => a + b.gider, 0);
-  const totalKar = metrics.reduce((a,b) => a + b.kar, 0);
-  const avgMargin = metrics.filter(m => m.ciro > 0).reduce((a,b) => a + b.margin, 0) / Math.max(1, metrics.filter(m=>m.ciro>0).length);
-  const avgROI = metrics.filter(m => m.gider > 0).reduce((a,b) => a + b.roi, 0) / Math.max(1, metrics.filter(m=>m.gider>0).length);
-
-  document.getElementById('kpi-ciro').textContent = fCur(totalCiro);
-  document.getElementById('kpi-kar').textContent = fCur(totalKar);
-  document.getElementById('kpi-gider').textContent = fCur(totalGider);
-  document.getElementById('kpi-margin').textContent = avgMargin.toFixed(1) + '%';
-  document.getElementById('kpi-count').textContent = evs.length;
-  document.getElementById('kpi-roi').textContent = avgROI.toFixed(1) + '%';
-
-  const positiveMarginEvs = metrics.filter(m => m.ciro > 0);
-  if (positiveMarginEvs.length > 0) {
-    const best = positiveMarginEvs.reduce((a,b) => a.kar > b.kar ? a : b);
-    const worst = positiveMarginEvs.reduce((a,b) => a.kar < b.kar ? a : b);
-    document.getElementById('kpi-best').textContent = best.name.substring(0,20);
-    document.getElementById('kpi-best-val').innerHTML = `<span class="kpi-badge badge-pos">${fCur(best.kar)} kar</span>`;
-    document.getElementById('kpi-worst').textContent = worst.name.substring(0,20);
-    document.getElementById('kpi-worst-val').innerHTML = `<span class="kpi-badge badge-neg">${fCur(worst.kar)}</span>`;
+// ── LOAD / SAVE ───────────────────────────────────
+async function loadData(){
+  setST('Yükleniyor…');
+  try{
+    const raw=await sGet(SK);
+    let userEvs=[];
+    if(raw){try{userEvs=JSON.parse(raw);}catch{}}
+    const map=new Map();
+    SEED.forEach(e=>map.set(e.id,e));
+    userEvs.forEach(e=>map.set(e.id,e));
+    DB=[...map.values()].sort((a,b)=>new Date(a.date||0)-new Date(b.date||0));
+    rebuildFilters();
+    setST('Senkronize');
+    updateFoot();
+  }catch{
+    DB=[...SEED];
+    rebuildFilters();
+    setST('Çevrimdışı');
   }
-
-  const karPct = totalCiro > 0 ? (totalKar/totalCiro)*100 : 0;
-  document.getElementById('kpi-ciro-badge').textContent = `Çek: ${fCur(metrics.reduce((a,b)=>a+b.cekCiro,0))} + Çadır: ${fCur(metrics.reduce((a,b)=>a+b.cadirCiro,0))}`;
-  document.getElementById('kpi-kar-badge').textContent = `Marj: ${karPct.toFixed(1)}%`;
-
-  updateCharts(metrics);
+}
+async function saveData(){
+  const toSave=DB.filter(e=>!e.id.startsWith('s')||e.weather);
+  await sSet(SK,JSON.stringify(toSave));
+  updateFoot();
+}
+async function syncAll(){await loadData();applyFilters();toast('↻ Senkronize edildi');}
+function setST(t){document.getElementById('sync-txt').textContent=t;}
+function updateFoot(){
+  document.getElementById('foot-count').textContent=DB.length+' etkinlik';
+  const u=[...new Set(DB.map(e=>e.addedBy).filter(Boolean))];
+  document.getElementById('foot-users').textContent=u.length+' kullanıcı';
 }
 
-// ============================================================
-// CHARTS
-// ============================================================
-const CHART_DEFAULTS = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: { labels: { color: '#8da0bf', font: { family: 'DM Mono', size: 10 }, boxWidth: 10 } },
-    tooltip: {
-      backgroundColor: '#1a2438',
-      borderColor: '#3b82f6',
-      borderWidth: 1,
-      titleColor: '#f0f4ff',
-      bodyColor: '#8da0bf',
-      padding: 10,
-    }
-  },
-  scales: {
-    x: { grid: { color: 'rgba(59,130,246,0.06)' }, ticks: { color: '#4d6080', font: { family: 'DM Mono', size: 9 } } },
-    y: { grid: { color: 'rgba(59,130,246,0.06)' }, ticks: { color: '#4d6080', font: { family: 'DM Mono', size: 9 }, callback: v => '₺' + (Math.abs(v)>=1000000 ? (v/1000000).toFixed(1)+'M' : Math.abs(v)>=1000 ? (v/1000).toFixed(0)+'K' : v) } }
+// ── USER ──────────────────────────────────────────
+function saveUser(v){username=v.trim();lSet(UK,username);}
+
+// ── DASHBOARD ─────────────────────────────────────
+function updateDashboard(){
+  const evs=filtered().map(e=>({...e,...calc(e)}));
+  const tCiro=evs.reduce((a,b)=>a+b.ciro,0);
+  const tGider=evs.reduce((a,b)=>a+b.gider,0);
+  const tKar=evs.reduce((a,b)=>a+b.kar,0);
+  const wC=evs.filter(e=>e.ciro>0),wG=evs.filter(e=>e.gider>0);
+  const avgM=wC.length?wC.reduce((a,b)=>a+b.margin,0)/wC.length:0;
+  const avgR=wG.length?wG.reduce((a,b)=>a+b.roi,0)/wG.length:0;
+
+  sv('k-ciro',fc(tCiro));sv('k-kar',fc(tKar));sv('k-gider',fc(tGider));
+  sv('k-margin',avgM.toFixed(1)+'%');sv('k-count',evs.length+'');sv('k-roi',avgR.toFixed(1)+'%');
+  sv('k-ciro-s',`Çek: ${fc(evs.reduce((a,b)=>a+b.cekCiro,0))} · Çadır: ${fc(evs.reduce((a,b)=>a+b.cadirCiro,0))}`);
+  sv('k-kar-s',`Marj: ${tCiro>0?((tKar/tCiro)*100).toFixed(1):'0'}%`);
+
+  const sorted=wC.sort((a,b)=>b.kar-a.kar);
+  if(sorted.length){
+    sv('k-best',sorted[0].name.substring(0,22)+(sorted[0].name.length>22?'…':''));
+    sv('k-best-s',fc(sorted[0].kar)+' kar');
+    sv('k-worst',sorted[sorted.length-1].name.substring(0,22));
+    sv('k-worst-s',fc(sorted[sorted.length-1].kar));
   }
-};
-
-function destroyChart(id) {
-  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+  buildCharts(evs);
 }
 
-function updateCharts(metrics) {
-  // Monthly trend
-  const monthMap = {};
-  const MONTHS = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
-  metrics.forEach(e => {
-    if (!e.date) return;
-    const d = new Date(e.date);
-    if (isNaN(d)) return;
-    const key = e.year + '-' + String(d.getMonth()).padStart(2,'0');
-    if (!monthMap[key]) monthMap[key] = { label: MONTHS[d.getMonth()] + ' ' + e.year, ciro: 0, kar: 0 };
-    monthMap[key].ciro += e.ciro;
-    monthMap[key].kar += e.kar;
+// ── CHARTS ────────────────────────────────────────
+const TT={backgroundColor:'#1a2438',borderColor:'rgba(59,130,246,.3)',borderWidth:1,titleColor:'#f0f4ff',bodyColor:'#8da0bf',padding:10};
+const LEG={labels:{color:'#8da0bf',font:{family:'DM Mono',size:10},boxWidth:9}};
+function AX(isY=false){return{grid:{color:'rgba(59,130,246,.05)'},ticks:{color:'#4d6080',font:{family:'DM Mono',size:9},callback:isY?v=>{const a=Math.abs(v);return(a>=1e6?(v/1e6).toFixed(1)+'M':a>=1000?(v/1000).toFixed(0)+'K':v)+'';}:undefined}};}
+function dc(id){if(CH[id]){CH[id].destroy();delete CH[id];}}
+
+function buildCharts(evs){
+  const MN=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+  const mp={};
+  evs.forEach(e=>{
+    if(!e.date)return;const d=new Date(e.date);if(isNaN(d))return;
+    const k=e.year+'-'+String(d.getMonth()).padStart(2,'0');
+    if(!mp[k])mp[k]={lbl:MN[d.getMonth()]+' '+e.year,ciro:0,kar:0};
+    mp[k].ciro+=e.ciro;mp[k].kar+=e.kar;
   });
+  const mk=Object.keys(mp).sort();
+  dc('monthly');
+  CH.monthly=new Chart(document.getElementById('cMonthly'),{type:'bar',data:{labels:mk.map(k=>mp[k].lbl),datasets:[
+    {label:'Ciro',data:mk.map(k=>mp[k].ciro),backgroundColor:'rgba(59,130,246,.65)',borderRadius:4,order:2},
+    {label:'Kar',data:mk.map(k=>mp[k].kar),type:'line',borderColor:'#10b981',backgroundColor:'rgba(16,185,129,.1)',borderWidth:2,pointRadius:3,tension:.4,order:1,fill:true}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:LEG,tooltip:TT},scales:{x:AX(),y:AX(true)}}});
 
-  const monthKeys = Object.keys(monthMap).sort();
-  const monthLabels = monthKeys.map(k => monthMap[k].label);
-  const monthCiro = monthKeys.map(k => monthMap[k].ciro);
-  const monthKar = monthKeys.map(k => monthMap[k].kar);
+  const cm={};
+  evs.forEach(e=>{if(!cm[e.city])cm[e.city]={kar:0,gider:0};cm[e.city].kar+=e.kar;cm[e.city].gider+=e.gider;});
+  const cok=Object.keys(cm).filter(c=>cm[c].gider>0);
+  const rois=cok.map(c=>(cm[c].kar/cm[c].gider)*100);
+  dc('city');
+  CH.city=new Chart(document.getElementById('cCity'),{type:'bar',data:{labels:cok,datasets:[{label:'ROI %',data:rois,backgroundColor:rois.map(r=>r>=0?'rgba(16,185,129,.7)':'rgba(244,63,94,.7)'),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:LEG,tooltip:TT},scales:{x:{...AX(),ticks:{...AX().ticks,callback:v=>v.toFixed(0)+'%'}},y:AX()}}});
 
-  destroyChart('monthly');
-  charts.monthly = new Chart(document.getElementById('chartMonthly'), {
-    type: 'bar',
-    data: {
-      labels: monthLabels,
-      datasets: [
-        { label: 'Ciro', data: monthCiro, backgroundColor: 'rgba(59,130,246,0.7)', borderRadius: 4, order: 2 },
-        { label: 'Kar', data: monthKar, type: 'line', borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', borderWidth: 2, pointRadius: 3, tension: 0.4, order: 1, fill: true }
-      ]
-    },
-    options: { ...CHART_DEFAULTS, plugins: { ...CHART_DEFAULTS.plugins } }
-  });
+  const top=evs.filter(e=>e.ciro>0).sort((a,b)=>b.ciro-a.ciro).slice(0,10);
+  dc('event');
+  CH.event=new Chart(document.getElementById('cEvent'),{type:'bar',data:{labels:top.map(e=>e.name.substring(0,13)+(e.name.length>13?'…':'')),datasets:[
+    {label:'Ciro',data:top.map(e=>e.ciro),backgroundColor:'rgba(59,130,246,.5)',borderRadius:3},
+    {label:'Gider',data:top.map(e=>e.gider),backgroundColor:'rgba(244,63,94,.5)',borderRadius:3},
+    {label:'Kar',data:top.map(e=>e.kar),backgroundColor:'rgba(16,185,129,.7)',borderRadius:3}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:LEG,tooltip:TT},scales:{x:AX(),y:AX(true)}}});
 
-  // City ROI
-  const cityMap = {};
-  metrics.forEach(e => {
-    if (!cityMap[e.city]) cityMap[e.city] = { kar: 0, gider: 0, count: 0 };
-    cityMap[e.city].kar += e.kar;
-    cityMap[e.city].gider += e.gider;
-    cityMap[e.city].count++;
-  });
-
-  const cities = Object.keys(cityMap).filter(c => cityMap[c].gider > 0);
-  const cityROI = cities.map(c => cityMap[c].gider > 0 ? (cityMap[c].kar / cityMap[c].gider) * 100 : 0);
-  const cityColors = cityROI.map(r => r >= 0 ? 'rgba(16,185,129,0.7)' : 'rgba(244,63,94,0.7)');
-
-  destroyChart('cityROI');
-  charts.cityROI = new Chart(document.getElementById('chartCityROI'), {
-    type: 'bar',
-    data: {
-      labels: cities,
-      datasets: [{ label: 'ROI %', data: cityROI, backgroundColor: cityColors, borderRadius: 4 }]
-    },
-    options: {
-      ...CHART_DEFAULTS,
-      indexAxis: 'y',
-      scales: {
-        x: { ...CHART_DEFAULTS.scales.x, ticks: { ...CHART_DEFAULTS.scales.x.ticks, callback: v => v.toFixed(0) + '%' } },
-        y: { ...CHART_DEFAULTS.scales.y }
-      }
-    }
-  });
-
-  // Event Profitability (top 10)
-  const top = metrics.filter(m => m.ciro > 0).sort((a,b) => b.ciro - a.ciro).slice(0, 10);
-  destroyChart('eventProfit');
-  charts.eventProfit = new Chart(document.getElementById('chartEventProfit'), {
-    type: 'bar',
-    data: {
-      labels: top.map(e => e.name.substring(0,15) + (e.name.length > 15 ? '…' : '')),
-      datasets: [
-        { label: 'Ciro', data: top.map(e => e.ciro), backgroundColor: 'rgba(59,130,246,0.5)', borderRadius: 3 },
-        { label: 'Gider', data: top.map(e => e.gider), backgroundColor: 'rgba(244,63,94,0.5)', borderRadius: 3 },
-        { label: 'Kar', data: top.map(e => e.kar), backgroundColor: 'rgba(16,185,129,0.7)', borderRadius: 3 }
-      ]
-    },
-    options: { ...CHART_DEFAULTS }
-  });
-
-  // Expense Breakdown
-  const totalAgency = metrics.reduce((a,b) => a + (b.agency||0), 0);
-  const totalPersonnel = metrics.reduce((a,b) => a + (b.personnel||0), 0);
-  const totalStand = metrics.reduce((a,b) => a + (b.standCost||0), 0);
-  const totalBarter = metrics.reduce((a,b) => a + (b.barter||0), 0);
-
-  destroyChart('expense');
-  charts.expense = new Chart(document.getElementById('chartExpense'), {
-    type: 'doughnut',
-    data: {
-      labels: ['Ajans Bedeli', 'Personel', 'Stand Maliyeti', 'Barter'],
-      datasets: [{
-        data: [totalAgency, totalPersonnel, totalStand, totalBarter],
-        backgroundColor: ['rgba(59,130,246,0.8)', 'rgba(139,92,246,0.8)', 'rgba(245,158,11,0.8)', 'rgba(34,211,238,0.8)'],
-        borderWidth: 0,
-        hoverOffset: 8
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom', labels: { color: '#8da0bf', font: { family: 'DM Mono', size: 9 }, boxWidth: 10, padding: 12 } },
-        tooltip: CHART_DEFAULTS.plugins.tooltip
-      }
-    }
-  });
+  const tA=evs.reduce((a,b)=>a+(b.agency||0),0);
+  const tP=evs.reduce((a,b)=>a+(b.personnel||0),0);
+  const tS=evs.reduce((a,b)=>a+(b.standCost||0),0);
+  const tB=evs.reduce((a,b)=>a+(b.barter||0),0);
+  dc('exp');
+  CH.exp=new Chart(document.getElementById('cExp'),{type:'doughnut',data:{labels:['Ajans','Personel','Stand','Barter'],datasets:[{data:[tA,tP,tS,tB],backgroundColor:['rgba(59,130,246,.8)','rgba(139,92,246,.8)','rgba(245,158,11,.8)','rgba(34,211,238,.8)'],borderWidth:0,hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{...LEG,position:'bottom'},tooltip:TT}}});
 }
 
-// ============================================================
-// EVENTS TABLE
-// ============================================================
-function renderEventsTable(search = '') {
-  const evs = getFilteredEvents();
-  const tbody = document.getElementById('events-table-body');
-  document.getElementById('event-count-badge').textContent = `(${evs.length})`;
-  tbody.innerHTML = '';
+// ── EVENTS TABLE ──────────────────────────────────
+function renderEvents(){
+  const evs=filtered();
+  const q=(document.getElementById('ev-srch').value||'').toLowerCase();
+  const grouped=document.getElementById('grp-yr').checked;
+  const tbody=document.getElementById('ev-tbody');
+  document.getElementById('ev-badge').textContent=`(${evs.length})`;
 
-  evs.filter(e => !search || e.name.toLowerCase().includes(search.toLowerCase()) || e.city.toLowerCase().includes(search.toLowerCase()))
-    .forEach(ev => {
-      const m = compute(ev);
-      const perf = m.margin >= 40 ? 'high' : m.margin >= 0 ? 'mid' : 'low';
-      const perfLabel = perf === 'high' ? 'Yüksek' : perf === 'mid' ? 'Orta' : 'Düşük';
-      const tr = document.createElement('tr');
-      tr.onclick = () => showModal(ev);
-      tr.innerHTML = `
-        <td class="name-col">${ev.name}</td>
-        <td>${ev.date || '—'}</td>
-        <td>${ev.city}</td>
-        <td class="num">${ev.participants > 0 ? fNum(ev.participants) : '—'}</td>
-        <td class="num ${m.ciro > 0 ? 'pos' : ''}">${fCur(m.ciro)}</td>
-        <td class="num">${fCur(m.gider)}</td>
-        <td class="num ${m.kar >= 0 ? 'pos' : 'neg'}">${fCur(m.kar)}</td>
-        <td class="num ${m.margin >= 0 ? 'pos' : 'neg'}">${m.ciro > 0 ? m.margin.toFixed(1) + '%' : '—'}</td>
-        <td class="num ${m.roi >= 0 ? 'pos' : 'neg'}">${m.gider > 0 ? m.roi.toFixed(0) + '%' : '—'}</td>
-        <td class="num">${ev.participants > 0 && m.ciro > 0 ? fCur(m.perCiro) : '—'}</td>
-        <td class="num">${ev.participants > 0 && m.gider > 0 ? fCur(m.perGider) : '—'}</td>
-        <td><span class="pill pill-${perf}">${perfLabel}</span></td>
-      `;
-      tbody.appendChild(tr);
+  const rows=evs.filter(e=>!q||e.name.toLowerCase().includes(q)||e.city.toLowerCase().includes(q));
+  tbody.innerHTML='';
+  if(!rows.length){tbody.innerHTML=`<tr><td colspan="14"><div class="empty">Etkinlik bulunamadı</div></td></tr>`;return;}
+
+  if(grouped){
+    const years=[...new Set(rows.map(e=>e.year))].sort((a,b)=>b-a);
+    years.forEach(yr=>{
+      const yr_rows=rows.filter(e=>e.year===yr);
+      const ym=yr_rows.map(e=>calc(e));
+      const yC=ym.reduce((a,b)=>a+b.ciro,0),yK=ym.reduce((a,b)=>a+b.kar,0);
+      // Year header
+      const htr=document.createElement('tr');htr.className='yr-row';
+      htr.innerHTML=`<td colspan="14">${yr} Etkinlikleri<span class="yr-stats">${yr_rows.length} etkinlik &nbsp;·&nbsp; Ciro: ${fc(yC)} &nbsp;·&nbsp; Net Kar: ${fc(yK)}</span></td>`;
+      tbody.appendChild(htr);
+      yr_rows.forEach(ev=>tbody.appendChild(mkRow(ev)));
     });
-
-  if (tbody.children.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="12"><div class="empty-state">Etkinlik bulunamadı</div></td></tr>';
+  } else {
+    rows.forEach(ev=>tbody.appendChild(mkRow(ev)));
   }
 }
 
-function filterTable(v) { renderEventsTable(v); }
+function mkRow(ev){
+  const m=calc(ev);
+  const p=m.margin>=40?'h':m.margin>=0?'m':'l';
+  const pL={h:'Yüksek',m:'Orta',l:'Düşük'}[p];
+  const tr=document.createElement('tr');
+  tr.onclick=e=>{if(!e.target.classList.contains('del-btn'))showModal(ev);};
+  tr.innerHTML=`
+    <td class="nm" title="${ev.name}">${ev.name}</td>
+    <td>${ev.date||'—'}</td><td>${ev.city}</td>
+    <td class="mo">${ev.year}</td>
+    <td class="mo">${ev.participants>0?fn(ev.participants):'—'}</td>
+    <td class="mo ${m.ciro>0?'pg':''}">${fc(m.ciro)}</td>
+    <td class="mo">${fc(m.gider)}</td>
+    <td class="mo ${m.kar>=0?'pg':'pr'}">${fc(m.kar)}</td>
+    <td class="mo ${m.margin>=0?'pg':'pr'}">${m.ciro>0?m.margin.toFixed(1)+'%':'—'}</td>
+    <td class="mo ${m.roi>=0?'pg':'pr'}">${m.gider>0?m.roi.toFixed(0)+'%':'—'}</td>
+    <td class="mo">${ev.participants>0&&m.ciro>0?fc(m.perC):'—'}</td>
+    <td><span class="pl p${p}">${pL}</span></td>
+    <td><span class="pl pu" style="font-size:9px">${ev.addedBy||'—'}</span></td>
+    <td><button class="del-btn" onclick="delEv('${ev.id}',event)" title="Sil">✕</button></td>`;
+  return tr;
+}
 
-// ============================================================
-// ANALYSIS
-// ============================================================
-function renderAnalysis() {
-  const evs = getFilteredEvents();
-  const metrics = evs.map(e => ({ ...e, ...compute(e) }));
+async function delEv(id,e){
+  e.stopPropagation();
+  if(!confirm('Bu etkinliği silmek istiyor musunuz?'))return;
+  DB=DB.filter(ev=>ev.id!==id);
+  await saveData();rebuildFilters();applyFilters();toast('Etkinlik silindi');
+}
 
-  // City analysis
-  const cityMap = {};
-  metrics.forEach(e => {
-    if (!cityMap[e.city]) cityMap[e.city] = { kar: 0, gider: 0, ciro: 0, count: 0 };
-    cityMap[e.city].kar += e.kar;
-    cityMap[e.city].gider += e.gider;
-    cityMap[e.city].ciro += e.ciro;
-    cityMap[e.city].count++;
-  });
+// ── FORM ──────────────────────────────────────────
+function onDateChange(){
+  const d=document.getElementById('f-date').value;
+  if(d){document.getElementById('f-year').value=new Date(d).getFullYear();onYearChange();}
+  buildPrompt();calcPrev();
+}
 
-  const cities = Object.entries(cityMap).sort((a,b) => b[1].kar - a[1].kar);
-  const maxKar = Math.max(...cities.map(c => Math.abs(c[1].kar)));
+function onYearChange(){
+  const yr=parseInt(document.getElementById('f-year').value);
+  const existing=new Set(DB.map(e=>e.year));
+  const banner=document.getElementById('yr-banner');
+  if(!existing.has(yr)){
+    banner.style.display='block';
+    document.getElementById('yr-banner-txt').textContent=yr;
+  } else {banner.style.display='none';}
+}
 
-  const cityEl = document.getElementById('city-analysis');
-  cityEl.innerHTML = cities.slice(0,8).map(([city, d]) => {
-    const roi = d.gider > 0 ? (d.kar/d.gider)*100 : 0;
-    const barPct = maxKar > 0 ? (Math.abs(d.kar) / maxKar) * 100 : 0;
-    const color = d.kar >= 0 ? '#10b981' : '#f43f5e';
-    return `<div class="insight-row">
-      <span class="ir-label">${city}</span>
-      <div class="ir-bar-wrap"><div class="ir-bar" style="width:${barPct}%;background:${color}"></div></div>
-      <span class="ir-val">${fCur(d.kar)}</span>
-    </div>`;
+function calcPrev(){
+  const cek=nv('f-cek'),cc=nv('f-cciro'),aj=nv('f-ajans'),pe=nv('f-per'),st=nv('f-stand'),ba=nv('f-barter'),kat=nv('f-kat');
+  const ciro=cek+cc,gider=aj+pe+st+ba,kar=ciro-gider;
+  sv('p-ciro',fc(ciro));sv('p-gider',fc(gider));
+  const pk=document.getElementById('p-kar');pk.textContent=fc(kar);pk.className='pvv '+(kar>=0?'cg':'cr');
+  sv('p-margin',ciro>0?((kar/ciro)*100).toFixed(1)+'%':'—');
+  sv('p-roi',gider>0?((kar/gider)*100).toFixed(1)+'%':'—');
+  sv('p-pciro',kat>0&&ciro>0?fc(ciro/kat):'—');
+  sv('p-pgdr',kat>0&&gider>0?fc(gider/kat):'—');
+}
+
+function buildPrompt(){
+  const date=document.getElementById('f-date').value;
+  const city=(document.getElementById('f-city').value||'').trim();
+  if(!date||!city){document.getElementById('wx-pr').textContent='Tarih ve şehir girerek prompt oluşturun…';return;}
+  const d=new Date(date);
+  const MN=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+  document.getElementById('wx-pr').textContent=`${d.getDate()} ${MN[d.getMonth()]} ${d.getFullYear()} tarihinde ${city}'de hava nasıldı?\nSadece şu formatta cevap ver:\nSıcaklık: X°C\nDurum: Güneşli/Yağmurlu/Bulutlu\nRüzgar: X km/h`;
+}
+
+async function saveEvent(){
+  const name=(document.getElementById('f-name').value||'').trim();
+  const city=(document.getElementById('f-city').value||'').trim();
+  const date=document.getElementById('f-date').value;
+  const year=parseInt(document.getElementById('f-year').value);
+  if(!name||!city){toast('Etkinlik adı ve şehir zorunludur','err');return;}
+  if(!username){toast('Lütfen sol menüden kullanıcı adı girin','err');return;}
+
+  const ev={
+    id:'u'+Date.now(),name,date,city,year,
+    participants:nv('f-kat'),tents:nv('f-cadir'),
+    agency:nv('f-ajans'),personnel:nv('f-per'),standCost:nv('f-stand'),barter:nv('f-barter'),
+    cekCiro:nv('f-cek'),cadirCiro:nv('f-cciro'),
+    weather:(document.getElementById('f-wx').value||'').trim(),
+    addedBy:username,addedAt:new Date().toISOString()
+  };
+
+  DB.push(ev);DB.sort((a,b)=>new Date(a.date||0)-new Date(b.date||0));
+  await saveData();rebuildFilters();applyFilters();
+  toast('✓ Kaydedildi: '+name);
+  clearForm();
+  goPage('events',document.querySelectorAll('.ni')[1]);
+}
+
+function clearForm(){
+  ['f-name','f-date','f-city','f-kat','f-cadir','f-ajans','f-per','f-stand','f-barter','f-cek','f-cciro','f-wx'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('yr-banner').style.display='none';
+  document.getElementById('wx-pr').textContent='Tarih ve şehir girerek prompt oluşturun…';
+  calcPrev();
+}
+
+// ── ANALYSIS ──────────────────────────────────────
+function renderAnalysis(){
+  const evs=filtered().map(e=>({...e,...calc(e)}));
+  const cm={};evs.forEach(e=>{if(!cm[e.city])cm[e.city]={kar:0,gider:0,ciro:0,count:0};cm[e.city].kar+=e.kar;cm[e.city].gider+=e.gider;cm[e.city].ciro+=e.ciro;cm[e.city].count++;});
+  const cities=Object.entries(cm).sort((a,b)=>b[1].kar-a[1].kar);
+  const maxK=Math.max(...cities.map(c=>Math.abs(c[1].kar)))||1;
+  document.getElementById('city-ins').innerHTML=cities.slice(0,8).map(([city,d])=>{
+    const pct=(Math.abs(d.kar)/maxK)*100;const col=d.kar>=0?'var(--green)':'var(--rose)';
+    return `<div class="ins-row"><span class="irl">${city}</span><div class="irbw"><div class="irb" style="width:${pct}%;background:${col}"></div></div><span class="irv">${fc(d.kar)}</span></div>`;
   }).join('');
 
-  // Agency vs Margin scatter
-  const agencyData = metrics.filter(m => m.agency > 0 && m.ciro > 0);
-  destroyChart('agencyMargin');
-  charts.agencyMargin = new Chart(document.getElementById('chartAgencyMargin'), {
-    type: 'scatter',
-    data: {
-      datasets: [{
-        label: 'Etkinlik',
-        data: agencyData.map(m => ({ x: m.agency/1000, y: m.margin })),
-        backgroundColor: 'rgba(59,130,246,0.6)',
-        pointRadius: 5
-      }]
-    },
-    options: {
-      ...CHART_DEFAULTS,
-      scales: {
-        x: { ...CHART_DEFAULTS.scales.x, title: { display: true, text: 'Ajans Bedeli (K₺)', color: '#4d6080', font: { size: 9 } }, ticks: { color: '#4d6080', font: { family: 'DM Mono', size: 9 }, callback: v => v + 'K' } },
-        y: { ...CHART_DEFAULTS.scales.y, title: { display: true, text: 'Kar Marjı %', color: '#4d6080', font: { size: 9 } }, ticks: { color: '#4d6080', font: { family: 'DM Mono', size: 9 }, callback: v => v.toFixed(0) + '%' } }
-      }
-    }
-  });
+  const ad=evs.filter(e=>e.agency>0&&e.ciro>0);
+  dc('agency');CH.agency=new Chart(document.getElementById('cAgency'),{type:'scatter',data:{datasets:[{label:'Etkinlik',data:ad.map(e=>({x:e.agency/1000,y:e.margin})),backgroundColor:'rgba(59,130,246,.6)',pointRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:LEG,tooltip:TT},scales:{x:{...AX(),title:{display:true,text:'Ajans (K₺)',color:'#4d6080',font:{size:9}},ticks:{...AX().ticks,callback:v=>v+'K'}},y:{...AX(),title:{display:true,text:'Kar Marjı %',color:'#4d6080',font:{size:9}},ticks:{...AX().ticks,callback:v=>v.toFixed(0)+'%'}}}}});
 
-  // Participants vs ROI
-  const partData = metrics.filter(m => m.participants > 0 && m.gider > 0);
-  destroyChart('participantROI');
-  charts.participantROI = new Chart(document.getElementById('chartParticipantROI'), {
-    type: 'scatter',
-    data: {
-      datasets: [{
-        label: 'Etkinlik',
-        data: partData.map(m => ({ x: m.participants, y: m.roi })),
-        backgroundColor: 'rgba(245,158,11,0.6)',
-        pointRadius: 5
-      }]
-    },
-    options: {
-      ...CHART_DEFAULTS,
-      scales: {
-        x: { ...CHART_DEFAULTS.scales.x, title: { display: true, text: 'Katılımcı Sayısı', color: '#4d6080', font: { size: 9 } }, ticks: { color: '#4d6080', font: { family: 'DM Mono', size: 9 } } },
-        y: { ...CHART_DEFAULTS.scales.y, title: { display: true, text: 'ROI %', color: '#4d6080', font: { size: 9 } }, ticks: { color: '#4d6080', font: { family: 'DM Mono', size: 9 }, callback: v => v.toFixed(0) + '%' } }
-      }
-    }
-  });
+  const pd=evs.filter(e=>e.participants>0&&e.gider>0);
+  dc('part');CH.part=new Chart(document.getElementById('cPart'),{type:'scatter',data:{datasets:[{label:'Etkinlik',data:pd.map(e=>({x:e.participants,y:e.roi})),backgroundColor:'rgba(245,158,11,.6)',pointRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:LEG,tooltip:TT},scales:{x:{...AX(),title:{display:true,text:'Katılımcı',color:'#4d6080',font:{size:9}}},y:{...AX(),title:{display:true,text:'ROI %',color:'#4d6080',font:{size:9}},ticks:{...AX().ticks,callback:v=>v.toFixed(0)+'%'}}}}});
 
-  // Decision support
-  const bestCity = cities[0];
-  const profitableCount = metrics.filter(m => m.kar > 0 && m.ciro > 0).length;
-  const avgAgency = metrics.filter(m => m.agency > 0).reduce((a,b) => a + b.agency, 0) / Math.max(1, metrics.filter(m=>m.agency>0).length);
-
-  document.getElementById('decision-support').innerHTML = `
-    <div style="background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.2);border-radius:10px;padding:16px">
-      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--accent-emerald);letter-spacing:1px;margin-bottom:8px">🏆 EN KARLI ŞEHİR</div>
-      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--text-primary)">${bestCity ? bestCity[0] : '—'}</div>
-      <div style="font-size:11px;color:var(--text-muted);margin-top:4px">${bestCity ? fCur(bestCity[1].kar) + ' toplam kar | ' + bestCity[1].count + ' etkinlik' : '—'}</div>
-    </div>
-    <div style="background:rgba(59,130,246,0.07);border:1px solid rgba(59,130,246,0.2);border-radius:10px;padding:16px">
-      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--accent-glow);letter-spacing:1px;margin-bottom:8px">📈 KARLILILIK ORANI</div>
-      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--text-primary)">${metrics.length > 0 ? ((profitableCount/metrics.filter(m=>m.ciro>0).length)*100).toFixed(0) + '%' : '—'}</div>
-      <div style="font-size:11px;color:var(--text-muted);margin-top:4px">${profitableCount} / ${metrics.filter(m=>m.ciro>0).length} etkinlik kârlı</div>
-    </div>
-    <div style="background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:16px">
-      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--accent-amber);letter-spacing:1px;margin-bottom:8px">💡 ORT. AJANS MALİYETİ</div>
-      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--text-primary)">${fCur(avgAgency)}</div>
-      <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Etkinlik başına ortalama</div>
-    </div>
-  `;
-
-  // Weather analysis
-  const withWeather = metrics.filter(m => m.weather && m.weather.trim());
-  if (withWeather.length > 0) {
-    const weatherEl = document.getElementById('weather-analysis');
-    const byCondition = {};
-    withWeather.forEach(m => {
-      const cond = parseWeather(m.weather).condition || 'Bilinmiyor';
-      if (!byCondition[cond]) byCondition[cond] = [];
-      byCondition[cond].push(m.roi);
-    });
-    weatherEl.innerHTML = Object.entries(byCondition).map(([cond, rois]) => {
-      const avgROI = rois.reduce((a,b)=>a+b,0)/rois.length;
-      return `<div class="insight-row">
-        <span class="ir-label">${cond}</span>
-        <span class="ir-val ${avgROI >= 0 ? 'pos' : 'neg'}">${avgROI.toFixed(0)}% ROI</span>
-      </div>`;
-    }).join('');
+  const wxEvs=evs.filter(e=>e.weather);
+  if(wxEvs.length){
+    const byC={};wxEvs.forEach(e=>{const c2=parseWx(e.weather).cond||'Bilinmiyor';if(!byC[c2])byC[c2]=[];byC[c2].push(e.roi);});
+    document.getElementById('wx-ins').innerHTML=Object.entries(byC).map(([c2,r])=>{const avg=r.reduce((a,b)=>a+b,0)/r.length;return`<div class="ins-row"><span class="irl">${c2}</span><span class="irv ${avg>=0?'pg':'pr'}">${avg.toFixed(0)}% ROI</span></div>`;}).join('');
   }
+
+  const bestCity=cities[0];
+  const prof=evs.filter(e=>e.kar>0&&e.ciro>0).length;
+  const total=evs.filter(e=>e.ciro>0).length;
+  const avgA=evs.filter(e=>e.agency>0).reduce((a,b)=>a+b.agency,0)/Math.max(1,evs.filter(e=>e.agency>0).length);
+  document.getElementById('deci-cards').innerHTML=`
+    <div class="dc2" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--green);letter-spacing:1px;margin-bottom:7px">🏆 EN KARLI ŞEHİR</div>
+      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700">${bestCity?bestCity[0]:'—'}</div>
+      <div style="font-size:11px;color:var(--t3);margin-top:3px">${bestCity?fc(bestCity[1].kar)+' · '+bestCity[1].count+' etkinlik':'—'}</div>
+    </div>
+    <div class="dc2" style="background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.2)">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--blue2);letter-spacing:1px;margin-bottom:7px">📈 KARLILIK ORANI</div>
+      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700">${total>0?((prof/total)*100).toFixed(0)+'%':'—'}</div>
+      <div style="font-size:11px;color:var(--t3);margin-top:3px">${prof} / ${total} etkinlik kârlı</div>
+    </div>
+    <div class="dc2" style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2)">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--amber);letter-spacing:1px;margin-bottom:7px">💡 ORT. AJANS MALİYETİ</div>
+      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700">${fc(avgA)}</div>
+      <div style="font-size:11px;color:var(--t3);margin-top:3px">Etkinlik başına ortalama</div>
+    </div>`;
 }
 
-// ============================================================
-// WEATHER TABLE
-// ============================================================
-function renderWeatherTable() {
-  const evs = allEvents.filter(e => e.weather && e.weather.trim());
-  const tbody = document.getElementById('weather-table-body');
-  tbody.innerHTML = '';
-  if (evs.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state">Henüz hava durumu verisi yok. Etkinlik eklerken Gemini yanıtını yapıştırın.</div></td></tr>';
-    return;
-  }
-  evs.forEach(ev => {
-    const m = compute(ev);
-    const w = parseWeather(ev.weather);
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td class="name-col">${ev.name}</td>
-      <td>${ev.date || '—'}</td>
-      <td>${ev.city}</td>
-      <td class="num">${w.temp || '—'}</td>
-      <td>${w.condition || '—'}</td>
-      <td class="num">${w.wind || '—'}</td>
-      <td class="num ${m.kar >= 0 ? 'pos' : 'neg'}">${fCur(m.kar)}</td>
-      <td>${getWeatherImpact(w, m)}</td>
-    `;
-    tbody.appendChild(tr);
-  });
+// ── WEATHER TABLE ─────────────────────────────────
+function renderWeather(){
+  const evs=DB.filter(e=>e.weather&&e.weather.trim());
+  const tbody=document.getElementById('wx-tbody');
+  if(!evs.length){tbody.innerHTML=`<tr><td colspan="9"><div class="empty">Henüz hava durumu verisi yok.</div></td></tr>`;return;}
+  tbody.innerHTML=evs.map(ev=>{
+    const m=calc(ev);const w=parseWx(ev.weather);
+    const imp=!w.cond?'—':m.roi>80&&(w.cond.includes('Güneş')||w.cond.includes('Açık'))?'<span class="pl ph">↑ Olumlu</span>':w.cond.includes('Yağmur')&&m.roi<0?'<span class="pl plo">↓ Olumsuz</span>':'<span class="pl pm">→ Nötr</span>';
+    return `<tr><td class="nm">${ev.name}</td><td>${ev.date||'—'}</td><td>${ev.city}</td><td class="mo">${ev.year}</td><td class="mo">${w.temp||'—'}</td><td>${w.cond||'—'}</td><td class="mo">${w.wind||'—'}</td><td class="mo ${m.kar>=0?'pg':'pr'}">${fc(m.kar)}</td><td>${imp}</td></tr>`;
+  }).join('');
 }
 
-function parseWeather(str) {
-  if (!str) return {};
-  const temp = (str.match(/sıcaklık:\s*([\d.]+)/i) || [])[1];
-  const cond = (str.match(/durum:\s*(\S+(?:\s+\S+)?)/i) || [])[1];
-  const wind = (str.match(/rüzgar:\s*([\d.]+)/i) || [])[1];
-  return { temp: temp ? temp + '°C' : null, condition: cond, wind: wind ? wind + ' km/h' : null };
-}
-
-function getWeatherImpact(w, m) {
-  if (!w.condition) return '—';
-  const cond = w.condition.toLowerCase();
-  if (m.roi > 100 && (cond.includes('güneş') || cond.includes('açık'))) return '<span class="pill pill-high">↑ Olumlu</span>';
-  if (cond.includes('yağmur') && m.roi < 0) return '<span class="pill pill-low">↓ Olumsuz</span>';
-  return '<span class="pill pill-mid">→ Nötr</span>';
-}
-
-// ============================================================
-// FORM / NEW EVENT
-// ============================================================
-function calcPreview() {
-  const cek = parseFloat(document.getElementById('f-cek').value) || 0;
-  const cadir = parseFloat(document.getElementById('f-cadirciro').value) || 0;
-  const ajans = parseFloat(document.getElementById('f-ajans').value) || 0;
-  const per = parseFloat(document.getElementById('f-personel').value) || 0;
-  const stand = parseFloat(document.getElementById('f-stand').value) || 0;
-  const barter = parseFloat(document.getElementById('f-barter').value) || 0;
-  const katilimci = parseFloat(document.getElementById('f-katilimci').value) || 0;
-
-  const ciro = cek + cadir;
-  const gider = ajans + per + stand + barter;
-  const kar = ciro - gider;
-  const margin = ciro > 0 ? (kar/ciro)*100 : 0;
-  const roi = gider > 0 ? (kar/gider)*100 : 0;
-
-  document.getElementById('p-ciro').textContent = fCur(ciro);
-  document.getElementById('p-gider').textContent = fCur(gider);
-
-  const karEl = document.getElementById('p-kar');
-  karEl.textContent = fCur(kar);
-  karEl.style.color = kar >= 0 ? 'var(--accent-emerald)' : 'var(--accent-rose)';
-
-  document.getElementById('p-margin').textContent = ciro > 0 ? margin.toFixed(1) + '%' : '—';
-  document.getElementById('p-roi').textContent = gider > 0 ? roi.toFixed(1) + '%' : '—';
-  document.getElementById('p-perciro').textContent = katilimci > 0 && ciro > 0 ? fCur(ciro/katilimci) : '—';
-  document.getElementById('p-pergider').textContent = katilimci > 0 && gider > 0 ? fCur(gider/katilimci) : '—';
-
-  fetchWeather();
-}
-
-function fetchWeather() {
-  const date = document.getElementById('f-date').value;
-  const city = document.getElementById('f-city').value;
-  if (!date || !city) return;
-
-  const d = new Date(date);
-  const months = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
-  const formatted = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
-
-  const prompt = `${formatted} tarihinde ${city}'de hava nasıldı?\nSadece şu formatta cevap ver:\nSıcaklık: X°C\nDurum: Güneşli/Yağmurlu/Bulutlu\nRüzgar: X km/h`;
-  document.getElementById('weather-prompt').textContent = prompt;
-  document.getElementById('weather-result').style.display = 'block';
-}
-
-function saveEvent() {
-  const name = document.getElementById('f-name').value.trim();
-  const date = document.getElementById('f-date').value;
-  const city = document.getElementById('f-city').value.trim();
-
-  if (!name || !city) { showToast('Etkinlik adı ve şehir zorunludur'); return; }
-
-  const ev = {
-    id: nextId++,
-    name,
-    date,
-    city,
-    participants: parseFloat(document.getElementById('f-katilimci').value) || 0,
-    tents: parseFloat(document.getElementById('f-cadır').value) || 0,
-    agency: parseFloat(document.getElementById('f-ajans').value) || 0,
-    personnel: parseFloat(document.getElementById('f-personel').value) || 0,
-    standCost: parseFloat(document.getElementById('f-stand').value) || 0,
-    barter: parseFloat(document.getElementById('f-barter').value) || 0,
-    cekCiro: parseFloat(document.getElementById('f-cek').value) || 0,
-    cadirCiro: parseFloat(document.getElementById('f-cadirciro').value) || 0,
-    year: parseInt(document.getElementById('f-year').value),
-    weather: document.getElementById('f-weather').value.trim()
+function parseWx(s){
+  if(!s)return{};
+  return{
+    temp:((s.match(/sıcaklık:\s*([\d.]+)/i)||[])[1]||null),
+    cond:((s.match(/durum:\s*(\S+(?:\s+\S+)?)/i)||[])[1]||null),
+    wind:((s.match(/rüzgar:\s*([\d.]+)/i)||[])[1]||null)
   };
-
-  allEvents.push(ev);
-  populateCityFilter();
-  applyFilters();
-  showToast('✓ Etkinlik kaydedildi: ' + name);
-  clearForm();
-  showPage('events', document.querySelectorAll('.nav-item')[1]);
 }
 
-function clearForm() {
-  ['f-name','f-date','f-city','f-katilimci','f-cadır','f-ajans','f-personel','f-stand','f-barter','f-cek','f-cadirciro','f-weather'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
-  calcPreview();
-}
-
-// ============================================================
-// MODAL
-// ============================================================
-function showModal(ev) {
-  const m = compute(ev);
-  document.getElementById('modal-event-name').textContent = ev.name;
-  document.getElementById('modal-overlay').classList.add('open');
-
-  const w = parseWeather(ev.weather);
-
-  document.getElementById('modal-body').innerHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-      ${[
-        ['Şehir', ev.city],
-        ['Tarih', ev.date || '—'],
-        ['Katılımcı', ev.participants > 0 ? fNum(ev.participants) : '—'],
-        ['Çadır Sayısı', ev.tents || '—'],
-        ['Yıl', ev.year],
-        ['ID', '#' + ev.id]
-      ].map(([l,v]) => `
-        <div style="background:var(--bg-elevated);border-radius:8px;padding:12px">
-          <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--text-muted);letter-spacing:1px;margin-bottom:4px">${l}</div>
-          <div style="font-weight:600;color:var(--text-primary)">${v}</div>
-        </div>`
-      ).join('')}
+// ── MODAL ─────────────────────────────────────────
+function showModal(ev){
+  const m=calc(ev);const w=parseWx(ev.weather);
+  document.getElementById('m-name').textContent=ev.name;
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('m-body').innerHTML=`
+    <div class="mg">
+      ${[['Şehir',ev.city],['Tarih',ev.date||'—'],['Yıl',ev.year],['Katılımcı',ev.participants>0?fn(ev.participants):'—'],['Çadır',ev.tents||'—'],['Ekleyen',ev.addedBy||'—']].map(([l,v])=>`<div class="mi"><div class="mil">${l}</div><div class="miv">${v}</div></div>`).join('')}
     </div>
-
-    <div style="background:var(--bg-elevated);border-radius:10px;padding:14px;margin-bottom:12px">
-      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--accent-primary);letter-spacing:1px;margin-bottom:10px">GİDER KALEMLERİ</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
-        <div><span style="color:var(--text-muted)">Ajans Bedeli: </span><span style="color:var(--text-primary);font-family:'DM Mono',monospace">${fCur(ev.agency||0)}</span></div>
-        <div><span style="color:var(--text-muted)">Personel: </span><span style="color:var(--text-primary);font-family:'DM Mono',monospace">${fCur(ev.personnel||0)}</span></div>
-        <div><span style="color:var(--text-muted)">Stand Maliyeti: </span><span style="color:var(--text-primary);font-family:'DM Mono',monospace">${fCur(ev.standCost||0)}</span></div>
-        <div><span style="color:var(--text-muted)">Barter: </span><span style="color:var(--text-primary);font-family:'DM Mono',monospace">${fCur(ev.barter||0)}</span></div>
+    <div style="background:var(--bg3);border-radius:8px;padding:12px;margin-bottom:11px">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--blue);letter-spacing:1px;margin-bottom:8px">GİDER KALEMLERİ</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">
+        <div><span style="color:var(--t3)">Ajans: </span><span style="font-family:'DM Mono',monospace">${fc(ev.agency||0)}</span></div>
+        <div><span style="color:var(--t3)">Personel: </span><span style="font-family:'DM Mono',monospace">${fc(ev.personnel||0)}</span></div>
+        <div><span style="color:var(--t3)">Stand: </span><span style="font-family:'DM Mono',monospace">${fc(ev.standCost||0)}</span></div>
+        <div><span style="color:var(--t3)">Barter: </span><span style="font-family:'DM Mono',monospace">${fc(ev.barter||0)}</span></div>
       </div>
     </div>
-
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px">
-      ${[
-        ['Toplam Ciro', fCur(m.ciro), 'var(--accent-glow)'],
-        ['Toplam Gider', fCur(m.gider), 'var(--accent-amber)'],
-        ['Net Kar', fCur(m.kar), m.kar >= 0 ? 'var(--accent-emerald)' : 'var(--accent-rose)'],
-        ['Kar Marjı', m.ciro > 0 ? m.margin.toFixed(1)+'%' : '—', 'var(--text-primary)'],
-        ['ROI', m.gider > 0 ? m.roi.toFixed(0)+'%' : '—', m.roi >= 0 ? 'var(--accent-emerald)' : 'var(--accent-rose)'],
-        ['Kat. Başı Ciro', ev.participants > 0 ? fCur(m.perCiro) : '—', 'var(--text-primary)'],
-      ].map(([l,v,c]) => `
-        <div style="background:var(--bg-elevated);border-radius:8px;padding:12px;text-align:center">
-          <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--text-muted);letter-spacing:1px;margin-bottom:4px">${l}</div>
-          <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:${c}">${v}</div>
-        </div>`
-      ).join('')}
+    <div class="mkr">
+      ${[['Toplam Ciro',fc(m.ciro),'var(--blue2)'],['Toplam Gider',fc(m.gider),'var(--amber)'],['Net Kar',fc(m.kar),m.kar>=0?'var(--green)':'var(--rose)'],['Kar Marjı',m.ciro>0?m.margin.toFixed(1)+'%':'—','var(--t1)'],['ROI',m.gider>0?m.roi.toFixed(0)+'%':'—',m.roi>=0?'var(--green)':'var(--rose)'],['Kat. Başı Ciro',ev.participants>0?fc(m.perC):'—','var(--t1)']].map(([l,v,c])=>`<div class="mk"><div class="mkl">${l}</div><div class="mkv" style="color:${c}">${v}</div></div>`).join('')}
     </div>
+    ${ev.weather?`<div style="background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.14);border-radius:8px;padding:11px"><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--blue);letter-spacing:1px;margin-bottom:5px">HAVA DURUMU</div><div style="font-size:12px;color:var(--t2);font-family:'DM Mono',monospace;white-space:pre-line">${ev.weather}</div></div>`:''}`;
+}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+function modalBg(e){if(e.target===document.getElementById('modal'))closeModal();}
 
-    ${ev.weather ? `<div style="background:rgba(59,130,246,0.07);border:1px solid rgba(59,130,246,0.15);border-radius:8px;padding:12px">
-      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--accent-primary);letter-spacing:1px;margin-bottom:6px">HAVA DURUMU</div>
-      <div style="font-size:12px;color:var(--text-secondary);font-family:'DM Mono',monospace;white-space:pre-line">${ev.weather}</div>
-    </div>` : ''}
-  `;
+// ── NAVIGATION ────────────────────────────────────
+const TITLES={dashboard:'Dashboard',events:'Etkinlikler','new-event':'Yeni Etkinlik Ekle',analysis:'Analiz Motoru',weather:'Hava Durumu'};
+function goPage(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  if(el)el.classList.add('active');
+  document.getElementById('pg-title').textContent=TITLES[id]||'';
+  if(id==='events')renderEvents();
+  if(id==='analysis')renderAnalysis();
+  if(id==='weather')renderWeather();
+  closeSB();
 }
 
-function closeModal(event) {
-  if (!event || event.target === document.getElementById('modal-overlay')) {
-    document.getElementById('modal-overlay').classList.remove('open');
-  }
+// ── SIDEBAR MOBILE ────────────────────────────────
+function toggleSB(){const sb=document.getElementById('sb'),hb=document.getElementById('hb'),ov=document.getElementById('sb-ov');const o=sb.classList.toggle('open');hb.classList.toggle('open',o);ov.classList.toggle('open',o);}
+function closeSB(){document.getElementById('sb').classList.remove('open');document.getElementById('hb').classList.remove('open');document.getElementById('sb-ov').classList.remove('open');}
+
+// ── TOAST ─────────────────────────────────────────
+let TT2;
+function toast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show '+(type==='err'?'err':'');clearTimeout(TT2);TT2=setTimeout(()=>t.classList.remove('show'),3200);}
+
+// ── EXPORT ────────────────────────────────────────
+function doExport(){
+  const evs=filtered();
+  const cols=['Etkinlik','Yıl','Tarih','Şehir','Katılımcı','Ajans','Personel','Stand','Barter','ÇekCiro','ÇadırCiro','ToplamCiro','ToplamGider','NetKar','KarMarjı%','ROI%','KatBaşıCiro','Ekleyen'];
+  const rows=evs.map(e=>{const m=calc(e);return[e.name,e.year,e.date,e.city,e.participants,e.agency,e.personnel,e.standCost,e.barter,e.cekCiro,e.cadirCiro,m.ciro.toFixed(0),m.gider.toFixed(0),m.kar.toFixed(0),m.margin.toFixed(1),m.roi.toFixed(1),m.perC.toFixed(0),e.addedBy||''].join(',');});
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+[cols.join(','),...rows].join('\n')],{type:'text/csv;charset=utf-8;'}));a.download='spx_etkinlikler.csv';a.click();
+  toast('CSV indirildi');
 }
 
-// ============================================================
-// NAVIGATION
-// ============================================================
-function showPage(id, navItem) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  if (navItem) navItem.classList.add('active');
+// ── HELPERS ───────────────────────────────────────
+function nv(id){return parseFloat(document.getElementById(id).value)||0;}
+function sv(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
+function applyFilters(){updateDashboard();renderEvents();}
 
-  const titles = {
-    dashboard: 'Dashboard — Genel Bakış',
-    events: 'Etkinlikler — Tüm Kayıtlar',
-    'new-event': 'Yeni Etkinlik Ekle',
-    analysis: 'Analiz Motoru — Karar Destek',
-    weather: 'Hava Durumu — Gemini Entegrasyonu'
-  };
-  document.getElementById('page-title').textContent = titles[id] || '';
-
-  if (id === 'events') renderEventsTable();
-  if (id === 'analysis') renderAnalysis();
-  if (id === 'weather') renderWeatherTable();
-}
-
-// ============================================================
-// TOAST
-// ============================================================
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-// ============================================================
-// EXPORT
-// ============================================================
-function exportCSV() {
-  const evs = getFilteredEvents();
-  const headers = ['Etkinlik','Tarih','Şehir','Katılımcı','Ajans','Personel','Stand','Barter','ÇekCiro','ÇadırCiro','ToplamCiro','ToplamGider','NetKar','KarMarjı%','ROI%','KatBaşıCiro','KatBaşıMaliyet'];
-  const rows = evs.map(ev => {
-    const m = compute(ev);
-    return [ev.name, ev.date, ev.city, ev.participants, ev.agency, ev.personnel, ev.standCost, ev.barter, ev.cekCiro, ev.cadirCiro,
-      m.ciro.toFixed(0), m.gider.toFixed(0), m.kar.toFixed(0), m.margin.toFixed(1), m.roi.toFixed(1),
-      m.perCiro.toFixed(0), m.perGider.toFixed(0)].join(',');
-  });
-
-  const csv = [headers.join(','), ...rows].join('\n');
-  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'spx_etkinlik_analizi.csv'; a.click();
-  showToast('CSV indirildi');
-}
-
-// ============================================================
-// INIT
-// ============================================================
-function init() {
-  populateCityFilter();
-  updateDashboard();
-  renderEventsTable();
+// ── INIT ──────────────────────────────────────────
+async function init(){
+  const u=lGet(UK)||'';if(u){document.getElementById('username').value=u;username=u;}
+  document.getElementById('f-date').valueAsDate=new Date();
+  onDateChange();
+  await loadData();
+  updateDashboard();renderEvents();
+  // Auto-sync every 30s
+  setInterval(async()=>{await loadData();applyFilters();},30000);
+  window.addEventListener('resize',()=>{if(window.innerWidth>768)closeSB();});
 }
 
 init();
