@@ -304,6 +304,104 @@ tbody tr:hover .row-acts{opacity:1;}
 }
 @media(max-width:480px){.sc-kpis{grid-template-columns:1fr 1fr;}}
 
+
+/* ─── FORECAST & AI SCORE PAGES ─── */
+.sc3{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:16px;}
+.sc4{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:16px;}
+.scenario-card{border-radius:var(--r);padding:18px;position:relative;overflow:hidden;}
+.scenario-card.pessimist{background:linear-gradient(135deg,rgba(244,63,94,.08),rgba(244,63,94,.04));border:1px solid rgba(244,63,94,.25);}
+.scenario-card.normal{background:linear-gradient(135deg,rgba(59,130,246,.08),rgba(59,130,246,.04));border:1px solid rgba(59,130,246,.25);}
+.scenario-card.optimist{background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(16,185,129,.04));border:1px solid rgba(16,185,129,.25);}
+.sc-badge{display:inline-flex;padding:3px 9px;border-radius:5px;font-family:'DM Mono',monospace;font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;}
+.sc-badge.bad{background:rgba(244,63,94,.14);color:var(--rose);}
+.sc-badge.mid{background:rgba(59,130,246,.14);color:var(--blue2);}
+.sc-badge.good{background:rgba(16,185,129,.14);color:var(--green);}
+.sc-num{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;line-height:1;margin-bottom:4px;}
+.sc-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;}
+.sc-metrics{display:flex;flex-direction:column;gap:6px;}
+.sc-metric{display:flex;justify-content:space-between;font-size:12px;}
+.sc-metric-l{color:var(--t3);}
+.sc-metric-v{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;}
+.sc-divider{height:1px;background:rgba(255,255,255,.06);margin:12px 0;}
+.sc-delta{display:flex;align-items:center;gap:5px;font-size:11px;font-family:'DM Mono',monospace;}
+.delta-up{color:var(--green);}.delta-dn{color:var(--rose);}.delta-nt{color:var(--t3);}
+
+/* Growth rate cards */
+.growth-card{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--r);padding:16px;}
+.growth-num{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1;}
+.growth-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-top:4px;margin-bottom:8px;}
+.growth-bar{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-top:8px;}
+.growth-fill{height:100%;border-radius:2px;transition:width 1s ease;}
+
+/* Insight boxes */
+.insight-box{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--r);padding:16px;margin-bottom:14px;}
+.insight-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.insight-text{font-size:12px;color:var(--t2);line-height:1.7;}
+.highlight{color:var(--blue2);font-weight:600;}
+.highlight-g{color:var(--green);font-weight:600;}
+.highlight-r{color:var(--rose);font-weight:600;}
+.highlight-a{color:var(--amber);font-weight:600;}
+
+/* AI Score specific */
+.ai-score-gauge{position:relative;width:130px;height:80px;margin:0 auto 8px;}
+.gauge-arc{overflow:visible;}
+.score-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.score-big{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;line-height:1;}
+.score-ring{width:70px;height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:3px solid;}
+.score-row{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--b1);}
+.score-row:last-child{border-bottom:none;}
+.score-detail{flex:1;min-width:0;}
+.score-name{font-size:13px;font-weight:600;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.score-meta{font-size:11px;color:var(--t3);font-family:'DM Mono',monospace;margin-top:2px;}
+.score-bar-wrap{display:flex;align-items:center;gap:8px;margin-top:6px;}
+.score-bar-bg{flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;}
+.score-bar-fill{height:100%;border-radius:2px;transition:width .8s ease;}
+.score-val{font-family:'DM Mono',monospace;font-size:11px;min-width:28px;text-align:right;}
+
+/* Weight breakdown */
+.weight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.weight-item{background:var(--bg3);border-radius:9px;padding:12px;text-align:center;}
+.weight-icon{font-size:18px;margin-bottom:4px;}
+.weight-pct{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:2px;}
+.weight-name{font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;}
+
+/* Recommendation badge */
+.rec-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;font-family:'DM Mono',monospace;font-size:11px;font-weight:600;}
+.rec-go{background:rgba(16,185,129,.15);color:var(--green);border:1px solid rgba(16,185,129,.3);}
+.rec-cond{background:rgba(59,130,246,.15);color:var(--blue2);border:1px solid rgba(59,130,246,.3);}
+.rec-risk{background:rgba(245,158,11,.15);color:var(--amber);border:1px solid rgba(245,158,11,.3);}
+.rec-no{background:rgba(244,63,94,.15);color:var(--rose);border:1px solid rgba(244,63,94,.3);}
+
+/* City strategy grid */
+.city-strat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:14px;}
+.city-strat-card{background:var(--bg3);border-radius:9px;padding:13px;border:1px solid var(--b1);transition:border-color .18s;}
+.city-strat-card:hover{border-color:var(--b2);}
+.city-strat-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:4px;}
+.city-strat-score{font-family:'DM Mono',monospace;font-size:11px;color:var(--t3);}
+.city-strat-bar{height:3px;background:var(--bg2);border-radius:2px;margin-top:8px;overflow:hidden;}
+
+/* Print-friendly summary box */
+.exec-summary{background:linear-gradient(135deg,rgba(59,130,246,.06),rgba(139,92,246,.06));border:1px solid rgba(59,130,246,.2);border-radius:var(--r);padding:20px;margin-bottom:16px;}
+.exec-summary-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.exec-bullet{display:flex;align-items:flex-start;gap:8px;margin-bottom:7px;font-size:13px;color:var(--t2);}
+.exec-bullet::before{content:'→';color:var(--blue2);font-family:'DM Mono',monospace;flex-shrink:0;margin-top:1px;}
+
+/* Responsive for new pages */
+@media(max-width:1100px){
+  .sc3{grid-template-columns:1fr;}
+  .sc4{grid-template-columns:repeat(2,1fr);}
+  .weight-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:768px){
+  .sc3,.sc4{grid-template-columns:1fr;}
+  .weight-grid{grid-template-columns:repeat(3,1fr);}
+  .city-strat-grid{grid-template-columns:repeat(2,1fr);}
+  .score-row{flex-wrap:wrap;}
+}
+@media(max-width:480px){
+  .weight-grid{grid-template-columns:1fr 1fr;}
+}
+
 </style>
 </head>
 <body>
@@ -330,6 +428,9 @@ tbody tr:hover .row-acts{opacity:1;}
     <div class="nl" style="margin-top:9px">Analiz</div>
     <div class="ni" onclick="goPage('analysis',this)"><span class="nx">▣</span>Analiz Motoru</div>
     <div class="ni" onclick="goPage('weather',this)"><span class="nx">◎</span>Hava Durumu</div>
+    <div class="nl" style="margin-top:9px">Yapay Zeka</div>
+    <div class="ni" onclick="goPage('forecast',this)"><span class="nx">◐</span>2026 Tahmin Modeli</div>
+    <div class="ni" onclick="goPage('ai-score',this)"><span class="nx">◑</span>AI Katılım Skoru</div>
   </div>
   <div class="sb-foot">
     <div class="ull">Kullanıcı Adı</div>
@@ -509,6 +610,111 @@ tbody tr:hover .row-acts{opacity:1;}
       </tr></thead><tbody id="wx-tbody"></tbody></table></div>
     </div>
   </div>
+
+  <!-- ════ 2026 FORECAST PAGE ════ -->
+  <div class="page" id="page-forecast">
+    <div class="sec-l">Yapay Zeka · Tahmin Motoru</div>
+    <div class="sec-t">2026 Tahmini Karlılık Modeli</div>
+
+    <!-- Growth Rate KPIs -->
+    <div id="forecast-growth-cards" class="sc4" style="margin-bottom:16px"></div>
+
+    <!-- Executive Summary -->
+    <div class="exec-summary" id="forecast-exec-summary"></div>
+
+    <!-- 3 Scenarios -->
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--blue);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;">SENARYO ANALİZİ</div>
+    <div class="sc3" id="forecast-scenarios"></div>
+
+    <!-- Charts Row -->
+    <div class="cg2">
+      <div class="cc"><div class="ch"><div><div class="ct">Senaryo Karşılaştırması</div><div class="cs">Ciro · Gider · Kar</div></div></div><div class="cw t"><canvas id="cForecastScenario"></canvas></div></div>
+      <div class="cc"><div class="ch"><div><div class="ct">2024→2025→2026 Trend</div><div class="cs">Yıllık büyüme projeksiyon</div></div></div><div class="cw t"><canvas id="cForecastTrend"></canvas></div></div>
+    </div>
+
+    <!-- City Level Forecast -->
+    <div class="insight-box">
+      <div class="insight-title">🏙 Şehir Bazlı 2026 Projeksiyonu</div>
+      <div class="tsc"><table style="min-width:600px;"><thead><tr>
+        <th>ŞEHİR</th><th>2025 CİRO</th><th>2026 TAHMİN (NORMAL)</th><th>2026 TAHMİN (İYİMSER)</th><th>BÜYÜME</th><th>STRATEJİ</th>
+      </tr></thead><tbody id="forecast-city-tbody"></tbody></table></div>
+    </div>
+
+    <!-- Monthly Projection -->
+    <div class="cc" style="margin-bottom:16px">
+      <div class="ch"><div><div class="ct">2026 Aylık Gelir Projeksiyonu (Normal Senaryo)</div><div class="cs">Geçmiş sezonalite bazlı</div></div></div>
+      <div class="cw t"><canvas id="cForecastMonthly"></canvas></div>
+    </div>
+
+    <!-- Insights -->
+    <div class="cg2">
+      <div class="insight-box" style="margin-bottom:0">
+        <div class="insight-title">🎯 Model Varsayımları</div>
+        <div id="forecast-assumptions" class="insight-text"></div>
+      </div>
+      <div class="insight-box" style="margin-bottom:0">
+        <div class="insight-title">⚠️ Risk Faktörleri & Fırsatlar</div>
+        <div id="forecast-risks" class="insight-text"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ AI SCORE PAGE ════ -->
+  <div class="page" id="page-ai-score">
+    <div class="sec-l">Yapay Zeka · Karar Destek</div>
+    <div class="sec-t">Katıl / Katılma AI Skoru</div>
+
+    <!-- Weight legend -->
+    <div class="cc" style="margin-bottom:16px">
+      <div class="ch"><div><div class="ct">Skor Ağırlık Matrisi</div><div class="cs">Her faktörün karar üzerindeki etkisi</div></div></div>
+      <div class="weight-grid" id="ai-weights-grid"></div>
+    </div>
+
+    <!-- Summary KPIs -->
+    <div class="sc4" id="ai-kpi-row" style="margin-bottom:16px"></div>
+
+    <!-- Charts row -->
+    <div class="cg2" style="margin-bottom:16px">
+      <div class="cc"><div class="ch"><div><div class="ct">Skor Dağılımı</div><div class="cs">Etkinlik bazlı 0–100</div></div></div><div class="cw"><canvas id="cAiScoreDist"></canvas></div></div>
+      <div class="cc"><div class="ch"><div><div class="ct">Faktör Etki Analizi</div><div class="cs">Hangi değişken en çok etkiliyor?</div></div></div><div class="cw"><canvas id="cAiFactors"></canvas></div></div>
+    </div>
+
+    <!-- Exec Summary -->
+    <div class="exec-summary" id="ai-exec-summary" style="margin-bottom:16px"></div>
+
+    <!-- City Strategy -->
+    <div class="insight-box" style="margin-bottom:16px">
+      <div class="insight-title">🌍 Şehir Stratejik Avantaj Haritası</div>
+      <div class="city-strat-grid" id="ai-city-grid"></div>
+    </div>
+
+    <!-- Cost Optimization -->
+    <div class="insight-box" style="margin-bottom:16px">
+      <div class="insight-title">💡 Maliyet Optimizasyon Önerileri</div>
+      <div id="ai-cost-tips"></div>
+    </div>
+
+    <!-- Full Score Table -->
+    <div class="tc">
+      <div class="th">
+        <div class="tht">Etkinlik AI Skor Tablosu</div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <select class="flt" id="ai-year-filter" onchange="renderAiTable()">
+            <option value="all">Tüm Yıllar</option>
+          </select>
+          <select class="flt" id="ai-sort" onchange="renderAiTable()">
+            <option value="score">Skora Göre</option>
+            <option value="roi">ROI'ye Göre</option>
+            <option value="name">Ada Göre</option>
+          </select>
+        </div>
+      </div>
+      <div class="score-table-wrap">
+        <div id="ai-score-list" style="padding:4px 0"></div>
+      </div>
+    </div>
+  </div>
+
 </main>
 </div>
 
@@ -1082,7 +1288,7 @@ function moBg(e,id){if(e.target===document.getElementById(id))closeModal(id);}
 function setv(id,v){const el=document.getElementById(id);if(el)el.value=v;}
 
 // ── NAVIGATION ────────────────────────────────────
-const TITLES={dashboard:'Dashboard',events:'Etkinlikler','new-event':'Yeni Etkinlik Ekle',analysis:'Analiz Motoru',weather:'Hava Durumu'};
+const TITLES={dashboard:'Dashboard',events:'Etkinlikler','new-event':'Yeni Etkinlik Ekle',analysis:'Analiz Motoru',weather:'Hava Durumu',forecast:'2026 Tahmin Modeli','ai-score':'AI Katılım Skoru'};
 function goPage(id,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
@@ -1092,6 +1298,8 @@ function goPage(id,el){
   if(id==='events')renderEvents();
   if(id==='analysis')renderAnalysis();
   if(id==='weather')renderWeather();
+  if(id==='forecast')renderForecast();
+  if(id==='ai-score')renderAiScore();
   closeSB();
 }
 
@@ -1130,6 +1338,366 @@ async function init(){
 }
 
 init();
+
+// ══════════════════════════════════════════════════════════
+// FORECAST ENGINE — 2026 Predictive Profitability Model
+// ══════════════════════════════════════════════════════════
+function getForecastData(){
+  const evs2024=DB.filter(e=>e.year===2024).map(e=>({...e,...calc(e)}));
+  const evs2025=DB.filter(e=>e.year===2025).map(e=>({...e,...calc(e)}));
+  const sum=(arr,key)=>arr.reduce((a,b)=>a+(b[key]||0),0);
+  const tot24={ciro:sum(evs2024,'ciro'),gider:sum(evs2024,'gider'),kar:sum(evs2024,'kar'),count:evs2024.length,parts:sum(evs2024,'participants')};
+  const tot25={ciro:sum(evs2025,'ciro'),gider:sum(evs2025,'gider'),kar:sum(evs2025,'kar'),count:evs2025.length,parts:sum(evs2025,'participants')};
+  const gr=(a,b)=>a>0?(b-a)/a:0.2;
+  const ciroGr=gr(tot24.ciro,tot25.ciro);
+  const giderGr=gr(tot24.gider,tot25.gider);
+  const cntGr=gr(tot24.count,tot25.count);
+  const partsGr=gr(tot24.parts,tot25.parts);
+  const proj26cnt=Math.round(tot25.count*(1+Math.min(cntGr,0.4)));
+  const nc=tot25.ciro*(1+ciroGr), ng=tot25.gider*(1+giderGr);
+  const norm={ciro:nc,gider:ng,kar:nc-ng,count:proj26cnt};
+  const pess={ciro:nc*0.90,gider:ng*1.05,kar:nc*0.90-ng*1.05,count:Math.round(proj26cnt*0.90)};
+  const opti={ciro:nc*1.15,gider:ng*1.08,kar:nc*1.15-ng*1.08,count:Math.round(proj26cnt*1.15)};
+  return{tot24,tot25,ciroGr,giderGr,cntGr,partsGr,norm,pess,opti,evs2024,evs2025};
+}
+
+function renderForecast(){
+  const d=getForecastData();
+  const{tot24,tot25,ciroGr,giderGr,cntGr,partsGr,norm,pess,opti,evs2024,evs2025}=d;
+
+  // Growth rate cards
+  document.getElementById('forecast-growth-cards').innerHTML=[
+    {lbl:'Ciro Büyüme Oranı',val:(ciroGr*100).toFixed(1)+'%',sub:'2024 → 2025 gerçek büyüme',col:'var(--green)',fill:Math.min(100,Math.abs(ciroGr)*200)},
+    {lbl:'Gider Büyüme Oranı',val:(giderGr*100).toFixed(1)+'%',sub:'2024 → 2025 gerçek büyüme',col:'var(--amber)',fill:Math.min(100,Math.abs(giderGr)*200)},
+    {lbl:'Etkinlik Sayısı Artışı',val:'+'+(cntGr*100).toFixed(0)+'%',sub:`${tot24.count} → ${tot25.count} etkinlik`,col:'var(--blue2)',fill:Math.min(100,cntGr*200)},
+    {lbl:'Katılımcı Artışı',val:'+'+(partsGr*100).toFixed(0)+'%',sub:'2024 → 2025 büyüme',col:'var(--violet)',fill:Math.min(100,partsGr*200)},
+  ].map(g=>`<div class="growth-card">
+    <div class="growth-num" style="color:${g.col}">${g.val}</div>
+    <div class="growth-lbl">${g.lbl}</div>
+    <div style="font-size:11px;color:var(--t3);margin-top:2px">${g.sub}</div>
+    <div class="growth-bar" style="margin-top:10px"><div class="growth-fill" style="width:${g.fill}%;background:${g.col}"></div></div>
+  </div>`).join('');
+
+  // Exec summary
+  const margN=norm.ciro>0?(norm.kar/norm.ciro*100).toFixed(1):0;
+  const roiN=norm.gider>0?(norm.kar/norm.gider*100).toFixed(1):0;
+  document.getElementById('forecast-exec-summary').innerHTML=`
+    <div class="exec-summary-title">📋 Yönetici Özeti — 2026 Projeksiyon</div>
+    <div class="exec-bullet">2025 toplam cirosu <span class="highlight-g">${fc(tot25.ciro)}</span> olarak gerçekleşti. Normal senaryoda 2026 tahmini <span class="highlight">${fc(norm.ciro)}</span>, büyüme oranı <span class="highlight-g">%${(ciroGr*100).toFixed(1)}</span>'dir.</div>
+    <div class="exec-bullet">Gider artış hızı (%${(giderGr*100).toFixed(1)}) ciro büyümesinin ${giderGr>ciroGr?'<span class="highlight-r">üzerinde</span> — maliyet kontrolü kritik öneme sahip':'<span class="highlight-g">altında</span> — sağlıklı yapı korunuyor'}.</div>
+    <div class="exec-bullet">Normal senaryoda kar marjı <span class="highlight">%${margN}</span>, ROI <span class="highlight">%${roiN}</span> öngörülmektedir. İyimser senaryo: <span class="highlight-g">${fc(opti.kar)}</span>, Kötümser: <span class="highlight-r">${fc(pess.kar)}</span>.</div>
+    <div class="exec-bullet">Senaryo aralığı (fark) <span class="highlight-a">${fc(opti.kar-pess.kar)}</span>. Yüksek ROI'li şehirlere odaklanılması ve ajans maliyetlerinin optimize edilmesi 2026 için kritik önerildir.</div>`;
+
+  // Scenario cards
+  const scenarios=[
+    {cls:'pessimist',bdg:'bad',bdgTxt:'KÖTÜMSER',icon:'📉',desc:'-10% Katılımcı Etkisi',s:pess,adj:`-10% ciro, +5% gider varsayımı`},
+    {cls:'normal',bdg:'mid',bdgTxt:'NORMAL',icon:'📊',desc:'Mevcut Trend Devam',s:norm,adj:`+${(ciroGr*100).toFixed(0)}% ciro, +${(giderGr*100).toFixed(0)}% gider`},
+    {cls:'optimist',bdg:'good',bdgTxt:'İYİMSER',icon:'📈',desc:'+15% Katılımcı Artışı',s:opti,adj:'+15% ciro, +8% gider artışı'},
+  ];
+  document.getElementById('forecast-scenarios').innerHTML=scenarios.map(sc=>{
+    const mg=sc.s.ciro>0?(sc.s.kar/sc.s.ciro*100).toFixed(1):0;
+    const ri=sc.s.gider>0?(sc.s.kar/sc.s.gider*100).toFixed(1):0;
+    const vs=sc.s.kar-tot25.kar;
+    return`<div class="scenario-card ${sc.cls}">
+      <span class="sc-badge ${sc.bdg}">${sc.bdgTxt}</span>
+      <div style="font-size:18px;font-weight:600;margin-bottom:4px">${sc.icon} ${sc.desc}</div>
+      <div style="font-size:11px;color:var(--t3);font-family:'DM Mono',monospace;margin-bottom:14px">${sc.adj}</div>
+      <div class="sc-metrics">
+        <div class="sc-metric"><span class="sc-metric-l">Toplam Ciro</span><span class="sc-metric-v" style="color:var(--blue2)">${fc(sc.s.ciro)}</span></div>
+        <div class="sc-metric"><span class="sc-metric-l">Toplam Gider</span><span class="sc-metric-v" style="color:var(--amber)">${fc(sc.s.gider)}</span></div>
+        <div class="sc-metric"><span class="sc-metric-l">Net Kar</span><span class="sc-metric-v" style="color:${sc.s.kar>=0?'var(--green)':'var(--rose)'}">${fc(sc.s.kar)}</span></div>
+        <div class="sc-divider"></div>
+        <div class="sc-metric"><span class="sc-metric-l">Kar Marjı</span><span class="sc-metric-v">${mg}%</span></div>
+        <div class="sc-metric"><span class="sc-metric-l">ROI</span><span class="sc-metric-v">${ri}%</span></div>
+        <div class="sc-metric"><span class="sc-metric-l">Etkinlik Sayısı</span><span class="sc-metric-v">${sc.s.count}</span></div>
+      </div>
+      <div class="sc-divider"></div>
+      <div class="sc-delta"><span class="${vs>=0?'delta-up':'delta-dn'}">${vs>=0?'▲':'▼'} ${fc(Math.abs(vs))}</span><span style="color:var(--t3);margin-left:6px;font-size:11px">2025'e göre</span></div>
+    </div>`;
+  }).join('');
+
+  // Chart: scenario comparison
+  dc('fscen');
+  CH.fscen=new Chart(document.getElementById('cForecastScenario'),{type:'bar',data:{
+    labels:['Kötümser','Normal','İyimser'],
+    datasets:[
+      {label:'Ciro',data:[pess.ciro,norm.ciro,opti.ciro],backgroundColor:['rgba(244,63,94,.55)','rgba(59,130,246,.65)','rgba(16,185,129,.55)'],borderRadius:7,order:2},
+      {label:'Gider',data:[pess.gider,norm.gider,opti.gider],backgroundColor:['rgba(244,63,94,.25)','rgba(59,130,246,.25)','rgba(16,185,129,.25)'],borderRadius:7,order:2},
+      {label:'Net Kar',data:[pess.kar,norm.kar,opti.kar],type:'line',borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,.1)',borderWidth:2.5,pointRadius:6,pointBackgroundColor:'#f59e0b',tension:.3,order:1,fill:false},
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:LEG,tooltip:TT},scales:{x:AX(),y:AX(true)}}});
+
+  // Chart: 2024→2025→2026 trend
+  dc('ftrend');
+  CH.ftrend=new Chart(document.getElementById('cForecastTrend'),{type:'line',data:{
+    labels:['2024 Gerçek','2025 Gerçek','2026 Kötümser','2026 Normal','2026 İyimser'],
+    datasets:[
+      {label:'Ciro',data:[tot24.ciro,tot25.ciro,pess.ciro,norm.ciro,opti.ciro],borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,.08)',borderWidth:2.5,pointRadius:5,tension:.35,fill:true,pointBackgroundColor:(ctx)=>ctx.dataIndex>=2?'rgba(59,130,246,.4)':'#3b82f6',pointBorderDash:(ctx)=>ctx.dataIndex>=2?[4,3]:[]},
+      {label:'Net Kar',data:[tot24.kar,tot25.kar,pess.kar,norm.kar,opti.kar],borderColor:'#10b981',backgroundColor:'rgba(16,185,129,.06)',borderWidth:2.5,pointRadius:5,tension:.35,fill:true,pointBackgroundColor:(ctx)=>ctx.dataIndex>=2?'rgba(16,185,129,.4)':'#10b981'},
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:LEG,tooltip:TT},scales:{x:AX(),y:AX(true)}}});
+
+  // City forecast table
+  const cityMap={};
+  [...evs2024,...evs2025].forEach(e=>{
+    if(!cityMap[e.city])cityMap[e.city]={c24:0,c25:0};
+    if(e.year===2024)cityMap[e.city].c24+=e.ciro;
+    else cityMap[e.city].c25+=e.ciro;
+  });
+  document.getElementById('forecast-city-tbody').innerHTML=Object.entries(cityMap)
+    .filter(([c,v])=>v.c25>0).sort((a,b)=>b[1].c25-a[1].c25)
+    .map(([city,v])=>{
+      const gr=v.c24>0?(v.c25-v.c24)/v.c24:0.2;
+      const n26=v.c25*(1+ciroGr); const o26=n26*1.15;
+      const strat=gr>0.3?'🚀 Genişlet':gr>0.1?'✅ Sürdür':'⚠️ İzle';
+      const col=gr>0.3?'var(--green)':gr>0.1?'var(--blue2)':'var(--amber)';
+      return`<tr><td class="nm">${city}</td><td class="mo">${fc(v.c25)}</td><td class="mo" style="color:var(--blue2)">${fc(n26)}</td><td class="mo" style="color:var(--green)">${fc(o26)}</td><td class="mo" style="color:${col}">${gr>=0?'+':''}${(gr*100).toFixed(0)}%</td><td>${strat}</td></tr>`;
+    }).join('');
+
+  // Monthly seasonality chart
+  const mBase=Array(12).fill(0);
+  evs2025.forEach(e=>{if(!e.date)return;const m=new Date(e.date).getMonth();mBase[m]+=e.ciro;});
+  const mTot=mBase.reduce((a,b)=>a+b,0)||1;
+  const mW=mBase.map(v=>v/mTot);
+  const MN=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+  dc('fmonthly');
+  CH.fmonthly=new Chart(document.getElementById('cForecastMonthly'),{type:'bar',data:{
+    labels:MN,
+    datasets:[
+      {label:'2025 Gerçek',data:mBase,backgroundColor:'rgba(59,130,246,.35)',borderRadius:4,order:2},
+      {label:'2026 Normal Tahmin',data:mW.map(w=>w*norm.ciro),backgroundColor:'rgba(16,185,129,.55)',borderRadius:4,order:2},
+      {label:'2026 İyimser',type:'line',data:mW.map(w=>w*opti.ciro),borderColor:'#22d3ee',borderWidth:2,pointRadius:3,tension:.4,order:1,fill:false},
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:LEG,tooltip:TT},scales:{x:AX(),y:AX(true)}}});
+
+  document.getElementById('forecast-assumptions').innerHTML=`
+    <div style="line-height:2;font-size:12px;color:var(--t2)">
+      <div>• Ciro büyüme hızı: <span class="highlight">%${(ciroGr*100).toFixed(1)}</span> (2024→2025 geçmiş verisi)</div>
+      <div>• Gider artış hızı: <span class="highlight-a">%${(giderGr*100).toFixed(1)}</span> (2024→2025 geçmiş verisi)</div>
+      <div>• Sezonalite dağılımı 2025 aylık verilerinden türetildi</div>
+      <div>• Şehir büyüme oranları münferiden hesaplandı</div>
+      <div>• Model; döviz şokları ve siyasi belirsizlikleri kapsamamaktadır</div>
+    </div>`;
+  document.getElementById('forecast-risks').innerHTML=`
+    <div style="line-height:2;font-size:12px;color:var(--t2)">
+      <div>${giderGr>ciroGr?'⚠️ Gider artışı ciro büyümesini <span class="highlight-r">aşıyor</span> — maliyet kontrolü kritik':'✅ Gider artışı ciro büyümesinin <span class="highlight-g">altında</span> — sağlıklı yapı'}</div>
+      <div>🎯 En büyük fırsat: <span class="highlight-g">İstanbul ve Antalya</span> portföyünü genişletmek</div>
+      <div>📉 Risk: Düşük katılımlı etkinliklerde yüksek sabit gider yükü</div>
+      <div>💡 Öneri: Yüksek ROI'li şehirlere ağırlık ver, ajans maliyetini %10 kıs</div>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// AI SCORE ENGINE — Katıl / Katılma Karar Sistemi
+// ══════════════════════════════════════════════════════════
+const AI_W={roi:0.30,participants:0.20,city:0.15,weather:0.10,agency:0.10,brand:0.15};
+const FM={
+  roi:{name:'Geçmiş ROI',icon:'📈',wlbl:'%30',col:'var(--green)'},
+  participants:{name:'Katılımcı Sayısı',icon:'👥',wlbl:'%20',col:'var(--blue2)'},
+  city:{name:'Şehir Performansı',icon:'🏙',wlbl:'%15',col:'var(--violet)'},
+  weather:{name:'Hava Koşulu',icon:'🌤',wlbl:'%10',col:'var(--cyan)'},
+  agency:{name:'Ajans Maliyeti',icon:'💼',wlbl:'%10',col:'var(--amber)'},
+  brand:{name:'Marka Görünürlüğü',icon:'⭐',wlbl:'%15',col:'var(--rose)'},
+};
+
+function computeAiScores(){
+  const evs=DB.map(e=>({...e,...calc(e)}));
+  if(!evs.length)return[];
+
+  // City avg roi
+  const cityR={};
+  evs.forEach(e=>{if(!cityR[e.city])cityR[e.city]=[];if(e.gider>0)cityR[e.city].push(e.roi);});
+  const cityAvg={};
+  Object.entries(cityR).forEach(([c,arr])=>{cityAvg[c]=arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:0;});
+
+  const rois=evs.filter(e=>e.gider>0).map(e=>e.roi);
+  const parts=evs.filter(e=>e.participants>0).map(e=>e.participants);
+  const agencies=evs.filter(e=>e.agency>0).map(e=>e.agency);
+  const maxRoi=Math.max(...rois,1);const minRoi=Math.min(...rois,0);
+  const maxParts=Math.max(...parts,1);
+  const maxAgency=Math.max(...agencies,1);
+  const roiRange=maxRoi-minRoi||1;
+
+  const cityVals=Object.values(cityAvg);
+  const maxCity=Math.max(...cityVals,1);const minCity=Math.min(...cityVals,0);
+  const cityRange=maxCity-minCity||1;
+
+  return evs.map(e=>{
+    const roiScore=e.gider>0?Math.min(100,Math.max(0,((e.roi-minRoi)/roiRange)*100)):25;
+    const partScore=e.participants>0?Math.min(100,(Math.log(e.participants)/Math.log(maxParts))*100):20;
+    const cAvg=cityAvg[e.city]||0;
+    const cityScore=Math.min(100,Math.max(0,((cAvg-minCity)/cityRange)*100));
+    const wx=parseWx(e.weather);
+    let wxScore=50;
+    if(wx.cond){const c=wx.cond.toLowerCase();if(c.includes('güneş')||c.includes('açık'))wxScore=88;else if(c.includes('bulut'))wxScore=60;else if(c.includes('yağmur')||c.includes('fırtına'))wxScore=22;}
+    const agencyScore=e.agency>0?Math.min(100,Math.max(0,(1-(e.agency/maxAgency))*100)):68;
+    const brandBase=e.participants>0&&e.ciro>0?e.ciro/e.participants:0;
+    const maxBrand=evs.filter(x=>x.participants>0&&x.ciro>0).reduce((a,x)=>Math.max(a,x.ciro/x.participants),1);
+    const brandScore=Math.min(100,brandBase>0?(brandBase/maxBrand)*100:28);
+
+    const comps={roi:roiScore,participants:partScore,city:cityScore,weather:wxScore,agency:agencyScore,brand:brandScore};
+    const total=Object.entries(comps).reduce((sum,[k,v])=>sum+v*AI_W[k],0);
+    const sorted=Object.entries(comps).sort((a,b)=>b[1]-a[1]);
+    return{...e,aiScore:Math.round(total),comps,topFactor:sorted[0][0],botFactor:sorted[sorted.length-1][0]};
+  });
+}
+
+function getRec(score){
+  if(score>=80)return{cls:'rec-go',txt:'✅ Kesin Katıl',col:'var(--green)'};
+  if(score>=60)return{cls:'rec-cond',txt:'⚡ Şartlı Katıl',col:'var(--blue2)'};
+  if(score>=40)return{cls:'rec-risk',txt:'⚠️ Riskli',col:'var(--amber)'};
+  return{cls:'rec-no',txt:'🚫 Katılma',col:'var(--rose)'};
+}
+
+function renderAiScore(){
+  const scored=computeAiScores();
+  if(!scored.length)return;
+
+  // Populate year filter
+  const yrs=[...new Set(scored.map(e=>e.year))].sort((a,b)=>b-a);
+  const ayf=document.getElementById('ai-year-filter');
+  const cur=ayf.value;
+  ayf.innerHTML='<option value="all">Tüm Yıllar</option>'+yrs.map(y=>`<option value="${y}"${String(y)===cur?' selected':''}>${y}</option>`).join('');
+
+  // Weight grid
+  document.getElementById('ai-weights-grid').innerHTML=Object.entries(FM).map(([k,m])=>`
+    <div class="weight-item">
+      <div class="weight-icon">${m.icon}</div>
+      <div class="weight-pct" style="color:${m.col}">${m.wlbl}</div>
+      <div class="weight-name">${m.name}</div>
+    </div>`).join('');
+
+  // KPI row
+  const goC=scored.filter(e=>e.aiScore>=80).length;
+  const condC=scored.filter(e=>e.aiScore>=60&&e.aiScore<80).length;
+  const riskC=scored.filter(e=>e.aiScore>=40&&e.aiScore<60).length;
+  const noC=scored.filter(e=>e.aiScore<40).length;
+  const avg=scored.reduce((a,b)=>a+b.aiScore,0)/scored.length;
+  const topEv=[...scored].sort((a,b)=>b.aiScore-a.aiScore)[0];
+  document.getElementById('ai-kpi-row').innerHTML=`
+    <div class="kc gn"><div class="kl">Ortalama AI Skoru</div><div class="kv">${avg.toFixed(0)}<span style="font-size:13px">/100</span></div><div class="ks">${scored.length} etkinlik analiz edildi</div></div>
+    <div class="kc bl"><div class="kl">✅ Kesin Katıl</div><div class="kv" style="color:var(--green)">${goC}</div><div class="ks">Skor ≥ 80</div></div>
+    <div class="kc am"><div class="kl">⚡ Şartlı / ⚠️ Riskli</div><div class="kv" style="color:var(--amber)">${condC+riskC}</div><div class="ks">Skor 40–80</div></div>
+    <div class="kc ro"><div class="kl">🚫 Katılma</div><div class="kv" style="color:var(--rose)">${noC}</div><div class="ks">Skor &lt; 40</div></div>`;
+
+  // Exec summary
+  const cityS={};
+  scored.forEach(e=>{if(!cityS[e.city])cityS[e.city]=[];cityS[e.city].push(e.aiScore);});
+  const topCity=Object.entries(cityS).map(([c,arr])=>({c,avg:arr.reduce((a,b)=>a+b,0)/arr.length})).sort((a,b)=>b.avg-a.avg)[0];
+  const botMap={};scored.forEach(e=>{botMap[e.botFactor]=(botMap[e.botFactor]||0)+1;});
+  const botKey=Object.entries(botMap).sort((a,b)=>b[1]-a[1])[0]?.[0]||'roi';
+  document.getElementById('ai-exec-summary').innerHTML=`
+    <div class="exec-summary-title">🤖 AI Analiz Özeti — Yönetici Raporu</div>
+    <div class="exec-bullet">Portföyün <span class="highlight-g">%${((goC/scored.length)*100).toFixed(0)}'ı</span> "Kesin Katıl" eşiğini geçmekte, <span class="highlight-r">%${((noC/scored.length)*100).toFixed(0)}'ı</span> ise "Katılma" bölgesinde kalmaktadır.</div>
+    <div class="exec-bullet">En yüksek AI skoru: <span class="highlight">${topEv.name}</span> — Skor: <span class="highlight-g">${topEv.aiScore}/100</span>. ${getRec(topEv.aiScore).txt}</div>
+    <div class="exec-bullet">Stratejik öncelikli şehir: <span class="highlight">${topCity?.c||'—'}</span> (Ort. Skor: <span class="highlight-g">${topCity?.avg.toFixed(0)||'—'}/100</span>). Bu şehirde etkinlik sayısını artırmanız tavsiye edilir.</div>
+    <div class="exec-bullet">Skoru en çok düşüren faktör: <span class="highlight-r">${FM[botKey]?.icon} ${FM[botKey]?.name}</span> (${botMap[botKey]} etkinlikte zayıf halka). Bu alanda aksiyon alınması ROI'yi doğrudan iyileştirecektir.</div>`;
+
+  // Score distribution chart (top 14)
+  const top14=[...scored].sort((a,b)=>b.aiScore-a.aiScore).slice(0,14);
+  dc('aiDist');
+  CH.aiDist=new Chart(document.getElementById('cAiScoreDist'),{type:'bar',data:{
+    labels:top14.map(e=>e.name.substring(0,13)+(e.name.length>13?'…':'')),
+    datasets:[{label:'AI Skor',data:top14.map(e=>e.aiScore),
+      backgroundColor:top14.map(e=>e.aiScore>=80?'rgba(16,185,129,.75)':e.aiScore>=60?'rgba(59,130,246,.75)':e.aiScore>=40?'rgba(245,158,11,.75)':'rgba(244,63,94,.75)'),
+      borderRadius:5}]
+  },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:LEG,tooltip:TT},scales:{x:{...AX(),max:100},y:AX()}}});
+
+  // Factor radar
+  const factorAvg=Object.keys(AI_W).map(k=>({k,avg:scored.reduce((a,e)=>a+e.comps[k],0)/scored.length}));
+  dc('aiFactors');
+  CH.aiFactors=new Chart(document.getElementById('cAiFactors'),{type:'radar',data:{
+    labels:factorAvg.map(f=>FM[f.k].icon+' '+FM[f.k].name),
+    datasets:[{label:'Ort. Faktör Skoru',data:factorAvg.map(f=>f.avg),
+      backgroundColor:'rgba(59,130,246,.12)',borderColor:'var(--blue)',borderWidth:2,
+      pointBackgroundColor:factorAvg.map(f=>FM[f.k].col),pointRadius:5}]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:LEG,tooltip:TT},
+    scales:{r:{min:0,max:100,ticks:{color:'#4d6080',font:{family:'DM Mono',size:9},stepSize:25},
+      grid:{color:'rgba(59,130,246,.08)'},
+      pointLabels:{color:'#8da0bf',font:{family:'DM Sans',size:11}}}}}});
+
+  // City strategy grid
+  document.getElementById('ai-city-grid').innerHTML=Object.entries(cityS)
+    .map(([c,arr])=>({c,avg:arr.reduce((a,b)=>a+b,0)/arr.length,count:arr.length}))
+    .sort((a,b)=>b.avg-a.avg)
+    .map(({c,avg,count})=>{
+      const col=avg>=70?'var(--green)':avg>=55?'var(--blue2)':avg>=40?'var(--amber)':'var(--rose)';
+      const strat=avg>=70?'🚀 Öncelikli Büyüt':avg>=55?'✅ Sürdür & Geliştir':avg>=40?'⚡ Potansiyel Var':'⚠️ Risk Değerlendirmesi';
+      return`<div class="city-strat-card">
+        <div class="city-strat-name">${c}</div>
+        <div class="city-strat-score">${count} etkinlik</div>
+        <div style="font-size:22px;font-family:'Syne',sans-serif;font-weight:800;color:${col};margin-top:6px">${avg.toFixed(0)}<span style="font-size:12px">/100</span></div>
+        <div style="font-size:10px;color:${col};font-family:'DM Mono',monospace;margin-top:3px">${strat}</div>
+        <div class="city-strat-bar"><div style="width:${avg}%;height:100%;background:${col};border-radius:2px"></div></div>
+      </div>`;
+    }).join('');
+
+  // Cost tips
+  const highAg=[...scored].filter(e=>e.agency>0&&e.comps.agency<40).sort((a,b)=>a.comps.agency-b.comps.agency).slice(0,4);
+  const lowS=[...scored].filter(e=>e.aiScore<60).sort((a,b)=>a.aiScore-b.aiScore).slice(0,4);
+  document.getElementById('ai-cost-tips').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+      <div style="background:var(--bg3);border-radius:9px;padding:14px;border:1px solid rgba(245,158,11,.2)">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--amber);letter-spacing:1px;margin-bottom:10px">🔧 YÜKSEK AJANS MALİYETİ</div>
+        ${highAg.length?highAg.map(e=>`<div style="margin-bottom:8px"><div style="font-size:12px;font-weight:600;color:var(--t1)">${e.name.substring(0,22)}</div><div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--rose)">${fc(e.agency||0)} ajans gideri</div><div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--t3)">%10 azalırsa ≈ +${(AI_W.agency*10).toFixed(0)} puan</div></div>`).join(''):'<div style="font-size:12px;color:var(--t3)">Veri yok</div>'}
+      </div>
+      <div style="background:var(--bg3);border-radius:9px;padding:14px;border:1px solid rgba(59,130,246,.2)">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--blue2);letter-spacing:1px;margin-bottom:10px">📊 SKOR GELİŞTİRME FIRSATI</div>
+        ${lowS.length?lowS.map(e=>{const bot=Object.entries(e.comps).sort((a,b)=>a[1]-b[1])[0];return`<div style="margin-bottom:8px"><div style="font-size:12px;font-weight:600;color:var(--t1)">${e.name.substring(0,22)}</div><div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--amber)">Skor: ${e.aiScore}/100</div><div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--t3)">${FM[bot[0]]?.icon} ${FM[bot[0]]?.name} iyileştir</div></div>`;}).join(''):'<div style="font-size:12px;color:var(--t3)">Veri yok</div>'}
+      </div>
+      <div style="background:var(--bg3);border-radius:9px;padding:14px;border:1px solid rgba(16,185,129,.2)">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--green);letter-spacing:1px;margin-bottom:10px">✅ STRATEJİK ÖNERİLER</div>
+        <div style="font-size:12px;color:var(--t2);line-height:2">
+          <div>→ Ajans maliyeti %10 azalırsa ort. skor <span style="color:var(--green)">+${(AI_W.agency*10).toFixed(0)} puan</span></div>
+          <div>→ Güneşli havada ROI, yağmurluya göre <span style="color:var(--green)">2x yüksek</span></div>
+          <div>→ 1,000+ katılımcı eşiği skor için kritik</div>
+          <div>→ ${topCity?.c||'—'} portföyünü büyüt</div>
+        </div>
+      </div>
+    </div>`;
+
+  renderAiTable();
+}
+
+function renderAiTable(){
+  const scored=computeAiScores();
+  const yr=document.getElementById('ai-year-filter').value;
+  const srt=document.getElementById('ai-sort').value;
+  let rows=yr==='all'?[...scored]:[...scored].filter(e=>String(e.year)===yr);
+  if(srt==='score')rows.sort((a,b)=>b.aiScore-a.aiScore);
+  else if(srt==='roi')rows.sort((a,b)=>b.roi-a.roi);
+  else rows.sort((a,b)=>a.name.localeCompare(b.name,'tr'));
+  document.getElementById('ai-score-list').innerHTML=rows.map(e=>{
+    const rec=getRec(e.aiScore);
+    const col=rec.col;
+    const bars=Object.entries(e.comps).map(([k,v])=>`
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px">
+        <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);min-width:80px">${FM[k].icon} ${FM[k].name.substring(0,10)}</span>
+        <div style="flex:1;height:3px;background:var(--bg3);border-radius:2px;overflow:hidden"><div style="width:${v}%;height:100%;background:${FM[k].col};border-radius:2px"></div></div>
+        <span style="font-family:'DM Mono',monospace;font-size:9px;min-width:22px;text-align:right;color:${FM[k].col}">${Math.round(v)}</span>
+      </div>`).join('');
+    return`<div style="display:flex;align-items:flex-start;gap:13px;padding:13px 17px;border-bottom:1px solid var(--b1);transition:background .13s;cursor:pointer" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background=''">
+      <div style="width:56px;height:56px;border-radius:50%;border:3px solid ${col};display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(0,0,0,.15)">
+        <span style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:${col}">${e.aiScore}</span>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px">
+          <span style="font-size:14px;font-weight:600;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px" title="${e.name}">${e.name}</span>
+          <span class="rec-badge ${rec.cls}">${rec.txt}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--t3)">${e.city} · ${e.year}</span>
+        </div>
+        <div style="font-size:11px;color:var(--t3);font-family:'DM Mono',monospace;margin-bottom:8px">
+          ROI: <span style="color:${e.roi>=0?'var(--green)':'var(--rose)'}">${e.gider>0?e.roi.toFixed(0)+'%':'—'}</span>&nbsp;·&nbsp;
+          Katılımcı: <span style="color:var(--t2)">${e.participants>0?fn(e.participants):'—'}</span>&nbsp;·&nbsp;
+          Net Kar: <span style="color:${e.kar>=0?'var(--green)':'var(--rose)'}">${fc(e.kar)}</span>&nbsp;·&nbsp;
+          💪 Güçlü: <span style="color:${FM[e.topFactor].col}">${FM[e.topFactor].icon} ${FM[e.topFactor].name}</span>
+        </div>
+        <div>${bars}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 </script>
 
 <!-- DETAIL MODAL -->
