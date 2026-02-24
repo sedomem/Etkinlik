@@ -232,6 +232,78 @@ tbody tr:hover .del-btn{opacity:1;}
   .pvs{grid-template-columns:repeat(2,1fr);}
   .pvv{font-size:14px;}
 }
+
+/* Row action buttons */
+.row-acts{display:flex;gap:4px;opacity:0;transition:opacity .15s;}
+tbody tr:hover .row-acts{opacity:1;}
+.rab{width:26px;height:26px;border-radius:5px;border:none;cursor:pointer;font-size:12px;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.rab-e{background:rgba(59,130,246,.14);color:var(--blue2);}.rab-e:hover{background:rgba(59,130,246,.28);}
+.rab-s{background:rgba(139,92,246,.14);color:var(--violet);}.rab-s:hover{background:rgba(139,92,246,.28);}
+.rab-d{background:rgba(244,63,94,.14);color:var(--rose);}.rab-d:hover{background:rgba(244,63,94,.28);}
+
+/* Modal base */
+.mo{display:none;position:fixed;inset:0;background:rgba(6,10,18,.88);backdrop-filter:blur(8px);z-index:300;align-items:center;justify-content:center;padding:14px;}
+.mo.open{display:flex;}
+/* Detail modal */
+.md{background:var(--bg2);border:1px solid var(--b2);border-radius:15px;padding:22px;max-width:580px;width:100%;max-height:90vh;overflow-y:auto;}
+/* Edit modal */
+.edit-md{background:var(--bg2);border:1px solid var(--b2);border-radius:15px;padding:22px;max-width:680px;width:100%;max-height:90vh;overflow-y:auto;}
+.mt{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+.mc{cursor:pointer;color:var(--t3);font-size:18px;transition:color .18s;line-height:1;flex-shrink:0;}.mc:hover{color:var(--t1);}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px;}
+.mi{background:var(--bg3);border-radius:8px;padding:10px;}
+.mil{font-family:'DM Mono',monospace;font-size:8px;color:var(--t3);letter-spacing:1px;margin-bottom:3px;}
+.miv{font-weight:600;color:var(--t1);font-size:13px;}
+.mkr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:11px;}
+.mk{background:var(--bg3);border-radius:8px;padding:10px;text-align:center;}
+.mkl{font-family:'DM Mono',monospace;font-size:8px;color:var(--t3);letter-spacing:1px;margin-bottom:3px;}
+.mkv{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;}
+.modal-acts{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;padding-top:14px;border-top:1px solid var(--b1);flex-wrap:wrap;}
+
+/* Share modal */
+.share-md{background:var(--bg2);border:1px solid var(--b2);border-radius:15px;padding:0;max-width:520px;width:100%;overflow:hidden;}
+.sc{background:linear-gradient(135deg,#08142b 0%,#0d1f3c 50%,#07142a 100%);padding:26px;position:relative;overflow:hidden;border-bottom:1px solid var(--b1);}
+.sc::before{content:'';position:absolute;top:-50px;right:-50px;width:220px;height:220px;background:radial-gradient(circle,rgba(59,130,246,.14) 0%,transparent 65%);pointer-events:none;}
+.sc::after{content:'';position:absolute;bottom:-40px;left:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(16,185,129,.09) 0%,transparent 65%);pointer-events:none;}
+.sc-brand{display:flex;align-items:center;gap:8px;margin-bottom:18px;}
+.sc-bname{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:var(--t1);}
+.sc-btag{font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-left:4px;}
+.sc-title{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;color:var(--t1);margin-bottom:5px;letter-spacing:-.5px;line-height:1.2;position:relative;z-index:1;}
+.sc-meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--t3);margin-bottom:20px;display:flex;gap:14px;flex-wrap:wrap;position:relative;z-index:1;}
+.sc-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;position:relative;z-index:1;}
+.sc-kpi{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:9px;padding:11px;}
+.sc-kpi-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.sc-kpi-val{font-family:'Syne',sans-serif;font-size:19px;font-weight:700;}
+.sc-kpi-sub{font-size:10px;color:var(--t3);margin-top:2px;font-family:'DM Mono',monospace;}
+.sc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:15px;padding-top:13px;border-top:1px solid rgba(255,255,255,.06);position:relative;z-index:1;}
+.sc-perf{display:flex;align-items:center;gap:8px;}
+.sc-pbw{width:70px;height:4px;background:rgba(255,255,255,.08);border-radius:2px;}
+.sc-pb{height:100%;border-radius:2px;}
+.sc-dtag{font-family:'DM Mono',monospace;font-size:10px;color:var(--t3);}
+.sc-wx{background:rgba(34,211,238,.07);border:1px solid rgba(34,211,238,.15);border-radius:7px;padding:9px 12px;margin-top:11px;font-family:'DM Mono',monospace;font-size:11px;color:var(--cyan);position:relative;z-index:1;}
+/* Share actions panel */
+.share-acts{padding:16px 20px;}
+.share-acts-ttl{font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:9px;}
+.share-btns{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px;}
+.share-link{background:var(--bg3);border:1px solid var(--b1);border-radius:8px;padding:8px 11px;font-family:'DM Mono',monospace;font-size:10px;color:var(--t3);word-break:break-all;line-height:1.5;max-height:52px;overflow:hidden;}
+.copy-ok{display:inline-flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:11px;color:var(--green);opacity:0;transition:opacity .3s;margin-left:6px;}
+.copy-ok.show{opacity:1;}
+
+/* Button variants */
+.bg2{background:rgba(16,185,129,.11);color:var(--green);border:1px solid rgba(16,185,129,.2);}.bg2:hover{background:rgba(16,185,129,.22);}
+.bsh{background:rgba(139,92,246,.11);color:var(--violet);border:1px solid rgba(139,92,246,.2);}.bsh:hover{background:rgba(139,92,246,.22);}
+
+/* Edit preview */
+.edit-pvs{display:grid;grid-template-columns:repeat(7,1fr);gap:9px;background:var(--bg3);border:1px solid var(--b1);border-radius:9px;padding:13px;margin-bottom:13px;}
+
+@media(max-width:768px){
+  .sc-kpis{grid-template-columns:repeat(2,1fr);}
+  .sc-title{font-size:17px;}
+  .mg{grid-template-columns:1fr;}
+  .mkr{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:480px){.sc-kpis{grid-template-columns:1fr 1fr;}}
+
 </style>
 </head>
 <body>
@@ -326,7 +398,7 @@ tbody tr:hover .del-btn{opacity:1;}
       <div class="tsc"><table><thead><tr>
         <th>ETKİNLİK</th><th>TARİH</th><th>ŞEHİR</th><th>YIL</th><th>KATILIMCI</th>
         <th>CİRO</th><th>GİDER</th><th>NET KAR</th><th>KAR MARJI</th>
-        <th>ROI</th><th>KAT.BAŞI CİRO</th><th>PERF.</th><th>EKLEYEN</th><th></th>
+        <th>ROI</th><th>KAT.BAŞI CİRO</th><th>PERF.</th><th>EKLEYEN</th><th>İŞLEMLER</th>
       </tr></thead><tbody id="ev-tbody"></tbody></table></div>
     </div>
   </div>
@@ -438,14 +510,6 @@ tbody tr:hover .del-btn{opacity:1;}
     </div>
   </div>
 </main>
-</div>
-
-<!-- DETAIL MODAL -->
-<div class="mo" id="modal" onclick="modalBg(event)">
-  <div class="md">
-    <div class="mt"><span id="m-name">Detay</span><span class="mc" onclick="closeModal()">✕</span></div>
-    <div id="m-body"></div>
-  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -693,7 +757,7 @@ function mkRow(ev){
   const p=m.margin>=40?'h':m.margin>=0?'m':'l';
   const pL={h:'Yüksek',m:'Orta',l:'Düşük'}[p];
   const tr=document.createElement('tr');
-  tr.onclick=e=>{if(!e.target.classList.contains('del-btn'))showModal(ev);};
+  tr.onclick=e=>{if(e.target.closest('.row-acts'))return;showDetail(ev.id);};
   tr.innerHTML=`
     <td class="nm" title="${ev.name}">${ev.name}</td>
     <td>${ev.date||'—'}</td><td>${ev.city}</td>
@@ -707,7 +771,11 @@ function mkRow(ev){
     <td class="mo">${ev.participants>0&&m.ciro>0?fc(m.perC):'—'}</td>
     <td><span class="pl p${p}">${pL}</span></td>
     <td><span class="pl pu" style="font-size:9px">${ev.addedBy||'—'}</span></td>
-    <td><button class="del-btn" onclick="delEv('${ev.id}',event)" title="Sil">✕</button></td>`;
+    <td><div class="row-acts">
+      <button class="rab rab-e" title="Düzenle" onclick="openEdit('${ev.id}')">✎</button>
+      <button class="rab rab-s" title="Paylaş" onclick="openShare('${ev.id}')">⬆</button>
+      <button class="rab rab-d" title="Sil" onclick="delEv('${ev.id}',event)">✕</button>
+    </div></td>`;
   return tr;
 }
 
@@ -756,39 +824,27 @@ function buildPrompt(){
 }
 
 async function saveEvent(){
-    const name=(document.getElementById('f-name').value||'').trim();
-    const city=(document.getElementById('f-city').value||'').trim();
-    const date=document.getElementById('f-date').value;
-    const year=parseInt(document.getElementById('f-year').value);
+  const name=(document.getElementById('f-name').value||'').trim();
+  const city=(document.getElementById('f-city').value||'').trim();
+  const date=document.getElementById('f-date').value;
+  const year=parseInt(document.getElementById('f-year').value);
+  if(!name||!city){toast('Etkinlik adı ve şehir zorunludur','err');return;}
+  if(!username){toast('Lütfen sol menüden kullanıcı adı girin','err');return;}
 
-    if(!name||!city){toast('Etkinlik adı ve şehir zorunludur','err');return;}
-    if(!username){toast('Lütfen sol menüden kullanıcı adı girin','err');return;}
+  const ev={
+    id:'u'+Date.now(),name,date,city,year,
+    participants:nv('f-kat'),tents:nv('f-cadir'),
+    agency:nv('f-ajans'),personnel:nv('f-per'),standCost:nv('f-stand'),barter:nv('f-barter'),
+    cekCiro:nv('f-cek'),cadirCiro:nv('f-cciro'),
+    weather:(document.getElementById('f-wx').value||'').trim(),
+    addedBy:username,addedAt:new Date().toISOString()
+  };
 
-    const ev={
-        id:'u'+Date.now(),name,date,city,year,
-        participants:nv('f-kat'),tents:nv('f-cadir'),
-        agency:nv('f-ajans'),personnel:nv('f-per'),standCost:nv('f-stand'),barter:nv('f-barter'),
-        cekCiro:nv('f-cek'),cadirCiro:nv('f-cciro'),
-        weather:(document.getElementById('f-wx').value||'').trim(),
-        addedBy:username,addedAt:new Date().toISOString()
-    };
-
-    // Google Sheets'e Gönder
-    fetch("https://script.google.com/macros/s/AKfycbyXea7--yjIql6dG0u8jLqCXhNsB6rnPHMFQe0ZDcuWmKQ0AkW6q0Y32NHUU2tS-3aT/exec", {
-      method: "POST",
-      mode: "no-cors",
-      body: JSON.stringify(ev)
-    });
-
-    // Dashboard Sistemine Kaydet (783. satırdan sonrası)
-    DB.push(ev);
-    DB.sort((a,b)=>new Date(a.date||0)-new Date(b.date||0));
-    await saveData();
-    rebuildFilters();
-    applyFilters();
-    toast('✓ Kaydedildi: '+name);
-    clearForm();
-    goPage('events',document.querySelectorAll('.ni')[1]);
+  DB.push(ev);DB.sort((a,b)=>new Date(a.date||0)-new Date(b.date||0));
+  await saveData();rebuildFilters();applyFilters();
+  toast('✓ Kaydedildi: '+name);
+  clearForm();
+  goPage('events',document.querySelectorAll('.ni')[1]);
 }
 
 function clearForm(){
@@ -864,11 +920,14 @@ function parseWx(s){
   };
 }
 
-// ── MODAL ─────────────────────────────────────────
-function showModal(ev){
+// ── DETAIL MODAL ──────────────────────────────────
+let _curId=null;
+function showDetail(id){
+  const ev=DB.find(e=>e.id===id);if(!ev)return;
+  _curId=id;
   const m=calc(ev);const w=parseWx(ev.weather);
   document.getElementById('m-name').textContent=ev.name;
-  document.getElementById('modal').classList.add('open');
+  document.getElementById('modal-detail').classList.add('open');
   document.getElementById('m-body').innerHTML=`
     <div class="mg">
       ${[['Şehir',ev.city],['Tarih',ev.date||'—'],['Yıl',ev.year],['Katılımcı',ev.participants>0?fn(ev.participants):'—'],['Çadır',ev.tents||'—'],['Ekleyen',ev.addedBy||'—']].map(([l,v])=>`<div class="mi"><div class="mil">${l}</div><div class="miv">${v}</div></div>`).join('')}
@@ -887,8 +946,140 @@ function showModal(ev){
     </div>
     ${ev.weather?`<div style="background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.14);border-radius:8px;padding:11px"><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--blue);letter-spacing:1px;margin-bottom:5px">HAVA DURUMU</div><div style="font-size:12px;color:var(--t2);font-family:'DM Mono',monospace;white-space:pre-line">${ev.weather}</div></div>`:''}`;
 }
-function closeModal(){document.getElementById('modal').classList.remove('open');}
-function modalBg(e){if(e.target===document.getElementById('modal'))closeModal();}
+function shareFromDetail(){const id=_curId;closeModal('modal-detail');setTimeout(()=>openShare(id),150);}
+function editFromDetail(){const id=_curId;closeModal('modal-detail');setTimeout(()=>openEdit(id),150);}
+async function delFromDetail(){
+  if(!_curId)return;
+  if(!confirm('Bu etkinliği silmek istiyor musunuz?'))return;
+  DB=DB.filter(e=>e.id!==_curId);
+  closeModal('modal-detail');
+  await saveData();rebuildFilters();applyFilters();toast('Etkinlik silindi');
+}
+
+// ── EDIT MODAL ─────────────────────────────────────
+function openEdit(id){
+  const ev=DB.find(e=>e.id===id);if(!ev)return;
+  document.getElementById('edit-id').value=ev.id;
+  setv('e-name',ev.name);setv('e-date',ev.date||'');setv('e-city',ev.city);
+  // Populate year dropdown
+  const nowY=new Date().getFullYear();
+  const years=[...new Set(DB.map(e=>e.year))];
+  const allY=[...new Set([...years,nowY,nowY+1,nowY+2])].sort((a,b)=>b-a);
+  const ey=document.getElementById('e-year');
+  ey.innerHTML=allY.map(y=>`<option value="${y}"${y===ev.year?' selected':''}>${y} Etkinlikleri</option>`).join('');
+  setv('e-kat',ev.participants||0);setv('e-cadir',ev.tents||0);
+  setv('e-ajans',ev.agency||0);setv('e-per',ev.personnel||0);
+  setv('e-stand',ev.standCost||0);setv('e-barter',ev.barter||0);
+  setv('e-cek',ev.cekCiro||0);setv('e-cciro',ev.cadirCiro||0);
+  setv('e-wx',ev.weather||'');
+  calcEP();
+  document.getElementById('modal-edit').classList.add('open');
+}
+function onEditDate(){
+  const d=document.getElementById('e-date').value;
+  if(d){document.getElementById('e-year').value=new Date(d).getFullYear();}
+}
+function calcEP(){
+  const cek=nv('e-cek'),cc=nv('e-cciro'),aj=nv('e-ajans'),pe=nv('e-per'),st=nv('e-stand'),ba=nv('e-barter'),kat=nv('e-kat');
+  const ciro=cek+cc,gider=aj+pe+st+ba,kar=ciro-gider;
+  sv('ep-ciro',fc(ciro));sv('ep-gider',fc(gider));
+  const pk=document.getElementById('ep-kar');pk.textContent=fc(kar);pk.className='pvv '+(kar>=0?'cg':'cr');
+  sv('ep-margin',ciro>0?((kar/ciro)*100).toFixed(1)+'%':'—');
+  sv('ep-roi',gider>0?((kar/gider)*100).toFixed(1)+'%':'—');
+  sv('ep-pciro',kat>0&&ciro>0?fc(ciro/kat):'—');
+  sv('ep-pgdr',kat>0&&gider>0?fc(gider/kat):'—');
+}
+async function saveEdit(){
+  const id=document.getElementById('edit-id').value;
+  const name=(document.getElementById('e-name').value||'').trim();
+  const city=(document.getElementById('e-city').value||'').trim();
+  if(!name||!city){toast('Ad ve şehir zorunludur','err');return;}
+  const idx=DB.findIndex(e=>e.id===id);
+  if(idx===-1){toast('Etkinlik bulunamadı','err');return;}
+  const orig=DB[idx];
+  DB[idx]={...orig,name,city,
+    date:document.getElementById('e-date').value||orig.date,
+    year:parseInt(document.getElementById('e-year').value)||orig.year,
+    participants:nv('e-kat'),tents:nv('e-cadir'),
+    agency:nv('e-ajans'),personnel:nv('e-per'),standCost:nv('e-stand'),barter:nv('e-barter'),
+    cekCiro:nv('e-cek'),cadirCiro:nv('e-cciro'),
+    weather:(document.getElementById('e-wx').value||'').trim(),
+    _edited:true,editedBy:username||orig.editedBy,editedAt:new Date().toISOString()
+  };
+  DB.sort((a,b)=>new Date(a.date||0)-new Date(b.date||0));
+  await saveData();rebuildFilters();applyFilters();
+  closeModal('modal-edit');toast('✓ Güncellendi: '+name);
+}
+
+// ── SHARE MODAL ────────────────────────────────────
+function openShare(id){
+  const ev=DB.find(e=>e.id===id);if(!ev)return;
+  const m=calc(ev);const w=parseWx(ev.weather);
+  const perfPct=Math.min(100,Math.max(0,(m.margin+20)*2));
+  const pColor=m.margin>=40?'var(--green)':m.margin>=0?'var(--amber)':'var(--rose)';
+  const pLbl=m.margin>=40?'Yüksek Performans':m.margin>=0?'Orta Performans':'Düşük Performans';
+  sv('sct',ev.name);sv('scd',ev.date||'—');sv('scc',ev.city);
+  sv('scp',ev.participants>0?fn(ev.participants)+' katılımcı':'—');
+  sv('sc-yr',ev.year+' · SPX');
+  const scCiro=document.getElementById('sc-ciro');scCiro.textContent=fc(m.ciro);scCiro.style.color='var(--blue2)';
+  sv('sc-ciro-s',`Çek: ${fc(ev.cekCiro||0)} · Çadır: ${fc(ev.cadirCiro||0)}`);
+  const scKar=document.getElementById('sc-kar');scKar.textContent=fc(m.kar);scKar.style.color=m.kar>=0?'var(--green)':'var(--rose)';
+  sv('sc-kar-s',`Gider: ${fc(m.gider)}`);
+  const scRoi=document.getElementById('sc-roi');scRoi.textContent=m.gider>0?m.roi.toFixed(0)+'%':'—';scRoi.style.color=m.roi>=0?'var(--cyan)':'var(--rose)';
+  const scM=document.getElementById('sc-margin');scM.textContent=m.ciro>0?m.margin.toFixed(1)+'%':'—';scM.style.color=m.margin>=0?'var(--green)':'var(--rose)';
+  sv('sc-gider',fc(m.gider));sv('sc-gider-s',`Ajans: ${fc(ev.agency||0)} · Pers: ${fc(ev.personnel||0)}`);
+  sv('sc-pciro',ev.participants>0&&m.ciro>0?fc(m.perC):'—');sv('sc-pciro-s',ev.participants>0?fn(ev.participants)+' kişi':'—');
+  document.getElementById('sc-pb').style.width=perfPct+'%';document.getElementById('sc-pb').style.background=pColor;sv('sc-pl',pLbl);
+  const wxw=document.getElementById('sc-wx-wrap');
+  if(w.temp||w.cond){wxw.style.display='block';sv('sc-wx-txt',`🌡 ${w.temp||'—'}  ⛅ ${w.cond||'—'}${w.wind?'  💨 '+w.wind:''}`);}
+  else{wxw.style.display='none';}
+  // Share link
+  const sd={id:ev.id,name:ev.name,city:ev.city,date:ev.date,year:ev.year,participants:ev.participants,ciro:m.ciro,gider:m.gider,kar:m.kar,margin:m.margin,roi:m.roi};
+  const enc=btoa(unescape(encodeURIComponent(JSON.stringify(sd))));
+  const url=(window.location.href.split('#')[0])+'#ev='+enc;
+  document.getElementById('share-link-box').textContent=url;
+  document.getElementById('modal-share').classList.add('open');
+}
+function copyLink(){
+  const url=document.getElementById('share-link-box').textContent;
+  _copy(url);
+}
+function copyText(){
+  const ev=DB.find(e=>e.id===_shareId)||{};
+  const n=document.getElementById('sct').textContent;
+  const d=document.getElementById('scd').textContent;
+  const c=document.getElementById('scc').textContent;
+  const ciro=document.getElementById('sc-ciro').textContent;
+  const kar=document.getElementById('sc-kar').textContent;
+  const roi=document.getElementById('sc-roi').textContent;
+  const margin=document.getElementById('sc-margin').textContent;
+  const gider=document.getElementById('sc-gider').textContent;
+  const wxLine=document.getElementById('sc-wx-wrap').style.display!=='none'?'\n🌤 '+document.getElementById('sc-wx-txt').textContent:'';
+  const t=`📊 SPX ETKİNLİK RAPORU\n${'─'.repeat(30)}\n🎯 ${n}\n📅 ${d}  📍 ${c}\n${'─'.repeat(30)}\n💰 Toplam Ciro: ${ciro}\n📉 Toplam Gider: ${gider}\n✅ Net Kar: ${kar}\n📈 ROI: ${roi}\n📊 Kar Marjı: ${margin}${wxLine}\n${'─'.repeat(30)}\nSPX Event Intelligence`;
+  _copy(t);
+}
+function shareWA(){
+  const n=document.getElementById('sct').textContent;
+  const d=document.getElementById('scd').textContent;
+  const c=document.getElementById('scc').textContent;
+  const ciro=document.getElementById('sc-ciro').textContent;
+  const kar=document.getElementById('sc-kar').textContent;
+  const roi=document.getElementById('sc-roi').textContent;
+  const url=document.getElementById('share-link-box').textContent;
+  const t=`*📊 ${n}*\n📅 ${d} · 📍 ${c}\n\n💰 Ciro: *${ciro}*\n✅ Net Kar: *${kar}*\n📈 ROI: *${roi}*\n\n🔗 ${url}`;
+  window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank');
+}
+function _copy(t){
+  navigator.clipboard.writeText(t).then(showCopyOk).catch(()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showCopyOk();});
+}
+function showCopyOk(){const el=document.getElementById('copy-ok');el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2200);}
+let _shareId=null;
+const _origOpenShare=openShare;
+
+// ── GENERIC MODAL HELPERS ──────────────────────────
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function moBg(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+function setv(id,v){const el=document.getElementById(id);if(el)el.value=v;}
 
 // ── NAVIGATION ────────────────────────────────────
 const TITLES={dashboard:'Dashboard',events:'Etkinlikler','new-event':'Yeni Etkinlik Ekle',analysis:'Analiz Motoru',weather:'Hava Durumu'};
@@ -940,5 +1131,122 @@ async function init(){
 
 init();
 </script>
+
+<!-- DETAIL MODAL -->
+<div class="mo" id="modal-detail" onclick="moBg(event,'modal-detail')">
+  <div class="md">
+    <div class="mt">
+      <span id="m-name" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Detay</span>
+      <div style="display:flex;gap:6px;align-items:center;flex-shrink:0">
+        <button class="btn bsh" style="font-size:11px;padding:5px 10px" onclick="shareFromDetail()">⬆ Paylaş</button>
+        <button class="btn bg2" style="font-size:11px;padding:5px 10px" onclick="editFromDetail()">✎ Düzenle</button>
+        <span class="mc" onclick="closeModal('modal-detail')">✕</span>
+      </div>
+    </div>
+    <div id="m-body"></div>
+    <div class="modal-acts">
+      <button class="btn bd" onclick="delFromDetail()">🗑 Sil</button>
+      <button class="btn bsh" onclick="shareFromDetail()">⬆ Kartı Paylaş</button>
+      <button class="btn bg2" onclick="editFromDetail()">✎ Düzenle</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="mo" id="modal-edit" onclick="moBg(event,'modal-edit')">
+  <div class="edit-md">
+    <div class="mt">
+      <span>Etkinliği Düzenle</span>
+      <span class="mc" onclick="closeModal('modal-edit')">✕</span>
+    </div>
+    <input type="hidden" id="edit-id">
+    <div class="fd">— Etkinlik Bilgileri</div>
+    <div class="fg3">
+      <div class="fg"><label class="fl">Etkinlik Adı *</label><input class="fi" id="e-name" placeholder="Etkinlik adı"></div>
+      <div class="fg"><label class="fl">Tarih</label><input type="date" class="fi" id="e-date" onchange="onEditDate()"></div>
+      <div class="fg"><label class="fl">Şehir</label><input class="fi" id="e-city" list="city-dl"></div>
+    </div>
+    <div class="fg3">
+      <div class="fg"><label class="fl">Yıl</label><select class="fi" id="e-year"></select></div>
+      <div class="fg"><label class="fl">Katılımcı Sayısı</label><input type="number" class="fi" id="e-kat" oninput="calcEP()"></div>
+      <div class="fg"><label class="fl">Çadır Sayısı</label><input type="number" class="fi" id="e-cadir"></div>
+    </div>
+    <div class="fd">— Gider Kalemleri</div>
+    <div class="fg4">
+      <div class="fg"><label class="fl">Ajans Bedeli (₺)</label><input type="number" class="fi" id="e-ajans" oninput="calcEP()"></div>
+      <div class="fg"><label class="fl">Personel Gideri (₺)</label><input type="number" class="fi" id="e-per" oninput="calcEP()"></div>
+      <div class="fg"><label class="fl">Stand Maliyeti (₺)</label><input type="number" class="fi" id="e-stand" oninput="calcEP()"></div>
+      <div class="fg"><label class="fl">Barter (₺)</label><input type="number" class="fi" id="e-barter" oninput="calcEP()"></div>
+    </div>
+    <div class="fd">— Ciro Kalemleri</div>
+    <div class="fg2">
+      <div class="fg"><label class="fl">Çek Ciro (₺)</label><input type="number" class="fi" id="e-cek" oninput="calcEP()"></div>
+      <div class="fg"><label class="fl">Çadır Ciro (₺)</label><input type="number" class="fi" id="e-cciro" oninput="calcEP()"></div>
+    </div>
+    <div class="fd">— Anlık Hesaplama</div>
+    <div class="edit-pvs">
+      <div class="pvi"><div class="pvl">Ciro</div><div class="pvv cb" id="ep-ciro">₺0</div></div>
+      <div class="pvi"><div class="pvl">Gider</div><div class="pvv ca" id="ep-gider">₺0</div></div>
+      <div class="pvi"><div class="pvl">Net Kar</div><div class="pvv cg" id="ep-kar">₺0</div></div>
+      <div class="pvi"><div class="pvl">Kar Marjı</div><div class="pvv cb" id="ep-margin">—</div></div>
+      <div class="pvi"><div class="pvl">ROI</div><div class="pvv cg" id="ep-roi">—</div></div>
+      <div class="pvi"><div class="pvl">Kat.Başı Ciro</div><div class="pvv cb" id="ep-pciro">—</div></div>
+      <div class="pvi"><div class="pvl">Kat.Başı Mlt.</div><div class="pvv ca" id="ep-pgdr">—</div></div>
+    </div>
+    <div class="fd">— Hava Durumu</div>
+    <div style="margin-bottom:14px">
+      <textarea class="fi" id="e-wx" rows="3" style="resize:vertical;font-family:'DM Mono',monospace;font-size:11px" placeholder="Sıcaklık: 22°C&#10;Durum: Güneşli&#10;Rüzgar: 15 km/h"></textarea>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">
+      <button class="btn bs" onclick="closeModal('modal-edit')">İptal</button>
+      <button class="btn bp" onclick="saveEdit()">✓ Güncelle</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHARE MODAL -->
+<div class="mo" id="modal-share" onclick="moBg(event,'modal-share')">
+  <div class="share-md">
+    <div class="sc" id="share-card-vis">
+      <div class="sc-brand">
+        <div class="sc-bname">SPX<span style="color:var(--blue)">.</span></div>
+        <div class="sc-btag">Event Report</div>
+      </div>
+      <div class="sc-title" id="sct">—</div>
+      <div class="sc-meta">
+        <span>📅 <span id="scd">—</span></span>
+        <span>📍 <span id="scc">—</span></span>
+        <span>👥 <span id="scp">—</span></span>
+      </div>
+      <div class="sc-kpis">
+        <div class="sc-kpi"><div class="sc-kpi-lbl">Toplam Ciro</div><div class="sc-kpi-val" id="sc-ciro" style="color:var(--blue2)">₺0</div><div class="sc-kpi-sub" id="sc-ciro-s">—</div></div>
+        <div class="sc-kpi"><div class="sc-kpi-lbl">Net Kar</div><div class="sc-kpi-val" id="sc-kar">₺0</div><div class="sc-kpi-sub" id="sc-kar-s">—</div></div>
+        <div class="sc-kpi"><div class="sc-kpi-lbl">ROI</div><div class="sc-kpi-val" id="sc-roi" style="color:var(--cyan)">—</div><div class="sc-kpi-sub">Yatırım getirisi</div></div>
+        <div class="sc-kpi"><div class="sc-kpi-lbl">Kar Marjı</div><div class="sc-kpi-val" id="sc-margin">—</div><div class="sc-kpi-sub">Gelirden kar payı</div></div>
+        <div class="sc-kpi"><div class="sc-kpi-lbl">Toplam Gider</div><div class="sc-kpi-val" id="sc-gider" style="color:var(--amber)">₺0</div><div class="sc-kpi-sub" id="sc-gider-s">—</div></div>
+        <div class="sc-kpi"><div class="sc-kpi-lbl">Kat. Başı Ciro</div><div class="sc-kpi-val" id="sc-pciro" style="color:var(--violet)">—</div><div class="sc-kpi-sub" id="sc-pciro-s">—</div></div>
+      </div>
+      <div id="sc-wx-wrap" style="display:none"><div class="sc-wx" id="sc-wx-txt">—</div></div>
+      <div class="sc-foot">
+        <div class="sc-perf"><span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:1px">PERFORMANS</span><div class="sc-pbw"><div class="sc-pb" id="sc-pb"></div></div><span style="font-family:'DM Mono',monospace;font-size:10px" id="sc-pl">—</span></div>
+        <div class="sc-dtag" id="sc-yr">—</div>
+      </div>
+    </div>
+    <div class="share-acts">
+      <div class="share-acts-ttl">Paylaşım Seçenekleri</div>
+      <div class="share-btns">
+        <button class="btn bp" style="font-size:11px" onclick="copyLink()">🔗 Bağlantıyı Kopyala</button>
+        <button class="btn bs" style="font-size:11px" onclick="copyText()">📋 Metni Kopyala</button>
+        <button class="btn bg2" style="font-size:11px" onclick="shareWA()">💬 WhatsApp</button>
+        <span class="copy-ok" id="copy-ok">✓ Kopyalandı!</span>
+      </div>
+      <div class="share-link" id="share-link-box">—</div>
+      <div style="display:flex;justify-content:flex-end;margin-top:9px">
+        <button class="btn bs" style="font-size:11px" onclick="closeModal('modal-share')">Kapat</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
