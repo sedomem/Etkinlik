@@ -3083,29 +3083,28 @@ async function calImport(){
 </div>
 <script>
 const scriptURL = 'https://script.google.com/macros/s/AKfycbz5d14xbVA0G-ClAKy8Rq8J7Ym8bJV8Ieic326wqpNC6_cIaiuXD19nMb0KDcMeGfcN/exec';
+
 async function loadEventsFromGoogle() {
     try {
         const response = await fetch(scriptURL);
         const data = await response.json();
         
-        // Veriyi tarayıcı hafızasına (LocalStorage) kesin olarak kaydedelim
-        localStorage.setItem('events', JSON.stringify(data));
-        
-        // Sayfadaki mevcut render fonksiyonlarını deneyelim
-        if (typeof renderEvents === "function") {
-            renderEvents(data);
-        } else if (typeof updateCalendar === "function") {
-            updateCalendar(data);
-        } else {
-            // Eğer fonksiyon ismini bulamazsak, veriyi kaydettik, 
-            // sayfa yenilendiğinde uygulama kendi hafızasından okuyacaktır.
-            console.log("Veri kaydedildi, uygulama hafızasından okunacak.");
+        if (data && data.length > 0) {
+            // Veriyi tarayıcı hafızasına yazıyoruz (LocalStorage)
+            localStorage.setItem('events', JSON.stringify(data));
+            
+            // Uygulamanın orijinal fonksiyonlarını tetiklemeye çalışıyoruz
+            if (typeof renderEvents === "function") renderEvents(data);
+            if (typeof initApp === "function") initApp();
+            
+            console.log("Veriler Google'dan başarıyla çekildi.");
         }
     } catch (error) {
-        console.error("Veri çekme hatası:", error);
+        console.error("Bağlantı hatası:", error);
     }
 }
 
+// Sayfa açıldığında otomatik çalıştır
 window.addEventListener('load', loadEventsFromGoogle);
 </script>
 </body>
