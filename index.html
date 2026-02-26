@@ -3082,29 +3082,39 @@ async function calImport(){
   </div>
 </div>
 <script>
-const scriptURL = 'https://script.google.com/macros/s/AKfycbz5d14xbVA0G-ClAKy8Rq8J7Ym8bJV8Ieic326wqpNC6_cIaiuXD19nMb0KDcMeGFcN/exec';
+const scriptURL = 'https://script.google.com/macros/s/AKfycbz5d14xbVA0G-ClAKy8Rq8J7Ym8bJV8Ieic326wqpNC6_cIaiuXD19nMb0KDcMeGfcN/exec';
 
 async function loadEventsFromGoogle() {
     try {
+        console.log("Google'dan veri çekiliyor...");
         const response = await fetch(scriptURL);
         const data = await response.json();
         
         if (data && data.length > 0) {
-            // Veriyi tarayıcı hafızasına yazıyoruz (LocalStorage)
-            localStorage.setItem('events', JSON.stringify(data));
+            // Senin uygulaman veriyi bir "events" paketi içinde bekliyor olabilir
+            const formattedData = {
+                "v": 1,
+                "exported": new Date().toISOString(),
+                "events": data
+            };
             
-            // Uygulamanın orijinal fonksiyonlarını tetiklemeye çalışıyoruz
-            if (typeof renderEvents === "function") renderEvents(data);
-            if (typeof initApp === "function") initApp();
+            // Veriyi her iki formatta da kaydedelim ki uygulama hangisini isterse onu alsın
+            localStorage.setItem('events', JSON.stringify(formattedData));
+            localStorage.setItem('spx_events_data', JSON.stringify(formattedData));
             
-            console.log("Veriler Google'dan başarıyla çekildi.");
+            console.log("Veri başarıyla işlendi ve kaydedildi.");
+
+            // Uygulamayı zorla yenileyelim (Sadece bir kez)
+            if (!sessionStorage.getItem('first_load_done')) {
+                sessionStorage.setItem('first_load_done', 'true');
+                setTimeout(() => { location.reload(); }, 500);
+            }
         }
     } catch (error) {
-        console.error("Bağlantı hatası:", error);
+        console.error("Bağlantı veya veri işleme hatası:", error);
     }
 }
 
-// Sayfa açıldığında otomatik çalıştır
 window.addEventListener('load', loadEventsFromGoogle);
 </script>
 </body>
