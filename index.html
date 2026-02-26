@@ -3082,31 +3082,30 @@ async function calImport(){
   </div>
 </div>
 <script>
-// 1. ADIM: Google Apps Script URL'nizi buraya yapıştırın
-const scriptURL = 'https://script.google.com/macros/s/AKfycbz5d14xbVA0G-ClAKy8Rq8J7Ym8bJV8Ieic326wqpNC6_cIaiuXD19nMb0KDcMeGFcN/exec';
-
-// 2. ADIM: Verileri çeken fonksiyon
+const scriptURL = 'https://script.google.com/macros/s/AKfycbz5d14xbVA0G-ClAKy8Rq8J7Ym8bJV8Ieic326wqpNC6_cIaiuXD19nMb0KDcMeGfcN/exec';
 async function loadEventsFromGoogle() {
     try {
         const response = await fetch(scriptURL);
         const data = await response.json();
         
-        // Verileri uygulamanızın anlayacağı formata sokuyoruz
-        // Sizin takvim fonksiyonunuzun adı renderEvents veya updateCalendar ise onu buraya yazmalısınız
+        // Veriyi tarayıcı hafızasına (LocalStorage) kesin olarak kaydedelim
+        localStorage.setItem('events', JSON.stringify(data));
+        
+        // Sayfadaki mevcut render fonksiyonlarını deneyelim
         if (typeof renderEvents === "function") {
             renderEvents(data);
-            console.log("Veriler başarıyla Google Drive'dan yüklendi!");
+        } else if (typeof updateCalendar === "function") {
+            updateCalendar(data);
         } else {
-            // Eğer fonksiyon adınız farklıysa veriyi LocalStorage'a da yedekleyebiliriz
-            localStorage.setItem('events', JSON.stringify(data));
-            location.reload(); // Sayfayı bir kez yenileyerek veriyi okumasını sağlarız
+            // Eğer fonksiyon ismini bulamazsak, veriyi kaydettik, 
+            // sayfa yenilendiğinde uygulama kendi hafızasından okuyacaktır.
+            console.log("Veri kaydedildi, uygulama hafızasından okunacak.");
         }
     } catch (error) {
         console.error("Veri çekme hatası:", error);
     }
 }
 
-// Sayfa yüklendiğinde çalıştır
 window.addEventListener('load', loadEventsFromGoogle);
 </script>
 </body>
