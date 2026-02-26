@@ -8,13 +8,47 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{
+  /* Dark theme (default) */
   --bg0:#060a12;--bg1:#0b1120;--bg2:#111827;--bg3:#1a2438;--bg4:#1e2d45;
   --blue:#3b82f6;--blue2:#60a5fa;--cyan:#22d3ee;
   --green:#10b981;--amber:#f59e0b;--rose:#f43f5e;--violet:#8b5cf6;
   --t1:#f0f4ff;--t2:#8da0bf;--t3:#4d6080;
   --b1:rgba(59,130,246,.12);--b2:rgba(59,130,246,.3);--grid:rgba(59,130,246,.05);
   --sb:220px;--r:12px;
+  --shadow:0 2px 12px rgba(0,0,0,.35);
+  --inp-bg:#1a2438;
 }
+
+/* ── LIGHT THEME ── */
+body.light{
+  --bg0:#f0f2f8;--bg1:#e8eaf2;--bg2:#ffffff;--bg3:#f4f6fc;--bg4:#eaecf7;
+  --t1:#0f172a;--t2:#475569;--t3:#94a3b8;
+  --b1:rgba(59,130,246,.15);--b2:rgba(59,130,246,.35);--grid:rgba(59,130,246,.07);
+  --shadow:0 2px 12px rgba(0,0,0,.08);
+  --inp-bg:#f4f6fc;
+  /* Keep accent colors same for both themes */
+}
+body.light body::before{opacity:.5;}
+body.light .sb{box-shadow:2px 0 16px rgba(0,0,0,.06);}
+body.light .topbar{background:rgba(240,242,248,.92);}
+body.light .mob-bar{background:rgba(240,242,248,.96);}
+body.light .toast{box-shadow:0 4px 16px rgba(0,0,0,.1);}
+body.light table thead tr{background:var(--bg3);}
+body.light .kc{box-shadow:var(--shadow);}
+body.light .cc{box-shadow:var(--shadow);}
+body.light .tc{box-shadow:var(--shadow);}
+body.light .fc2{box-shadow:var(--shadow);}
+body.light .cal-box{box-shadow:var(--shadow);}
+body.light .cal-list{box-shadow:var(--shadow);}
+body.light .insight-box{box-shadow:var(--shadow);}
+body.light .exec-summary{background:rgba(59,130,246,.05);border-color:rgba(59,130,246,.2);}
+body.light .share-card,.body.light .sc{background:linear-gradient(135deg,#1a237e 0%,#283593 50%,#1a237e 100%);}
+body.light .md,.body.light .edit-md,.body.light .share-md,.body.light .cal-edit-modal{background:#fff;}
+body.light .fi,.body.light .flt,.body.light .si,.body.light .ui{background:var(--inp-bg);}
+body.light .wx-box{background:var(--bg3);}
+body.light .wx-pr{background:rgba(59,130,246,.05);}
+body.light .pvs{background:var(--bg3);}
+body.light .yr-banner{background:rgba(59,130,246,.06);}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--t1);min-height:100vh;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
@@ -402,6 +436,115 @@ tbody tr:hover .row-acts{opacity:1;}
   .weight-grid{grid-template-columns:1fr 1fr;}
 }
 
+
+/* ─── CALENDAR PAGE ─── */
+.cal-grid{display:grid;grid-template-columns:340px 1fr;gap:16px;align-items:start;}
+.cal-box{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--r);overflow:hidden;}
+/* Mini calendar */
+.cal-header{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--b1);}
+.cal-nav{display:flex;align-items:center;gap:8px;}
+.cal-nav-btn{width:28px;height:28px;border-radius:6px;border:1px solid var(--b1);background:var(--bg3);color:var(--t2);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.cal-nav-btn:hover{border-color:var(--b2);color:var(--t1);}
+.cal-month-lbl{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;min-width:130px;text-align:center;}
+.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);padding:8px 12px 4px;}
+.cal-dow span{font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:1px;text-align:center;padding:4px 0;}
+.cal-days{display:grid;grid-template-columns:repeat(7,1fr);padding:4px 12px 12px;gap:2px;}
+.cal-day{aspect-ratio:1;border-radius:7px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;position:relative;min-height:34px;}
+.cal-day:hover{background:var(--bg3);}
+.cal-day.other-month{opacity:.28;}
+.cal-day.today{background:rgba(59,130,246,.14);border:1px solid rgba(59,130,246,.3);}
+.cal-day.selected{background:var(--blue);color:#fff;}
+.cal-day.has-event::after{content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--amber);}
+.cal-day.selected.has-event::after{background:#fff;}
+.cal-day-num{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;}
+/* Add event form */
+.cal-form{padding:16px;}
+.cal-form-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:13px;display:flex;align-items:center;gap:7px;}
+/* Event list */
+.cal-list{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--r);overflow:hidden;}
+.cal-list-header{padding:13px 17px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.cal-list-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;}
+.ev-item{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;border-bottom:1px solid var(--b1);transition:background .13s;cursor:pointer;}
+.ev-item:last-child{border-bottom:none;}
+.ev-item:hover{background:var(--bg3);}
+.ev-item:hover .ev-actions{opacity:1;}
+/* Date badge */
+.ev-date-badge{flex-shrink:0;width:48px;text-align:center;background:var(--bg3);border-radius:8px;padding:6px 4px;border:1px solid var(--b1);}
+.ev-date-day{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;line-height:1;}
+.ev-date-month{font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;}
+.ev-date-badge.soon{border-color:rgba(245,158,11,.35);background:rgba(245,158,11,.07);}
+.ev-date-badge.soon .ev-date-day{color:var(--amber);}
+.ev-date-badge.today-badge{border-color:rgba(59,130,246,.4);background:rgba(59,130,246,.1);}
+.ev-date-badge.today-badge .ev-date-day{color:var(--blue2);}
+.ev-date-badge.past{opacity:.45;}
+/* Event info */
+.ev-info{flex:1;min-width:0;}
+.ev-name{font-size:14px;font-weight:600;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ev-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--t3);margin-top:3px;display:flex;gap:10px;flex-wrap:wrap;}
+.ev-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;}
+.ev-tag{display:inline-flex;padding:2px 7px;border-radius:4px;font-family:'DM Mono',monospace;font-size:9px;font-weight:500;}
+.ev-tag-city{background:rgba(59,130,246,.12);color:var(--blue2);}
+.ev-tag-type{background:rgba(139,92,246,.12);color:var(--violet);}
+.ev-tag-note{background:rgba(245,158,11,.12);color:var(--amber);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ev-countdown{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;flex-shrink:0;text-align:right;}
+.ev-actions{display:flex;gap:4px;opacity:0;transition:opacity .15s;flex-shrink:0;}
+/* Urgency rings */
+.urgency-7{color:var(--rose);}
+.urgency-30{color:var(--amber);}
+.urgency-future{color:var(--green);}
+.urgency-past{color:var(--t3);}
+/* Filter chips */
+.filter-chips{display:flex;gap:6px;flex-wrap:wrap;}
+.chip{padding:4px 10px;border-radius:20px;font-family:'DM Mono',monospace;font-size:10px;cursor:pointer;border:1px solid var(--b1);background:var(--bg3);color:var(--t2);transition:all .15s;}
+.chip.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+/* Timeline stripe */
+.cal-timeline{padding:0 16px 12px;}
+.timeline-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;padding:10px 0 6px;border-top:1px solid var(--b1);margin-top:2px;}
+.timeline-label:first-child{border-top:none;padding-top:2px;}
+/* Edit inline modal for calendar events */
+.cal-edit-modal{background:var(--bg2);border:1px solid var(--b2);border-radius:15px;padding:22px;max-width:500px;width:100%;max-height:88vh;overflow-y:auto;}
+/* Stats strip */
+.cal-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+@media(max-width:1100px){
+  .cal-grid{grid-template-columns:1fr;}
+  .cal-stats{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:768px){
+  .cal-stats{grid-template-columns:repeat(2,1fr);}
+  .ev-actions{opacity:1;}
+}
+@media(max-width:480px){
+  .cal-stats{grid-template-columns:1fr 1fr;}
+}
+
+
+/* ── THEME TOGGLE ── */
+.theme-toggle{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 16px;border-top:1px solid var(--b1);
+  margin-top:auto;
+}
+.theme-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;flex:1;}
+.toggle-track{
+  width:42px;height:22px;border-radius:11px;
+  background:var(--bg3);border:1px solid var(--b1);
+  position:relative;cursor:pointer;transition:background .25s,border-color .25s;
+  flex-shrink:0;
+}
+.toggle-track.on{background:var(--blue);border-color:var(--blue);}
+.toggle-thumb{
+  position:absolute;top:2px;left:2px;
+  width:16px;height:16px;border-radius:50%;
+  background:var(--t2);transition:transform .25s,background .25s;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;line-height:1;
+}
+.toggle-track.on .toggle-thumb{transform:translateX(20px);background:#fff;}
+.theme-icon-light{opacity:0;transition:opacity .2s;position:absolute;}
+.theme-icon-dark{opacity:1;transition:opacity .2s;position:absolute;}
+.toggle-track.on .theme-icon-light{opacity:1;}
+.toggle-track.on .theme-icon-dark{opacity:0;}
+
 </style>
 </head>
 <body>
@@ -428,9 +571,21 @@ tbody tr:hover .row-acts{opacity:1;}
     <div class="nl" style="margin-top:9px">Analiz</div>
     <div class="ni" onclick="goPage('analysis',this)"><span class="nx">▣</span>Analiz Motoru</div>
     <div class="ni" onclick="goPage('weather',this)"><span class="nx">◎</span>Hava Durumu</div>
+    <div class="nl" style="margin-top:9px">Planlama</div>
+    <div class="ni" onclick="goPage('calendar',this)"><span class="nx">⊡</span>Etkinlik Takvimi</div>
     <div class="nl" style="margin-top:9px">Yapay Zeka</div>
     <div class="ni" onclick="goPage('forecast',this)"><span class="nx">◐</span>2026 Tahmin Modeli</div>
     <div class="ni" onclick="goPage('ai-score',this)"><span class="nx">◑</span>AI Katılım Skoru</div>
+  </div>
+  <div class="theme-toggle">
+    <span class="theme-lbl">Tema</span>
+    <span id="theme-lbl-mode" style="font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);margin-right:4px">Koyu</span>
+    <div class="toggle-track" id="theme-track" onclick="toggleTheme()">
+      <div class="toggle-thumb">
+        <span class="theme-icon-dark">🌙</span>
+        <span class="theme-icon-light">☀️</span>
+      </div>
+    </div>
   </div>
   <div class="sb-foot">
     <div class="ull">Kullanıcı Adı</div>
@@ -711,6 +866,89 @@ tbody tr:hover .row-acts{opacity:1;}
       </div>
       <div class="score-table-wrap">
         <div id="ai-score-list" style="padding:4px 0"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════ CALENDAR PAGE ════ -->
+  <div class="page" id="page-calendar">
+    <div class="sec-l">Planlama & Takvim</div>
+    <div class="sec-t">Etkinlik Takvimi</div>
+
+    <!-- Stats strip -->
+    <div class="cal-stats" id="cal-stats-strip"></div>
+
+    <div class="cal-grid">
+      <!-- Left: Mini calendar + Add form -->
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <!-- Mini calendar -->
+        <div class="cal-box">
+          <div class="cal-header">
+            <div class="cal-nav">
+              <button class="cal-nav-btn" onclick="calPrevMonth()">‹</button>
+              <div class="cal-month-lbl" id="cal-month-lbl">—</div>
+              <button class="cal-nav-btn" onclick="calNextMonth()">›</button>
+            </div>
+            <button class="btn bs" style="font-size:11px;padding:5px 10px" onclick="calGoToday()">Bugün</button>
+          </div>
+          <div class="cal-dow">
+            <span>Pt</span><span>Sa</span><span>Ça</span><span>Pe</span><span>Cu</span><span>Ct</span><span>Pz</span>
+          </div>
+          <div class="cal-days" id="cal-days"></div>
+        </div>
+
+        <!-- Add / Edit form -->
+        <div class="cal-box">
+          <div class="cal-form">
+            <div class="cal-form-title">
+              <span id="cal-form-title-txt">＋ Yeni Etkinlik Ekle</span>
+            </div>
+            <input type="hidden" id="cal-edit-id">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div class="fg"><label class="fl">Etkinlik Adı *</label><input class="fi" id="cal-name" placeholder="Etkinlik adını girin…"></div>
+              <div class="fg"><label class="fl">Tarih *</label><input type="date" class="fi" id="cal-date"></div>
+              <div class="fg"><label class="fl">Bitiş Tarihi (Opsiyonel)</label><input type="date" class="fi" id="cal-end-date"></div>
+              <div class="fg"><label class="fl">Şehir</label><input class="fi" id="cal-city" placeholder="İstanbul" list="city-dl"></div>
+              <div class="fg"><label class="fl">Tür</label>
+                <select class="fi" id="cal-type">
+                  <option value="Yarı Maraton">Yarı Maraton</option>
+                  <option value="Ultra Trail">Ultra Trail</option>
+                  <option value="Maraton">Maraton</option>
+                  <option value="Bisiklet">Bisiklet</option>
+                  <option value="Triatlon">Triatlon</option>
+                  <option value="Festival">Festival</option>
+                  <option value="Kurumsal">Kurumsal</option>
+                  <option value="Pickleball">Pickleball</option>
+                  <option value="Tenis">Tenis</option>
+                  <option value="Diğer">Diğer</option>
+                </select>
+              </div>
+              <div class="fg"><label class="fl">Tahmini Katılımcı</label><input type="number" class="fi" id="cal-participants" placeholder="0"></div>
+              <div class="fg"><label class="fl">Not / Açıklama</label><textarea class="fi" id="cal-note" rows="2" style="resize:vertical;font-size:12px" placeholder="Önemli detaylar…"></textarea></div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:13px;justify-content:flex-end;flex-wrap:wrap">
+              <button class="btn bs" id="cal-cancel-btn" style="display:none" onclick="calCancelEdit()">İptal</button>
+              <button class="btn bp" id="cal-save-btn" onclick="calSaveEvent()">＋ Ekle</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Event list -->
+      <div class="cal-list">
+        <div class="cal-list-header">
+          <div class="cal-list-title">Etkinlik Listesi <span id="cal-badge" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--t3)"></span></div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <input class="si" id="cal-search" placeholder="Ara…" oninput="renderCalendarList()" style="width:160px">
+            <div class="filter-chips">
+              <div class="chip active" data-filter="all" onclick="calSetFilter('all',this)">Tümü</div>
+              <div class="chip" data-filter="upcoming" onclick="calSetFilter('upcoming',this)">Yaklaşan</div>
+              <div class="chip" data-filter="past" onclick="calSetFilter('past',this)">Geçmiş</div>
+            </div>
+          </div>
+        </div>
+        <div id="cal-event-list" style="max-height:650px;overflow-y:auto;-webkit-overflow-scrolling:touch;"></div>
       </div>
     </div>
   </div>
@@ -1288,7 +1526,7 @@ function moBg(e,id){if(e.target===document.getElementById(id))closeModal(id);}
 function setv(id,v){const el=document.getElementById(id);if(el)el.value=v;}
 
 // ── NAVIGATION ────────────────────────────────────
-const TITLES={dashboard:'Dashboard',events:'Etkinlikler','new-event':'Yeni Etkinlik Ekle',analysis:'Analiz Motoru',weather:'Hava Durumu',forecast:'2026 Tahmin Modeli','ai-score':'AI Katılım Skoru'};
+const TITLES={dashboard:'Dashboard',events:'Etkinlikler','new-event':'Yeni Etkinlik Ekle',analysis:'Analiz Motoru',weather:'Hava Durumu',forecast:'2026 Tahmin Modeli','ai-score':'AI Katılım Skoru',calendar:'Etkinlik Takvimi'};
 function goPage(id,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
@@ -1300,6 +1538,7 @@ function goPage(id,el){
   if(id==='weather')renderWeather();
   if(id==='forecast')renderForecast();
   if(id==='ai-score')renderAiScore();
+  if(id==='calendar')renderCalendar();
   closeSB();
 }
 
@@ -1326,18 +1565,361 @@ function sv(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
 function applyFilters(){updateDashboard();renderEvents();}
 
 // ── INIT ──────────────────────────────────────────
+// ══════════════════════════════════════════════
+// THEME TOGGLE
+// ══════════════════════════════════════════════
+const TK='spx:theme';
+let isLight=false;
+
+function applyTheme(light){
+  isLight=light;
+  document.body.classList.toggle('light',light);
+  const track=document.getElementById('theme-track');
+  const lbl=document.getElementById('theme-lbl-mode');
+  if(track)track.classList.toggle('on',light);
+  if(lbl)lbl.textContent=light?'Açık':'Koyu';
+  lSet(TK,light?'light':'dark');
+  // Rebuild charts with new theme colors after short delay
+  setTimeout(()=>{
+    if(document.getElementById('page-dashboard').classList.contains('active'))updateDashboard();
+    if(document.getElementById('page-analysis').classList.contains('active'))renderAnalysis();
+  },80);
+}
+
+function toggleTheme(){applyTheme(!isLight);}
+
 async function init(){
+  const savedTheme=lGet(TK);
+  applyTheme(savedTheme==='light');
   const u=lGet(UK)||'';if(u){document.getElementById('username').value=u;username=u;}
   document.getElementById('f-date').valueAsDate=new Date();
   onDateChange();
   await loadData();
   updateDashboard();renderEvents();
   // Auto-sync every 30s
+  await loadCalendar();
   setInterval(async()=>{await loadData();applyFilters();},30000);
   window.addEventListener('resize',()=>{if(window.innerWidth>768)closeSB();});
 }
 
 init();
+
+// ══════════════════════════════════════════════════════════
+// CALENDAR ENGINE
+// ══════════════════════════════════════════════════════════
+const CK='spx:calendar:v1';
+let CAL_EVENTS=[]; // upcoming/planned events (separate from DB financials)
+let calYear=new Date().getFullYear();
+let calMonth=new Date().getMonth();
+let calSelectedDate=null;
+let calFilter='all';
+
+async function loadCalendar(){
+  try{
+    const raw=await sGet(CK);
+    if(raw)CAL_EVENTS=JSON.parse(raw);
+    else CAL_EVENTS=[];
+  }catch{CAL_EVENTS=[];}
+}
+async function saveCalendar(){
+  await sSet(CK,JSON.stringify(CAL_EVENTS));
+}
+
+// ── RENDER ──────────────────────────────────────────────
+function renderCalendar(){
+  renderMiniCal();
+  renderCalStats();
+  renderCalendarList();
+  // Pre-fill date if a date is selected
+  if(calSelectedDate){
+    const d=calSelectedDate;
+    document.getElementById('cal-date').value=`${d.y}-${String(d.m+1).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`;
+  } else {
+    document.getElementById('cal-date').valueAsDate=new Date();
+  }
+}
+
+function renderMiniCal(){
+  const MN_TR=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+  document.getElementById('cal-month-lbl').textContent=MN_TR[calMonth]+' '+calYear;
+  const today=new Date();today.setHours(0,0,0,0);
+  const firstDay=new Date(calYear,calMonth,1);
+  // Monday-first: 0=Mon..6=Sun
+  let startDow=firstDay.getDay()-1; if(startDow<0)startDow=6;
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const daysInPrev=new Date(calYear,calMonth,0).getDate();
+  // Event dates set for quick lookup
+  const eventDates=new Set(CAL_EVENTS.map(e=>{
+    const d=new Date(e.date);return`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+  }));
+  let cells='';
+  let totalCells=Math.ceil((startDow+daysInMonth)/7)*7;
+  for(let i=0;i<totalCells;i++){
+    let dayNum,mo=calMonth,yr=calYear,cls='cal-day';
+    if(i<startDow){dayNum=daysInPrev-startDow+i+1;mo=calMonth-1;if(mo<0){mo=11;yr=calYear-1;}cls+=' other-month';}
+    else if(i>=startDow+daysInMonth){dayNum=i-startDow-daysInMonth+1;mo=calMonth+1;if(mo>11){mo=0;yr=calYear+1;}cls+=' other-month';}
+    else{dayNum=i-startDow+1;}
+    const thisDate=new Date(yr,mo,dayNum);thisDate.setHours(0,0,0,0);
+    const key=`${thisDate.getFullYear()}-${thisDate.getMonth()}-${thisDate.getDate()}`;
+    if(thisDate.getTime()===today.getTime())cls+=' today';
+    if(calSelectedDate&&calSelectedDate.y===thisDate.getFullYear()&&calSelectedDate.m===thisDate.getMonth()&&calSelectedDate.d===dayNum&&!(i<startDow||i>=startDow+daysInMonth))cls+=' selected';
+    if(eventDates.has(key))cls+=' has-event';
+    cells+=`<div class="${cls}" onclick="calSelectDay(${thisDate.getFullYear()},${thisDate.getMonth()},${dayNum},${i<startDow||i>=startDow+daysInMonth})"><span class="cal-day-num">${dayNum}</span></div>`;
+  }
+  document.getElementById('cal-days').innerHTML=cells;
+}
+
+function calSelectDay(y,m,d,other){
+  if(other){calYear=y;calMonth=m;renderMiniCal();return;}
+  calSelectedDate={y,m,d};
+  renderMiniCal();
+  // Pre-fill form date
+  document.getElementById('cal-date').value=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  document.getElementById('cal-name').focus();
+  // Scroll to form
+  document.querySelector('.cal-form').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function calPrevMonth(){calMonth--;if(calMonth<0){calMonth=11;calYear--;}renderMiniCal();}
+function calNextMonth(){calMonth++;if(calMonth>11){calMonth=0;calYear++;}renderMiniCal();}
+function calGoToday(){const n=new Date();calYear=n.getFullYear();calMonth=n.getMonth();calSelectedDate=null;renderMiniCal();}
+
+function calSetFilter(f,el){
+  calFilter=f;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderCalendarList();
+}
+
+function renderCalStats(){
+  const now=new Date();now.setHours(0,0,0,0);
+  const upcoming=CAL_EVENTS.filter(e=>new Date(e.date)>=now&&e.status!=='cancelled');
+  const in7=upcoming.filter(e=>{const diff=(new Date(e.date)-now)/86400000;return diff<=7;});
+  const in30=upcoming.filter(e=>{const diff=(new Date(e.date)-now)/86400000;return diff<=30;});
+  const confirmed=CAL_EVENTS.filter(e=>e.status==='confirmed'&&new Date(e.date)>=now);
+  document.getElementById('cal-stats-strip').innerHTML=`
+    <div class="kc bl"><div class="kl">Toplam Planlanan</div><div class="kv">${CAL_EVENTS.length}</div><div class="ks">${upcoming.length} yaklaşan etkinlik</div></div>
+    <div class="kc ro"><div class="kl">7 Gün İçinde</div><div class="kv" style="color:${in7.length>0?'var(--rose)':'var(--t2)'}">${in7.length}</div><div class="ks">Kritik yaklaşan</div></div>
+    <div class="kc am"><div class="kl">30 Gün İçinde</div><div class="kv" style="color:${in30.length>0?'var(--amber)':'var(--t2)'}">${in30.length}</div><div class="ks">Bu ay içinde</div></div>
+    <div class="kc gn"><div class="kl">Onaylandı</div><div class="kv" style="color:var(--green)">${confirmed.length}</div><div class="ks">Kesinleşmiş etkinlik</div></div>`;
+}
+
+function renderCalendarList(){
+  const q=(document.getElementById('cal-search').value||'').toLowerCase();
+  const now=new Date();now.setHours(0,0,0,0);
+  let evs=[...CAL_EVENTS].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  if(q)evs=evs.filter(e=>e.name.toLowerCase().includes(q)||(e.city||'').toLowerCase().includes(q)||(e.type||'').toLowerCase().includes(q));
+  if(calFilter==='upcoming')evs=evs.filter(e=>new Date(e.date)>=now);
+  else if(calFilter==='past')evs=evs.filter(e=>new Date(e.date)<now);
+  document.getElementById('cal-badge').textContent=`(${evs.length})`;
+  if(!evs.length){
+    document.getElementById('cal-event-list').innerHTML=`<div class="empty">Etkinlik bulunamadı.<br><span style="font-size:11px">Sol formu kullanarak yeni etkinlik ekleyin.</span></div>`;
+    return;
+  }
+  const MN=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+  // Group by month
+  const groups={};
+  evs.forEach(e=>{
+    const d=new Date(e.date);
+    const key=`${d.getFullYear()}-${String(d.getMonth()).padStart(2,'0')}`;
+    if(!groups[key])groups[key]={label:MN[d.getMonth()]+' '+d.getFullYear(),items:[]};
+    groups[key].items.push(e);
+  });
+  let html='<div class="cal-timeline">';
+  Object.entries(groups).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([k,g])=>{
+    html+=`<div class="timeline-label">${g.label}</div>`;
+    g.items.forEach(e=>html+=buildEvItem(e,now,MN));
+  });
+  html+='</div>';
+  document.getElementById('cal-event-list').innerHTML=html;
+}
+
+function buildEvItem(e,now,MN){
+  const d=new Date(e.date);d.setHours(0,0,0,0);
+  const diff=Math.round((d-now)/86400000);
+  const dayNum=d.getDate();
+  const mon=MN[d.getMonth()];
+  // Badge class
+  let bdgCls='ev-date-badge';
+  if(diff<0)bdgCls+=' past';
+  else if(diff===0)bdgCls+=' today-badge';
+  else if(diff<=7)bdgCls+=' soon';
+  // Countdown
+  let countdown='',cntCls='ev-countdown';
+  if(diff<0){countdown=Math.abs(diff)+'g önce';cntCls+=' urgency-past';}
+  else if(diff===0){countdown='BUGÜN';cntCls+=' urgency-7';}
+  else if(diff<=7){countdown=diff+'g kaldı';cntCls+=' urgency-7';}
+  else if(diff<=30){countdown=diff+'g kaldı';cntCls+=' urgency-30';}
+  else{countdown=diff+'g kaldı';cntCls+=' urgency-future';}
+  // Status badge
+  const statusMap={planned:'Planlandı',confirmed:'✅ Onaylandı',tentative:'❓ Belirsiz',cancelled:'🚫 İptal'};
+  const statusCol={planned:'var(--t3)',confirmed:'var(--green)',tentative:'var(--amber)',cancelled:'var(--rose)'};
+  // status styling handled inline below
+  const safeId=e.id.replace(/'/g,"\\'");
+  return `<div class="ev-item" onclick="calItemClick('${safeId}')">
+    <div class="${bdgCls}">
+      <div class="ev-date-day">${dayNum}</div>
+      <div class="ev-date-month">${mon}</div>
+    </div>
+    <div class="ev-info">
+      <div class="ev-name" title="${e.name}">${e.name}</div>
+      <div class="ev-meta">
+        ${e.city?'📍 '+e.city:''}
+        ${e.type?'· '+e.type:''}
+        ${e.participants>0?'· 👥 '+fn(e.participants):''}
+        ${e.endDate?'· Bitiş: '+e.endDate:''}
+      </div>
+      <div class="ev-tags">
+        ${e.status&&e.status!=='planned'?`<span class="ev-tag" style="background:${e.status==='confirmed'?'rgba(16,185,129,.12)':e.status==='tentative'?'rgba(245,158,11,.12)':'rgba(244,63,94,.12)'};color:${statusCol[e.status]||'var(--t3)'}">${statusMap[e.status]||e.status}</span>`:''}
+        ${e.note?`<span class="ev-tag ev-tag-note" title="${e.note}">📝 ${e.note}</span>`:''}
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
+      <div class="${cntCls}">${countdown}</div>
+      <div class="ev-actions">
+        <button class="rab rab-e" title="Düzenle" onclick="calOpenEdit('${safeId}',event)">✎</button>
+        <button class="rab rab-d" title="Sil" onclick="calDeleteEv('${safeId}',event)">✕</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function calItemClick(id){
+  // Fill form with this event for quick edit
+  calOpenEdit(id,{stopPropagation:()=>{}});
+}
+
+// ── ADD EVENT ────────────────────────────────────────────
+async function calSaveEvent(){
+  const name=(document.getElementById('cal-name').value||'').trim();
+  const date=document.getElementById('cal-date').value;
+  if(!name||!date){toast('Etkinlik adı ve tarih zorunludur','err');return;}
+  const editId=document.getElementById('cal-edit-id').value;
+  if(editId){
+    // Update inline
+    const idx=CAL_EVENTS.findIndex(e=>e.id===editId);
+    if(idx>=0){
+      CAL_EVENTS[idx]={...CAL_EVENTS[idx],
+        name,date,
+        endDate:document.getElementById('cal-end-date').value||'',
+        city:(document.getElementById('cal-city').value||'').trim(),
+        type:document.getElementById('cal-type').value,
+        participants:parseFloat(document.getElementById('cal-participants').value)||0,
+        note:(document.getElementById('cal-note').value||'').trim(),
+        updatedAt:new Date().toISOString()
+      };
+      toast('✓ Güncellendi: '+name);
+    }
+    calCancelEdit();
+  } else {
+    const ev={
+      id:'c'+Date.now(),name,date,
+      endDate:document.getElementById('cal-end-date').value||'',
+      city:(document.getElementById('cal-city').value||'').trim(),
+      type:document.getElementById('cal-type').value,
+      participants:parseFloat(document.getElementById('cal-participants').value)||0,
+      note:(document.getElementById('cal-note').value||'').trim(),
+      status:'planned',
+      createdAt:new Date().toISOString()
+    };
+    CAL_EVENTS.push(ev);
+    toast('✓ Takvime eklendi: '+name);
+    // Update mini calendar for new month if needed
+    const nd=new Date(date);calYear=nd.getFullYear();calMonth=nd.getMonth();
+    calClearForm();
+  }
+  await saveCalendar();
+  renderCalendar();
+}
+
+function calClearForm(){
+  document.getElementById('cal-name').value='';
+  document.getElementById('cal-end-date').value='';
+  document.getElementById('cal-city').value='';
+  document.getElementById('cal-participants').value='';
+  document.getElementById('cal-note').value='';
+  document.getElementById('cal-type').value='Yarı Maraton';
+  document.getElementById('cal-date').valueAsDate=new Date();
+  calSelectedDate=null;
+}
+
+// ── INLINE EDIT (fill left form) ─────────────────────────
+function calOpenEdit(id,e){
+  if(e&&e.stopPropagation)e.stopPropagation();
+  const ev=CAL_EVENTS.find(x=>x.id===id);if(!ev)return;
+  document.getElementById('cal-edit-id').value=ev.id;
+  document.getElementById('cal-name').value=ev.name;
+  document.getElementById('cal-date').value=ev.date;
+  document.getElementById('cal-end-date').value=ev.endDate||'';
+  document.getElementById('cal-city').value=ev.city||'';
+  document.getElementById('cal-type').value=ev.type||'Diğer';
+  document.getElementById('cal-participants').value=ev.participants||'';
+  document.getElementById('cal-note').value=ev.note||'';
+  document.getElementById('cal-form-title-txt').textContent='✎ Etkinliği Düzenle';
+  document.getElementById('cal-save-btn').textContent='✓ Güncelle';
+  document.getElementById('cal-cancel-btn').style.display='flex';
+  // Navigate calendar to event month
+  const d=new Date(ev.date);calYear=d.getFullYear();calMonth=d.getMonth();
+  calSelectedDate={y:d.getFullYear(),m:d.getMonth(),d:d.getDate()};
+  renderMiniCal();
+  // Scroll to form
+  document.querySelector('.cal-form').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function calCancelEdit(){
+  document.getElementById('cal-edit-id').value='';
+  document.getElementById('cal-form-title-txt').textContent='＋ Yeni Etkinlik Ekle';
+  document.getElementById('cal-save-btn').textContent='＋ Ekle';
+  document.getElementById('cal-cancel-btn').style.display='none';
+  calClearForm();
+}
+
+// ── MODAL EDIT (alternative detailed edit) ───────────────
+function calOpenModalEdit(id){
+  const ev=CAL_EVENTS.find(x=>x.id===id);if(!ev)return;
+  document.getElementById('mce-id').value=ev.id;
+  document.getElementById('mce-name').value=ev.name;
+  document.getElementById('mce-date').value=ev.date;
+  document.getElementById('mce-end-date').value=ev.endDate||'';
+  document.getElementById('mce-city').value=ev.city||'';
+  document.getElementById('mce-type').value=ev.type||'Diğer';
+  document.getElementById('mce-participants').value=ev.participants||'';
+  document.getElementById('mce-status').value=ev.status||'planned';
+  document.getElementById('mce-note').value=ev.note||'';
+  document.getElementById('modal-cal-edit').classList.add('open');
+}
+async function calSaveModalEdit(){
+  const id=document.getElementById('mce-id').value;
+  const name=(document.getElementById('mce-name').value||'').trim();
+  const date=document.getElementById('mce-date').value;
+  if(!name||!date){toast('Ad ve tarih zorunludur','err');return;}
+  const idx=CAL_EVENTS.findIndex(e=>e.id===id);
+  if(idx<0){toast('Etkinlik bulunamadı','err');return;}
+  CAL_EVENTS[idx]={...CAL_EVENTS[idx],name,date,
+    endDate:document.getElementById('mce-end-date').value||'',
+    city:(document.getElementById('mce-city').value||'').trim(),
+    type:document.getElementById('mce-type').value,
+    participants:parseFloat(document.getElementById('mce-participants').value)||0,
+    status:document.getElementById('mce-status').value,
+    note:(document.getElementById('mce-note').value||'').trim(),
+    updatedAt:new Date().toISOString()
+  };
+  await saveCalendar();
+  closeModal('modal-cal-edit');
+  renderCalendar();
+  toast('✓ Güncellendi: '+name);
+}
+
+async function calDeleteEv(id,e){
+  if(e)e.stopPropagation();
+  const ev=CAL_EVENTS.find(x=>x.id===id);if(!ev)return;
+  if(!confirm(`"${ev.name}" etkinliğini silmek istiyor musunuz?`))return;
+  CAL_EVENTS=CAL_EVENTS.filter(x=>x.id!==id);
+  await saveCalendar();
+  renderCalendar();
+  toast('Etkinlik silindi');
+}
+
 
 // ══════════════════════════════════════════════════════════
 // FORECAST ENGINE — 2026 Predictive Profitability Model
@@ -1699,6 +2281,46 @@ function renderAiTable(){
 }
 
 </script>
+
+
+<!-- CAL EDIT MODAL (for row edit button) -->
+<div class="mo" id="modal-cal-edit" onclick="moBg(event,'modal-cal-edit')">
+  <div class="cal-edit-modal">
+    <div class="mt"><span>Etkinliği Düzenle</span><span class="mc" onclick="closeModal('modal-cal-edit')">✕</span></div>
+    <input type="hidden" id="mce-id">
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="fg"><label class="fl">Etkinlik Adı *</label><input class="fi" id="mce-name"></div>
+      <div class="fg3">
+        <div class="fg"><label class="fl">Başlangıç Tarihi *</label><input type="date" class="fi" id="mce-date"></div>
+        <div class="fg"><label class="fl">Bitiş Tarihi</label><input type="date" class="fi" id="mce-end-date"></div>
+        <div class="fg"><label class="fl">Şehir</label><input class="fi" id="mce-city" list="city-dl"></div>
+      </div>
+      <div class="fg3">
+        <div class="fg"><label class="fl">Tür</label>
+          <select class="fi" id="mce-type">
+            <option>Yarı Maraton</option><option>Ultra Trail</option><option>Maraton</option>
+            <option>Bisiklet</option><option>Triatlon</option><option>Festival</option>
+            <option>Kurumsal</option><option>Pickleball</option><option>Tenis</option><option>Diğer</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">Tahmini Katılımcı</label><input type="number" class="fi" id="mce-participants"></div>
+        <div class="fg"><label class="fl">Durum</label>
+          <select class="fi" id="mce-status">
+            <option value="planned">Planlandı</option>
+            <option value="confirmed">Onaylandı</option>
+            <option value="tentative">Belirsiz</option>
+            <option value="cancelled">İptal</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><label class="fl">Not</label><textarea class="fi" id="mce-note" rows="3" style="resize:vertical;font-size:12px"></textarea></div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap">
+      <button class="btn bs" onclick="closeModal('modal-cal-edit')">İptal</button>
+      <button class="btn bp" onclick="calSaveModalEdit()">✓ Güncelle</button>
+    </div>
+  </div>
+</div>
 
 <!-- DETAIL MODAL -->
 <div class="mo" id="modal-detail" onclick="moBg(event,'modal-detail')">
