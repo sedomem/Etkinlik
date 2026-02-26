@@ -30,8 +30,8 @@ body.light{
 }
 body.light body::before{opacity:.5;}
 body.light .sb{box-shadow:2px 0 16px rgba(0,0,0,.06);}
-body.light .topbar{background:rgba(240,242,248,.92);}
-body.light .mob-bar{background:rgba(240,242,248,.96);}
+body.light .topbar{background:#f0f2f8;}
+body.light .mob-bar{background:#f0f2f8;}
 body.light .toast{box-shadow:0 4px 16px rgba(0,0,0,.1);}
 body.light table thead tr{background:var(--bg3);}
 body.light .kc{box-shadow:var(--shadow);}
@@ -83,12 +83,12 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .hb.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
 .hb.open span:nth-child(2){opacity:0;}
 .hb.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
-.sb-ov{display:none;position:fixed;inset:0;background:rgba(6,10,18,.72);z-index:390;-webkit-tap-highlight-color:transparent;}
+.sb-ov{display:none;position:fixed;inset:0;z-index:390;background:transparent;}
 .sb-ov.open{display:block;}
 
 /* ── MAIN ── */
 .main{margin-left:var(--sb);flex:1;min-width:0;}
-.topbar{background:rgba(11,17,32,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--b1);padding:12px 26px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:8px;flex-wrap:wrap;}
+.topbar{background:rgba(11,17,32,.98);border-bottom:1px solid var(--b1);padding:12px 26px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:8px;flex-wrap:wrap;}
 .pt{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;white-space:nowrap;}
 .tr{display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
 .flt{background:var(--bg3);border:1px solid var(--b1);color:var(--t2);padding:7px 10px;border-radius:7px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;outline:none;transition:border-color .2s;}
@@ -249,17 +249,16 @@ tbody tr:hover .del-btn{opacity:1;}
     overflow-y:auto;
     overflow-x:hidden;
     -webkit-overflow-scrolling:touch;
-    will-change:transform;
     position:fixed;
     top:0;left:0;
     z-index:400;
   }
   .sb.open{transform:translateX(0);}
-  .sb-ov{z-index:390;}
+  .sb-ov.open{display:block;}
   .mob-bar{display:flex;z-index:380;}
   .main{margin-left:0;padding-top:54px;}
   /* No backdrop-filter on topbar in mobile — causes paint issues */
-  .topbar{padding:9px 13px;top:54px;backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--bg1);}
+  .topbar{padding:9px 13px;top:54px;background:var(--bg1);}
   .page{padding:14px 13px;}
   .kg{grid-template-columns:repeat(2,1fr);gap:9px;}
   .kv{font-size:20px;}
@@ -574,6 +573,107 @@ tbody tr:hover .row-acts{opacity:1;}
   .mob-bar{height:46px;padding:0 12px;}
   .main{padding-top:46px;}
   .topbar{top:46px;}
+}
+
+
+/* ─── NOTIFICATION SYSTEM ─── */
+.notif-panel{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--r);overflow:hidden;margin-bottom:16px;}
+.notif-header{padding:13px 17px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.notif-header-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px;}
+.notif-body{padding:16px 17px;}
+
+/* Permission banner */
+.notif-perm-banner{
+  display:flex;align-items:center;gap:12px;padding:14px 16px;
+  border-radius:9px;margin-bottom:14px;flex-wrap:wrap;gap:10px;
+}
+.notif-perm-banner.ask{background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.2);}
+.notif-perm-banner.granted{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);}
+.notif-perm-banner.denied{background:rgba(244,63,94,.07);border:1px solid rgba(244,63,94,.2);}
+.notif-perm-icon{font-size:22px;flex-shrink:0;}
+.notif-perm-txt{flex:1;min-width:180px;}
+.notif-perm-title{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:2px;}
+.notif-perm-sub{font-size:11px;color:var(--t3);font-family:'DM Mono',monospace;}
+
+/* Reminder timing grid */
+.reminder-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0;}
+.reminder-chip{
+  padding:10px 8px;border-radius:9px;text-align:center;cursor:pointer;
+  border:1px solid var(--b1);background:var(--bg3);transition:all .18s;
+  user-select:none;
+}
+.reminder-chip:hover{border-color:var(--b2);}
+.reminder-chip.active{background:rgba(59,130,246,.12);border-color:var(--blue);color:var(--blue2);}
+.reminder-chip-num{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;line-height:1;margin-bottom:2px;}
+.reminder-chip-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;}
+.reminder-chip.active .reminder-chip-lbl{color:var(--blue2);}
+
+/* Notification log */
+.notif-log{max-height:260px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.notif-log-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:9px 0;border-bottom:1px solid var(--b1);
+}
+.notif-log-item:last-child{border-bottom:none;}
+.notif-log-icon{
+  width:32px;height:32px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px;
+}
+.notif-log-icon.sent{background:rgba(16,185,129,.12);}
+.notif-log-icon.pending{background:rgba(245,158,11,.12);}
+.notif-log-icon.missed{background:rgba(244,63,94,.12);}
+.notif-log-name{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:2px;}
+.notif-log-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--t3);}
+.notif-log-badge{font-family:'DM Mono',monospace;font-size:9px;padding:2px 6px;border-radius:4px;margin-left:auto;flex-shrink:0;white-space:nowrap;}
+.nlb-sent{background:rgba(16,185,129,.12);color:var(--green);}
+.nlb-pending{background:rgba(245,158,11,.12);color:var(--amber);}
+.nlb-today{background:rgba(244,63,94,.12);color:var(--rose);}
+
+/* Notification sound toggle */
+.sound-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--b1);margin-top:10px;}
+.sound-lbl{flex:1;font-size:12px;color:var(--t2);}
+
+/* Pulse animation for active notif indicator */
+@keyframes notif-pulse{0%{box-shadow:0 0 0 0 rgba(16,185,129,.4);}70%{box-shadow:0 0 0 8px rgba(16,185,129,0);}100%{box-shadow:0 0 0 0 rgba(16,185,129,0);}}
+.notif-active-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;animation:notif-pulse 2s infinite;}
+
+@media(max-width:768px){
+  .reminder-grid{grid-template-columns:repeat(2,1fr);}
+}
+
+
+/* ── SIDEBAR OPEN DIMMING (no fixed overlay = no Android blur bug) ── */
+.main{transition:none;}
+.main.sb-open{
+  /* Just a subtle brightness dim — no compositing layer */
+  pointer-events:none;
+}
+.main.sb-open::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  z-index:200;
+  pointer-events:none;
+}
+@media(max-width:768px){
+  .main.sb-open::after{z-index:200;}
+}
+
+
+/* ── CALENDAR MOBILE REORDER ── */
+@media(max-width:768px){
+  /* Stack: notification, stats already single col */
+  .cal-grid{display:flex;flex-direction:column;gap:14px;}
+  /* Show event list FIRST on mobile */
+  .cal-list{order:1;}
+  /* Add form section SECOND */
+  .cal-left-panel{order:2;}
+  /* Limit mini cal height on mobile */
+  .cal-days{grid-template-columns:repeat(7,1fr);}
+  /* Event list: full height on mobile, no max-height cap */
+  #cal-event-list{max-height:none !important;overflow-y:visible;}
+  /* Notification panel: collapse by default on mobile */
 }
 
 </style>
@@ -910,9 +1010,78 @@ tbody tr:hover .row-acts{opacity:1;}
     <!-- Stats strip -->
     <div class="cal-stats" id="cal-stats-strip"></div>
 
+    <!-- NOTIFICATION PANEL -->
+    <div class="notif-panel" id="notif-panel">
+      <div class="notif-header">
+        <div class="notif-header-title">
+          <span id="notif-active-indicator"></span>
+          🔔 Hatırlatma Sistemi
+        </div>
+        <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap">
+          <button class="btn bs" style="font-size:11px;padding:5px 10px" onclick="notifTest()">🧪 Test</button>
+          <button class="btn bs" style="font-size:11px;padding:5px 10px" onclick="toggleNotifPanel()">Gizle ↑</button>
+        </div>
+      </div>
+      <div class="notif-body" id="notif-panel-body">
+        <!-- Permission banner -->
+        <div class="notif-perm-banner ask" id="notif-perm-banner">
+          <div class="notif-perm-icon" id="notif-perm-icon">🔔</div>
+          <div class="notif-perm-txt">
+            <div class="notif-perm-title" id="notif-perm-title">Bildirim İzni Gerekli</div>
+            <div class="notif-perm-sub" id="notif-perm-sub">Yaklaşan etkinlikler için uyarı almak için izin verin</div>
+          </div>
+          <button class="btn bp" id="notif-perm-btn" style="font-size:11px" onclick="requestNotifPermission()">İzin Ver</button>
+        </div>
+
+        <!-- Reminder timing settings -->
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;">NE KADAR ÖNCE UYARILMAK İSTERSİNİZ?</div>
+        <div class="reminder-grid" id="reminder-grid">
+          <div class="reminder-chip" data-days="0" onclick="toggleReminderDay(0,this)">
+            <div class="reminder-chip-num">0</div>
+            <div class="reminder-chip-lbl">Gün önce (sabah)</div>
+          </div>
+          <div class="reminder-chip active" data-days="1" onclick="toggleReminderDay(1,this)">
+            <div class="reminder-chip-num">1</div>
+            <div class="reminder-chip-lbl">Gün önce</div>
+          </div>
+          <div class="reminder-chip active" data-days="3" onclick="toggleReminderDay(3,this)">
+            <div class="reminder-chip-num">3</div>
+            <div class="reminder-chip-lbl">Gün önce</div>
+          </div>
+          <div class="reminder-chip active" data-days="7" onclick="toggleReminderDay(7,this)">
+            <div class="reminder-chip-num">7</div>
+            <div class="reminder-chip-lbl">Gün önce</div>
+          </div>
+        </div>
+
+        <!-- Notification time setting -->
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;">GÜNLÜK HATIRLATMA SAATİ</div>
+          <input type="time" class="fi" id="notif-time" value="09:00" style="width:110px;font-family:'DM Mono',monospace" onchange="saveNotifSettings()">
+          <span style="font-size:11px;color:var(--t3)">Her gün bu saatte kontrol edilir</span>
+        </div>
+
+        <!-- Sound + vibration -->
+        <div class="sound-row">
+          <span style="font-size:16px">🔊</span>
+          <span class="sound-lbl">Bildirim sesi</span>
+          <div class="toggle-track" id="sound-track" onclick="toggleSound()">
+            <div class="toggle-thumb">
+              <span class="theme-icon-dark">🔇</span>
+              <span class="theme-icon-light">🔊</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming notifications log -->
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin:14px 0 8px;">YAKLAŞAN HATIRLATMALAR</div>
+        <div class="notif-log" id="notif-log-list"></div>
+      </div>
+    </div>
+
     <div class="cal-grid">
       <!-- Left: Mini calendar + Add form -->
-      <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="cal-left-panel" style="display:flex;flex-direction:column;gap:14px;">
         <!-- Mini calendar -->
         <div class="cal-box">
           <div class="cal-header">
@@ -979,7 +1148,7 @@ tbody tr:hover .row-acts{opacity:1;}
             </div>
           </div>
         </div>
-        <div id="cal-event-list" style="max-height:650px;overflow-y:auto;-webkit-overflow-scrolling:touch;"></div>
+        <div id="cal-event-list" style="max-height:600px;overflow-y:auto;-webkit-overflow-scrolling:touch;"></div>
       </div>
     </div>
   </div>
@@ -1569,26 +1738,27 @@ function goPage(id,el){
   if(id==='weather')renderWeather();
   if(id==='forecast')renderForecast();
   if(id==='ai-score')renderAiScore();
-  if(id==='calendar')renderCalendar();
+  if(id==='calendar'){renderCalendar();setTimeout(()=>renderNotifLog(),100);}
   closeSB();
 }
 
 // ── SIDEBAR MOBILE ────────────────────────────────
 function toggleSB(){
   const sb=document.getElementById('sb'),hb=document.getElementById('hb'),ov=document.getElementById('sb-ov');
+  const main=document.querySelector('.main');
   const o=sb.classList.toggle('open');
   hb.classList.toggle('open',o);
   ov.classList.toggle('open',o);
-  // Prevent body scroll while sidebar open on mobile
+  if(main)main.classList.toggle('sb-open',o);
   document.body.style.overflow=o?'hidden':'';
-  document.body.style.position=o?'':'';
 }
 function closeSB(){
   document.getElementById('sb').classList.remove('open');
   document.getElementById('hb').classList.remove('open');
   document.getElementById('sb-ov').classList.remove('open');
+  const main=document.querySelector('.main');
+  if(main)main.classList.remove('sb-open');
   document.body.style.overflow='';
-  document.body.style.position='';
 }
 
 // ── TOAST ─────────────────────────────────────────
@@ -1643,6 +1813,7 @@ async function init(){
   updateDashboard();renderEvents();
   // Auto-sync every 30s
   await loadCalendar();
+  initNotifications();
   setInterval(async()=>{await loadData();applyFilters();},30000);
   window.addEventListener('resize',()=>{if(window.innerWidth>768)closeSB();});
 }
@@ -2323,6 +2494,407 @@ function renderAiTable(){
       </div>
     </div>`;
   }).join('');
+}
+
+
+// ══════════════════════════════════════════════════════════
+// NOTIFICATION ENGINE
+// ══════════════════════════════════════════════════════════
+const NK_SETTINGS = 'spx:notif:settings';
+const NK_SENT     = 'spx:notif:sent';    // tracks already-fired notifications
+
+let notifSettings = {
+  enabled: true,
+  days: [1, 3, 7],    // remind N days before
+  time: '09:00',      // daily check time
+  sound: true,
+  panelOpen: true,
+};
+let notifSent = {};   // { "eventId_daysBefore": timestamp }
+let notifCheckInterval = null;
+let soundEnabled = true;
+
+// ── INIT ────────────────────────────────────────────────
+function initNotifications() {
+  // Auto-collapse on mobile to save space
+  if (window.innerWidth < 768) {
+    const body = document.getElementById('notif-panel-body');
+    const btn = document.querySelector('[onclick="toggleNotifPanel()"]');
+    if (body) body.style.display = 'none';
+    if (btn) btn.textContent = 'Göster ↓';
+  }
+  // Load settings
+  try {
+    const s = lGet(NK_SETTINGS);
+    if (s) notifSettings = { ...notifSettings, ...JSON.parse(s) };
+    const sent = lGet(NK_SENT);
+    if (sent) notifSent = JSON.parse(sent);
+  } catch(e) {}
+
+  soundEnabled = notifSettings.sound !== false;
+  updateNotifPermUI();
+  applyReminderChips();
+  applyTimeInput();
+  applySoundToggle();
+
+  // Start interval checker (every 60 seconds)
+  if (notifCheckInterval) clearInterval(notifCheckInterval);
+  notifCheckInterval = setInterval(checkNotifications, 60000);
+
+  // Also check immediately after a short delay (let cal load first)
+  setTimeout(checkNotifications, 2000);
+
+  // Register Service Worker (for background notifications when tab is minimized)
+  registerNotifSW();
+
+  renderNotifLog();
+}
+
+// ── SERVICE WORKER via Blob (background support) ─────────
+function registerNotifSW() {
+  if (!('serviceWorker' in navigator)) return;
+  const swCode = `
+    self.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'SHOW_NOTIFICATION') {
+        self.registration.showNotification(e.data.title, {
+          body: e.data.body,
+          icon: e.data.icon || '',
+          badge: e.data.badge || '',
+          tag: e.data.tag || 'spx-reminder',
+          requireInteraction: false,
+          vibrate: [200, 100, 200],
+          data: { url: self.location.origin }
+        });
+      }
+    });
+    self.addEventListener('notificationclick', function(e) {
+      e.notification.close();
+      e.waitUntil(clients.matchAll({type:'window'}).then(function(cs){
+        if(cs.length>0){cs[0].focus();}
+        else{clients.openWindow(e.notification.data.url||'/');}
+      }));
+    });
+  `;
+  try {
+    const blob = new Blob([swCode], { type: 'application/javascript' });
+    const swURL = URL.createObjectURL(blob);
+    navigator.serviceWorker.register(swURL)
+      .then(reg => { window._swReg = reg; })
+      .catch(() => {}); // Silently fail if blob SW not allowed
+  } catch(e) {}
+}
+
+// ── PERMISSION UI ────────────────────────────────────────
+function updateNotifPermUI() {
+  const banner = document.getElementById('notif-perm-banner');
+  const icon   = document.getElementById('notif-perm-icon');
+  const title  = document.getElementById('notif-perm-title');
+  const sub    = document.getElementById('notif-perm-sub');
+  const btn    = document.getElementById('notif-perm-btn');
+  const ind    = document.getElementById('notif-active-indicator');
+  if (!banner) return;
+
+  const perm = Notification && Notification.permission;
+
+  if (perm === 'granted') {
+    banner.className = 'notif-perm-banner granted';
+    icon.textContent = '✅';
+    title.textContent = 'Bildirimler Aktif';
+    sub.textContent = 'Yaklaşan etkinlikler için uyarı alacaksınız';
+    btn.textContent = 'Test Gönder';
+    btn.onclick = notifTest;
+    btn.className = 'btn bg2';
+    if (ind) ind.innerHTML = '<span class="notif-active-dot" style="margin-right:6px"></span>';
+  } else if (perm === 'denied') {
+    banner.className = 'notif-perm-banner denied';
+    icon.textContent = '🚫';
+    title.textContent = 'Bildirim İzni Reddedildi';
+    sub.textContent = 'Tarayıcı ayarlarından izin veriniz: Ayarlar → Site İzinleri → Bildirimler';
+    btn.textContent = 'Nasıl Açılır?';
+    btn.className = 'btn bd';
+    btn.onclick = showNotifHelp;
+    if (ind) ind.innerHTML = '';
+  } else {
+    banner.className = 'notif-perm-banner ask';
+    icon.textContent = '🔔';
+    title.textContent = 'Bildirim İzni Gerekli';
+    sub.textContent = 'Yaklaşan etkinlikler için masaüstü/telefon bildirimi alın';
+    btn.textContent = 'İzin Ver';
+    btn.className = 'btn bp';
+    btn.onclick = requestNotifPermission;
+    if (ind) ind.innerHTML = '';
+  }
+}
+
+async function requestNotifPermission() {
+  if (!('Notification' in window)) {
+    toast('Bu tarayıcı bildirimleri desteklemiyor', 'err');
+    return;
+  }
+  const result = await Notification.requestPermission();
+  updateNotifPermUI();
+  if (result === 'granted') {
+    toast('🔔 Bildirimler aktif!');
+    // Fire a welcome notification
+    setTimeout(() => showNotification(
+      '🎉 SPX Hatırlatma Aktif',
+      'Artık yaklaşan etkinlikler için bildirim alacaksınız.',
+      'welcome'
+    ), 500);
+    checkNotifications();
+  } else {
+    toast('Bildirim izni reddedildi', 'err');
+  }
+}
+
+function showNotifHelp() {
+  alert('Bildirimleri Açmak İçin:\n\n📱 Android Chrome:\nAyarlar → Site Ayarları → Bildirimler → sedomem.github.io → İzin Ver\n\n🍎 iPhone Safari:\nAyarlar → Safari → Gelişmiş → Deneysel Özellikler → Push API (iOS 16.4+)\n\n💻 Masaüstü:\nAdres çubuğundaki kilit ikonuna tıklayın → Bildirimler → İzin Ver');
+}
+
+// ── CORE NOTIFICATION SENDER ─────────────────────────────
+function showNotification(title, body, tag) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+
+  // Try Service Worker first (works in background)
+  if (window._swReg && window._swReg.active) {
+    window._swReg.active.postMessage({
+      type: 'SHOW_NOTIFICATION',
+      title, body,
+      tag: tag || 'spx-event',
+      icon: ''
+    });
+  } else {
+    // Fallback: direct Notification
+    try {
+      new Notification(title, {
+        body,
+        tag: tag || 'spx-event',
+        icon: '',
+        requireInteraction: false,
+      });
+    } catch(e) {}
+  }
+
+  // Play sound if enabled
+  if (soundEnabled) playNotifSound();
+}
+
+// ── CHECK NOTIFICATIONS (called every 60s) ────────────────
+function checkNotifications() {
+  if (!CAL_EVENTS.length) return;
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  if (!notifSettings.enabled) return;
+
+  const now  = new Date();
+  const hhmm = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+  const notifTime = notifSettings.time || '09:00';
+
+  // Only fire during the minute window matching user's preferred time
+  // (or within 5 min after - to catch missed minutes)
+  const [nh, nm] = notifTime.split(':').map(Number);
+  const nowMins  = now.getHours() * 60 + now.getMinutes();
+  const tgtMins  = nh * 60 + nm;
+  const withinWindow = Math.abs(nowMins - tgtMins) <= 5;
+  if (!withinWindow) return;
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const days  = notifSettings.days || [1, 3, 7];
+
+  CAL_EVENTS.forEach(ev => {
+    if (ev.status === 'cancelled') return;
+    const evDate = new Date(ev.date); evDate.setHours(0,0,0,0);
+    const diffDays = Math.round((evDate - today) / 86400000);
+
+    days.forEach(d => {
+      if (diffDays !== d) return;
+      const key = `${ev.id}_${d}`;
+      // Check if already sent today
+      const sentAt = notifSent[key];
+      const sentToday = sentAt && new Date(sentAt).toDateString() === now.toDateString();
+      if (sentToday) return;
+
+      // Fire!
+      const MN = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+      const evD = new Date(ev.date);
+      const dateStr = `${evD.getDate()} ${MN[evD.getMonth()]} ${evD.getFullYear()}`;
+      const title = d === 0
+        ? `📅 BUGÜN: ${ev.name}`
+        : `⏰ ${d} Gün Kaldı: ${ev.name}`;
+      const body = `${ev.city ? '📍 ' + ev.city + '  ' : ''}${dateStr}${ev.type ? '  · ' + ev.type : ''}${ev.participants > 0 ? '\n👥 ' + ev.participants.toLocaleString('tr-TR') + ' katılımcı' : ''}`;
+
+      showNotification(title, body, key);
+      notifSent[key] = now.toISOString();
+      lSet(NK_SENT, JSON.stringify(notifSent));
+    });
+  });
+
+  renderNotifLog();
+}
+
+// ── TEST NOTIFICATION ────────────────────────────────────
+function notifTest() {
+  if (!('Notification' in window)) { toast('Tarayıcı desteklemiyor', 'err'); return; }
+  if (Notification.permission !== 'granted') {
+    requestNotifPermission();
+    return;
+  }
+  const upcoming = CAL_EVENTS.filter(e => {
+    const d = new Date(e.date); d.setHours(0,0,0,0);
+    const t = new Date(); t.setHours(0,0,0,0);
+    return d >= t && e.status !== 'cancelled';
+  }).sort((a,b) => new Date(a.date) - new Date(b.date));
+
+  if (upcoming.length) {
+    const ev = upcoming[0];
+    const diff = Math.round((new Date(ev.date) - new Date().setHours(0,0,0,0)) / 86400000);
+    showNotification(
+      `🧪 TEST: ${ev.name}`,
+      `${diff === 0 ? 'BUGÜN!' : diff + ' gün kaldı'}  ${ev.city ? '📍 ' + ev.city : ''}`,
+      'spx-test'
+    );
+    toast('🔔 Test bildirimi gönderildi!');
+  } else {
+    showNotification('🧪 SPX Test Bildirimi', 'Hatırlatma sistemi çalışıyor ✅', 'spx-test');
+    toast('🔔 Test bildirimi gönderildi!');
+  }
+}
+
+// ── NOTIFICATION LOG ─────────────────────────────────────
+function renderNotifLog() {
+  const el = document.getElementById('notif-log-list');
+  if (!el) return;
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const days = notifSettings.days || [1, 3, 7];
+
+  // Build upcoming reminder schedule
+  const items = [];
+  CAL_EVENTS.forEach(ev => {
+    if (ev.status === 'cancelled') return;
+    const evDate = new Date(ev.date); evDate.setHours(0,0,0,0);
+    const diffDays = Math.round((evDate - today) / 86400000);
+    if (diffDays < -1) return; // skip old events
+
+    days.forEach(d => {
+      const remindAt = new Date(evDate);
+      remindAt.setDate(remindAt.getDate() - d);
+      const key = `${ev.id}_${d}`;
+      const sent = notifSent[key] && new Date(notifSent[key]).toDateString();
+      const isPast = remindAt < today;
+      const isToday = remindAt.toDateString() === today.toDateString();
+
+      const MN = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+      items.push({ ev, d, remindAt, key, sent, isPast, isToday, diffDays });
+    });
+
+    // Always show "today" reminder if event is today
+    if (diffDays === 0) {
+      const key = `${ev.id}_0`;
+      const sent = notifSent[key] && new Date(notifSent[key]).toDateString();
+      if (!days.includes(0)) {
+        items.push({ ev, d: 0, remindAt: today, key, sent, isPast: false, isToday: true, diffDays });
+      }
+    }
+  });
+
+  items.sort((a,b) => a.remindAt - b.remindAt);
+
+  if (!items.length) {
+    el.innerHTML = '<div class="empty" style="padding:18px">Planlanmış etkinlik yok. Takvime etkinlik ekleyin.</div>';
+    return;
+  }
+
+  const MN = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+  el.innerHTML = items.slice(0, 20).map(({ev, d, remindAt, key, sent, isPast, isToday, diffDays}) => {
+    const remindStr = isToday ? 'Bugün' :
+      `${remindAt.getDate()} ${MN[remindAt.getMonth()]}`;
+    const statusIcon = sent ? '✅' : isPast ? '⏭' : isToday ? '🔔' : '⏰';
+    const iconCls = sent ? 'sent' : isPast ? 'missed' : 'pending';
+    const badgeCls = sent ? 'nlb-sent' : isPast ? 'nlb-pending' : isToday ? 'nlb-today' : 'nlb-pending';
+    const badgeTxt = sent ? 'Gönderildi' : isPast ? 'Kaçırıldı' : isToday ? 'Bugün!' : remindStr;
+    const evDateStr = `${new Date(ev.date).getDate()} ${MN[new Date(ev.date).getMonth()]}`;
+    return `<div class="notif-log-item">
+      <div class="notif-log-icon ${iconCls}">${statusIcon}</div>
+      <div style="flex:1;min-width:0">
+        <div class="notif-log-name" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${ev.name}</div>
+        <div class="notif-log-meta">
+          ${d === 0 ? 'Etkinlik günü' : d + ' gün öncesi'} · Etkinlik: ${evDateStr}
+          ${ev.city ? ' · 📍 ' + ev.city : ''}
+        </div>
+      </div>
+      <span class="notif-log-badge ${badgeCls}">${badgeTxt}</span>
+    </div>`;
+  }).join('');
+}
+
+// ── SETTINGS PERSISTENCE ─────────────────────────────────
+function saveNotifSettings() {
+  notifSettings.time = document.getElementById('notif-time').value;
+  notifSettings.sound = soundEnabled;
+  lSet(NK_SETTINGS, JSON.stringify(notifSettings));
+}
+
+function toggleReminderDay(day, el) {
+  el.classList.toggle('active');
+  const active = [...document.querySelectorAll('.reminder-chip.active')].map(c => parseInt(c.dataset.days));
+  notifSettings.days = active;
+  saveNotifSettings();
+  renderNotifLog();
+}
+
+function applyReminderChips() {
+  const days = notifSettings.days || [1, 3, 7];
+  document.querySelectorAll('.reminder-chip').forEach(c => {
+    c.classList.toggle('active', days.includes(parseInt(c.dataset.days)));
+  });
+}
+
+function applyTimeInput() {
+  const el = document.getElementById('notif-time');
+  if (el) el.value = notifSettings.time || '09:00';
+}
+
+function applySoundToggle() {
+  const track = document.getElementById('sound-track');
+  if (track) track.classList.toggle('on', soundEnabled);
+}
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  document.getElementById('sound-track').classList.toggle('on', soundEnabled);
+  saveNotifSettings();
+}
+
+// ── PANEL TOGGLE ─────────────────────────────────────────
+function toggleNotifPanel() {
+  const body = document.getElementById('notif-panel-body');
+  const btn  = document.querySelector('[onclick="toggleNotifPanel()"]');
+  const open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : '';
+  if (btn) btn.textContent = open ? 'Göster ↓' : 'Gizle ↑';
+}
+
+// ── SOUND ────────────────────────────────────────────────
+function playNotifSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    // Gentle two-tone chime
+    const play = (freq, start, dur) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + start);
+      gain.gain.setValueAtTime(0, ctx.currentTime + start);
+      gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + dur);
+      osc.start(ctx.currentTime + start);
+      osc.stop(ctx.currentTime + start + dur);
+    };
+    play(880, 0, 0.35);
+    play(1100, 0.2, 0.35);
+    play(1320, 0.4, 0.5);
+  } catch(e) {}
 }
 
 </script>
